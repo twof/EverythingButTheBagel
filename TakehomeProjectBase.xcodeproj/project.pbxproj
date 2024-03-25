@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		248D90412BB0AF72005F7A40 /* TakehomeProjectBaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 248D90402BB0AF72005F7A40 /* TakehomeProjectBaseCore */; };
 		24BA5B1A2BB006810062084E /* TakehomeProjectBaseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24BA5B192BB006810062084E /* TakehomeProjectBaseApp.swift */; };
 		24BA5B1C2BB006810062084E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24BA5B1B2BB006810062084E /* ContentView.swift */; };
 		24BA5B1E2BB006820062084E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24BA5B1D2BB006820062084E /* Assets.xcassets */; };
 		24BA5B212BB006820062084E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24BA5B202BB006820062084E /* Preview Assets.xcassets */; };
-		9D8AD5FE7547449580364FE4 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 87B3602631F64240B83D72B7 /* Sentry */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,8 +20,8 @@
 		24BA5B1B2BB006810062084E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		24BA5B1D2BB006820062084E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		24BA5B202BB006820062084E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		24BA5B272BB006AC0062084E /* TakehomeProjectBaseCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = TakehomeProjectBaseCore; path = ../TakehomeProjectBaseCore; sourceTree = "<group>"; };
 		24BA5B282BB0073D0062084E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		24BA5B292BB025400062084E /* TakehomeProjectBaseCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = TakehomeProjectBaseCore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,20 +29,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9D8AD5FE7547449580364FE4 /* Sentry in Frameworks */,
+				248D90412BB0AF72005F7A40 /* TakehomeProjectBaseCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		248D903F2BB0AF72005F7A40 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		24BA5B0D2BB006810062084E = {
 			isa = PBXGroup;
 			children = (
 				24BA5B282BB0073D0062084E /* README.md */,
-				24BA5B272BB006AC0062084E /* TakehomeProjectBaseCore */,
+				24BA5B292BB025400062084E /* TakehomeProjectBaseCore */,
 				24BA5B182BB006810062084E /* TakehomeProjectBase */,
 				24BA5B172BB006810062084E /* Products */,
+				248D903F2BB0AF72005F7A40 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -90,12 +98,12 @@
 			dependencies = (
 			);
 			name = TakehomeProjectBase;
+			packageProductDependencies = (
+				248D90402BB0AF72005F7A40 /* TakehomeProjectBaseCore */,
+			);
 			productName = TakehomeProjectBase;
 			productReference = 24BA5B162BB006810062084E /* TakehomeProjectBase.app */;
 			productType = "com.apple.product-type.application";
-			packageProductDependencies = (
-				87B3602631F64240B83D72B7 /* Sentry */,
-			);
 		};
 /* End PBXNativeTarget section */
 
@@ -121,14 +129,13 @@
 				Base,
 			);
 			mainGroup = 24BA5B0D2BB006810062084E;
+			packageReferences = (
+			);
 			productRefGroup = 24BA5B172BB006810062084E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				24BA5B152BB006810062084E /* TakehomeProjectBase */,
-			);
-			packageReferences = (
-				245F9F0F14124D6486676814 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 		};
 /* End PBXProject section */
@@ -144,6 +151,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C2BAC14D64BE45C39413AB79 /* Upload Debug Symbols to Sentry */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/.sentryclirc",
+			);
+			name = "Upload Debug Symbols to Sentry";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script is responsable to upload debug symbols and source context for Sentry.\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=alexdev-fw\nexport SENTRY_PROJECT=apple-ios\nERROR=$(sentry-cli debug-files ui.show_notifications false upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		24BA5B122BB006810062084E /* Sources */ = {
@@ -284,6 +311,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"TakehomeProjectBase/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -302,7 +330,6 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 			};
 			name = Debug;
 		};
@@ -313,6 +340,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"TakehomeProjectBase/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -331,7 +359,6 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 			};
 			name = Release;
 		};
@@ -358,40 +385,10 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		C2BAC14D64BE45C39413AB79 /* Upload Debug Symbols to Sentry */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			name = "Upload Debug Symbols to Sentry";
-			inputPaths = (
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
-			);
-			outputPaths = (
-			);
-			shellPath = /bin/sh;
-			shellScript = "# This script is responsable to upload debug symbols and source context for Sentry.\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=alexdev-fw\nexport SENTRY_PROJECT=apple-ios\nERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		245F9F0F14124D6486676814 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/getsentry/sentry-cocoa/";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		87B3602631F64240B83D72B7 /* Sentry */ = {
+		248D90402BB0AF72005F7A40 /* TakehomeProjectBaseCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 245F9F0F14124D6486676814 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
-			productName = Sentry;
+			productName = TakehomeProjectBaseCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
