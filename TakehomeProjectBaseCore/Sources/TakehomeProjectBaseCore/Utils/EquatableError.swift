@@ -1,4 +1,8 @@
-struct EquatableError: Error, Equatable, CustomStringConvertible {
+/// Wrapper around standard library errors because by default they aren't equatable.
+///
+/// The lack of equatability makes testing very difficult.
+/// Credit: https://sideeffect.io/posts/2021-12-10-equatableerror/
+public struct EquatableError: Error, Equatable, CustomStringConvertible {
   let base: Error
   private let equals: (Error) -> Bool
   
@@ -12,11 +16,11 @@ struct EquatableError: Error, Equatable, CustomStringConvertible {
     self.equals = { ($0 as? Base) == base }
   }
   
-  static func ==(lhs: EquatableError, rhs: EquatableError) -> Bool {
+  public static func ==(lhs: EquatableError, rhs: EquatableError) -> Bool {
     lhs.equals(rhs.base)
   }
   
-  var description: String {
+  public var description: String {
     "\(self.base)"
   }
   
@@ -31,12 +35,22 @@ struct EquatableError: Error, Equatable, CustomStringConvertible {
 
 extension Error where Self: Equatable {
   func toEquatableError() -> EquatableError {
-    EquatableError(self)
+    // Avoid re-wrapping EquatableErrors
+    if let error = self as? EquatableError {
+      return error
+    }
+    
+    return EquatableError(self)
   }
 }
 
 extension Error {
   func toEquatableError() -> EquatableError {
-    EquatableError(self)
+    // Avoid re-wrapping EquatableErrors
+    if let error = self as? EquatableError {
+      return error
+    }
+    
+    return EquatableError(self)
   }
 }

@@ -3,20 +3,20 @@ import ComposableArchitecture
 import Sentry
 import os
 
-enum LogLevel: Equatable {
+public enum LogLevel: Equatable {
   case info(message: String)
   case warning(message: String)
   case error(error: EquatableError)
 }
 
 @DependencyClient
-struct LoggingClient {
-  var setup: () -> Void
-  var log: (_ level: LogLevel, _ category: String) -> Void
+public struct LoggingClient {
+  public var setup: () -> Void
+  public var log: (_ level: LogLevel, _ category: String) -> Void
 }
 
 extension LoggingClient: DependencyKey {
-  static var liveValue = LoggingClient {
+  public static var liveValue = LoggingClient {
     @Dependency(\.remoteLoggingClient) var remoteLoggingClient
     remoteLoggingClient.setup()
   } log: { level, category in
@@ -37,11 +37,11 @@ extension LoggingClient: DependencyKey {
   }
   
   // We want to turn off logging during tests most of the time
-  static var testValue = LoggingClient(setup: { }, log: { _, _ in })
+  public static var testValue = LoggingClient(setup: { }, log: { _, _ in })
 }
 
 extension DependencyValues {
-  var loggingClient: LoggingClient {
+  public var loggingClient: LoggingClient {
     get { self[LoggingClient.self] }
     set { self[LoggingClient.self] = newValue }
   }
@@ -81,4 +81,37 @@ extension DependencyValues {
     set { self[RemoteLoggingClient.self] = newValue }
   }
 }
-                 
+
+/// Area of interest for logging purposes
+protocol LoggingContext {
+  /// A tag to be used by logs created by this type
+  static var loggingCategory: String { get }
+}
+
+extension LoggingContext {
+  /// Logs at the provided level using the category defined by the protocol conformance
+  func log(_ level: LogLevel) {
+    @Dependency(\.loggingClient) var loggingClient
+    loggingClient.log(level: level, category: Self.loggingCategory)
+  }
+  
+  /// Logs any errors throwin in the closure returning results and rethrowing errors
+  func logErrors<RetType>(_ closure: () async throws -> RetType) async throws -> RetType {
+    do {
+      return try await closure()
+    } catch {
+      log(.error(error: error.toEquatableError()))
+      throw error
+    }
+  }
+  
+  /// Logs any errors throwin in the closure returning results and rethrowing errors
+  func logErrors<RetType>(_ closure: () throws -> RetType) throws -> RetType {
+    do {
+      return try closure()
+    } catch {
+      log(.error(error: error.toEquatableError()))
+      throw error
+    }
+  }
+}
