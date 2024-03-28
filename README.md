@@ -4,7 +4,7 @@
 - Be on a macOS machine
 - Be using Xcode 15
 - Clone the project
-- Open `TakehomeProjectBase.xcodeproj`
+- Open `EverythingButTheBagel.xcodeproj`
 - Packages will start downloading automatically
 - Run the project on an iOS 17 device or simulator
 
