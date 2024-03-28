@@ -10,7 +10,7 @@ let package = Package(
   products: [
     .library(
       name: "TakehomeProjectBaseCore",
-      targets: ["TakehomeProjectBaseCore"]),
+      targets: ["TakehomeProjectBaseCore"])
   ],
   dependencies: [
     .package(
@@ -36,12 +36,14 @@ let package = Package(
       dependencies: [
         "FunctionSpy",
         "TakehomeProjectBaseCore"
-      ]),
+      ]
+    ),
     .testTarget(
       name: "IntegrationTests",
       dependencies: [
         "FunctionSpy",
         "TakehomeProjectBaseCore"
-      ]),
+      ]
+    )
   ]
 )

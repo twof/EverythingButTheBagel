@@ -23,7 +23,7 @@ extension LoggingClient: DependencyKey {
     let subsystem = Bundle.main.bundleIdentifier!
     let logger = Logger(subsystem: subsystem, category: category)
     @Dependency(\.remoteLoggingClient) var remoteLoggingClient
-   
+
     switch level {
     case let .info(message):
       logger.info("\(message)")
@@ -32,10 +32,10 @@ extension LoggingClient: DependencyKey {
     case let .error(error):
       logger.error("\(error.localizedDescription)")
     }
-    
+
     remoteLoggingClient.log(level: level, category: category)
   }
-  
+
   // We want to turn off logging during tests most of the time
   public static var testValue = LoggingClient(setup: { }, log: { _, _ in })
 }
@@ -70,7 +70,7 @@ extension RemoteLoggingClient: DependencyKey {
       SentrySDK.addBreadcrumb(Breadcrumb(level: .warning, category: category))
     }
   }
-  
+
   // We want to turn off logging during tests most of the time
   static var testValue = RemoteLoggingClient(setup: { }, log: { _, _ in })
 }
@@ -94,7 +94,7 @@ extension LoggingContext {
     @Dependency(\.loggingClient) var loggingClient
     loggingClient.log(level: level, category: Self.loggingCategory)
   }
-  
+
   /// Logs any errors throwin in the closure returning results and rethrowing errors
   func logErrors<RetType>(_ closure: () async throws -> RetType) async throws -> RetType {
     do {
@@ -104,7 +104,7 @@ extension LoggingContext {
       throw error
     }
   }
-  
+
   /// Logs any errors throwin in the closure returning results and rethrowing errors
   func logErrors<RetType>(_ closure: () throws -> RetType) throws -> RetType {
     do {

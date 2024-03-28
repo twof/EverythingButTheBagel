@@ -8,21 +8,21 @@ public struct InternetStatusIndicator {
     // TODO: Need to conform this type to Codable
     public var status: NWPath.Status = .satisfied
     @EquatableNoop var monitor: NWPathMonitor?
-    
+
     public init(status: NWPath.Status = .satisfied, monitor: NWPathMonitor? = nil) {
       self.status = status
       self.monitor = monitor
     }
   }
-  
+
   public enum Action: Equatable {
     case start
     case stop
     case newStatus(NWPath.Status)
   }
-  
+
   @Dependency(\.networkStatus) var networkStatus
-  
+
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
@@ -38,7 +38,7 @@ public struct InternetStatusIndicator {
         state.monitor?.cancel()
         state.monitor = nil
         return .none
-        
+
       case let .newStatus(status):
         state.status = status
         return .none
@@ -57,10 +57,10 @@ struct NetworkStatusMonitor: DependencyKey {
     }
     let queue = DispatchQueue(label: "Monitor")
     monitor.start(queue: queue)
-    
+
     return (monitor, stream)
   }
-  
+
   static var testValue: () -> (monitor: NWPathMonitor, stream: AsyncStream<NWPath.Status>) = unimplemented("network status")
 }
 

@@ -6,7 +6,7 @@ public struct CatFactsListBase {
   public struct State: Codable, Equatable {
     public var viewModel: CatFactsListViewModelReducer.State
     public var dataSource: CatFactsListDataSource.State
-    
+
     public init(
       viewModel: CatFactsListViewModelReducer.State = .init(),
       dataSource: CatFactsListDataSource.State = .init()
@@ -15,14 +15,14 @@ public struct CatFactsListBase {
       self.dataSource = dataSource
     }
   }
-  
+
   public enum Action: Equatable {
     case viewModel(CatFactsListViewModelReducer.Action)
     case dataSource(CatFactsListDataSource.Action)
   }
-  
+
   public init() {}
-  
+
   public var body: some Reducer<State, Action> {
     CombineReducers {
       Scope(state: \.viewModel, action: \.viewModel) {
@@ -33,7 +33,7 @@ public struct CatFactsListBase {
       }
       // The base reducer is primarily responsable for routing data from the data source to
       // the view model, and user interactions from the view model to the data source
-      Reduce { state, action in
+      Reduce { _, action in
         switch action {
         case let .dataSource(.factsResponse(response)):
           return .send(.viewModel(.newFacts(response.data)))

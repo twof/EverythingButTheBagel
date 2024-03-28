@@ -3,7 +3,7 @@ import TakehomeProjectBaseCore
 
 struct ErrorView: ViewModifier {
   let vm: ErrorViewModel
-  
+
   func body(content: Content) -> some View {
     ZStack {
       content
@@ -13,14 +13,14 @@ struct ErrorView: ViewModifier {
           Image(systemName: "exclamationmark.circle")
             .padding(.leading)
             .bold()
-          
+
           Text(vm.message)
             .lineLimit(1)
             .truncationMode(.tail)
             .padding([.top, .bottom], 20)
-          
+
           Spacer()
-          
+
         }
         .background {
           // TODO: Move color to assets
@@ -47,5 +47,5 @@ extension View {
 #Preview {
   Text("Hello")
     .withError(vm: .init(id: "0", message: "Oh no! Something went wrong"))
-    
+
 }

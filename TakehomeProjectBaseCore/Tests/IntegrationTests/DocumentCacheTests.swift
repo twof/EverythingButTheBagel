@@ -3,5 +3,5 @@ import XCTest
 
 @MainActor
 class DocumentCacheTests: XCTestCase {
-  
+
 }

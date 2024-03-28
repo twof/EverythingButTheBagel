@@ -4,27 +4,27 @@ import Foundation
 struct Repository: LoggingContext {
   static let loggingCategory = "Networking"
   static let shared = Repository()
-  
+
   @Dependency(\.networkRequest) var networkRequest
   @Dependency(\.cacheConfiguration) var cacheConfiguration
-  
+
   /// Memory and disk capacity of the builtin URL cache. nil values will keep the defaults.
   init(memoryCapacity: Int? = nil, diskCapacity: Int? = nil) {
     cacheConfiguration(memoryCapacity, diskCapacity)
   }
-  
+
   func makeRequest<ResponseModel: Decodable>(
     _ request: URLRequest,
     modelType: ResponseModel.Type
   ) async throws -> ResponseModel {
     let data = try await self.makeRequest(request)
-    
+
     let decoder = JSONDecoder()
     return try logErrors {
       try decoder.decode(modelType, from: data)
     }
   }
-  
+
   /// Send a request and do some processing on errors.
   ///
   /// Makes use of the built in cache. Cache policy can be set as a part of the the `request` parameter.
@@ -40,7 +40,7 @@ struct Repository: LoggingContext {
       return try await self.makeRequestInternal(request)
     }
   }
-  
+
   private func makeRequestInternal(_ request: URLRequest) async throws -> Data {
     // Map response to a HTTPURLResponse, or throw an error if that's not possible
     let result = await Result { try await networkRequest(request) }.flatMap { (data, response) in
@@ -50,7 +50,7 @@ struct Repository: LoggingContext {
         return .failure(NetworkRequestError.malformedResponse(message: "Response was not an HTTPURLResponse"))
       }
     }
-    
+
     // Throw error if response code is outside of the 200 range or if URLSession throws an error
     return switch result {
     case let .success((data, response)) where (200...299).contains(response.statusCode): data
@@ -100,7 +100,7 @@ struct CacheConfigurationKey: DependencyKey {
     if let memoryCapacity {
       URLSession.shared.configuration.urlCache?.memoryCapacity = memoryCapacity
     }
-    
+
     if let diskCapacity {
       URLSession.shared.configuration.urlCache?.diskCapacity = diskCapacity
     }

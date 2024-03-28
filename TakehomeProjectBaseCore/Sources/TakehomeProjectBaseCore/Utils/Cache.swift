@@ -17,22 +17,22 @@ public final class DocumentsCache: Caching {
     self.key = key
     self.decoder = decoder
     self.encoder = encoder
-    
+
     self.fileUrl = fileManager
       .urls(for: .documentDirectory, in: .userDomainMask)[0]
       .appendingPathComponent("\(key).json")
   }
-  
+
   public let key: String
   let decoder: JSONDecoder
   let encoder: JSONEncoder
   let fileUrl: URL
-  
+
   public func save<Value: Encodable>(_ value: Value) {
     let data = try? encoder.encode(value)
     try? data?.write(to: fileUrl)
   }
-  
+
   public func load<Value: Decodable>() -> Value? {
     guard let data = try? Data(contentsOf: fileUrl) else { return nil }
     return try? decoder.decode(Value.self, from: data)
@@ -41,7 +41,7 @@ public final class DocumentsCache: Caching {
 
 public extension Reducer where State: Codable {
   func caching(cache: Caching) -> Reduce<Self.State, Self.Action> {
-    
+
     return Reduce<Self.State, Self.Action> { state, action in
       let effect = self.reduce(into: &state, action: action)
       let newState = state

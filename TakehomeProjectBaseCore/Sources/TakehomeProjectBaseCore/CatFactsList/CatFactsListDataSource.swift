@@ -5,17 +5,17 @@ import Foundation
 public struct CatFactsListDataSource: ErrorProducer {
   static let errorId = String(describing: Self.self)
   public struct State: Codable, Equatable { public init() { } }
-  
+
   public enum Action: Equatable {
     case fetchFacts(count: Int)
     case factsResponse(CatFactsResponseModel)
     case error(EquatableError)
   }
-  
+
   @Dependency(\.fetchCatFacts) var fetchCatFacts
-  
+
   public var body: some Reducer<State, Action> {
-    Reduce { state, action in
+    Reduce { _, action in
       switch action {
       case let .fetchFacts(count):
         return .run { send in
@@ -39,7 +39,7 @@ public struct CatFactsResponseModel: Codable, Equatable {
   let currentPage: Int
   let data: [CatFactModel]
   let nextPageUrl: URL?
-  
+
   // API uses snake case keys
   enum CodingKeys: String, CodingKey {
     case currentPage = "current_page"
@@ -53,17 +53,17 @@ public struct CatFactModel: Codable, Equatable {
 }
 
 struct FetchCatFactsKey: DependencyKey {
-  static let liveValue: (_ count: Int) async throws -> CatFactsResponseModel = { count in
+  static let liveValue: (_ count: Int) async throws -> CatFactsResponseModel = { _ in
     let urlString = "https://catfact.ninja/facts?limit=5"
     guard let url = URL(string: urlString) else {
       throw NetworkRequestError.malformedRequest(message: "Attempted to connect to a malformed URL: \(urlString)")
     }
-    
+
     @Dependency(\.repositoryGenerator) var repositoryGenerator
     let repository = repositoryGenerator()
     var urlRequest = URLRequest(url: url)
     urlRequest.cachePolicy = .reloadIgnoringLocalCacheData
-    
+
     return try await repository.makeRequest(urlRequest, modelType: CatFactsResponseModel.self)
   }
 }

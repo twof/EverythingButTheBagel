@@ -7,7 +7,7 @@ import ComposableArchitecture
 struct BaseAppScreen<InnerView: View>: View {
   @Bindable var store: StoreOf<AppReducer>
   @ViewBuilder var view: () -> InnerView
-  
+
   init(
     store: StoreOf<AppReducer>,
     @ViewBuilder view: @escaping () -> InnerView
@@ -15,7 +15,7 @@ struct BaseAppScreen<InnerView: View>: View {
     self.store = store
     self.view = view
   }
-  
+
   var body: some View {
     view()
       .withError(vm: store.errors.error())

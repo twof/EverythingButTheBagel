@@ -4,7 +4,7 @@ import TakehomeProjectBaseCore
 
 struct CatFactsListView: View {
   let store: StoreOf<CatFactsListViewModelReducer>
-  
+
   var body: some View {
     List {
       ForEach(store.facts) { fact in
