@@ -19,7 +19,7 @@ public struct CatFactsListViewModelReducer {
     }
   }
   
-  public enum Action {
+  public enum Action: Equatable {
     case task
     case newFacts([CatFactModel])
     case scroll(position: Float)

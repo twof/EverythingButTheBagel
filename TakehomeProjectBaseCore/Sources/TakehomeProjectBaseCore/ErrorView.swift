@@ -1,10 +1,5 @@
 import ComposableArchitecture
 
-public struct ErrorViewModel: Codable, Equatable, Identifiable {
-  public let id: String
-  public let message: String
-}
-
 @Reducer
 public struct ErrorIndicatorViewModel {
   public struct State: Equatable, Codable {
@@ -12,6 +7,19 @@ public struct ErrorIndicatorViewModel {
     ///
     /// Used to indicate active errors produced by other reducers
     public var errors: [String: IdentifiedArrayOf<ErrorViewModel>]
+    
+    public init(errors: [String: IdentifiedArrayOf<ErrorViewModel>] = [:]) {
+      self.errors = errors
+    }
+    
+    /// `keys` indicate error sources to look for. If `keys` is empty, it will look for errors from any sources.
+    public func error(forKeys keys: [String] = []) -> ErrorViewModel? {
+      if keys.isEmpty {
+        return errors.values.lazy.flatMap { $0 }.first
+      }
+      
+      return keys.lazy.compactMap { errors[$0] }.flatMap { $0 }.first
+    }
   }
   
   public enum Action: Equatable {
@@ -30,5 +38,15 @@ public struct ErrorIndicatorViewModel {
         return .none
       }
     }
+  }
+}
+
+public struct ErrorViewModel: Codable, Equatable, Identifiable {
+  public let id: String
+  public let message: String
+  
+  public init(id: String, message: String) {
+    self.id = id
+    self.message = message
   }
 }

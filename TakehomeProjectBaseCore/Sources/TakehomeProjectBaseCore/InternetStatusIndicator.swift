@@ -6,8 +6,13 @@ import ComposableArchitecture
 public struct InternetStatusIndicator {
   public struct State: Equatable {
     // TODO: Need to conform this type to Codable
-    public var status: NWPath.Status
+    public var status: NWPath.Status = .satisfied
     @EquatableNoop var monitor: NWPathMonitor?
+    
+    public init(status: NWPath.Status = .satisfied, monitor: NWPathMonitor? = nil) {
+      self.status = status
+      self.monitor = monitor
+    }
   }
   
   public enum Action: Equatable {

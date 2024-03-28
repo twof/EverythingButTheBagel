@@ -4,16 +4,34 @@ import ComposableArchitecture
 public struct AppReducer {
   @ObservableState
   public struct State: Equatable {
-    var internetStatus: InternetStatusIndicator.State
-    var errors: ErrorIndicatorViewModel.State
-    var catFacts: CatFactsListBase.State
+    public var internetStatus: InternetStatusIndicator.State
+    public var errors: ErrorIndicatorViewModel.State
+    public var catFacts: CatFactsListBase.State
+    
+    public var path = StackState<Path.State>()
+    
+    public init(
+      internetStatus: InternetStatusIndicator.State = .init(),
+      errors: ErrorIndicatorViewModel.State = .init(),
+      catFacts: CatFactsListBase.State = .init(),
+      path: StackState<Path.State> = StackState<Path.State>()
+    ) {
+      self.internetStatus = internetStatus
+      self.errors = errors
+      self.catFacts = catFacts
+      self.path = path
+    }
   }
   
   public enum Action {
     case internetStatus(InternetStatusIndicator.Action)
     case errors(ErrorIndicatorViewModel.Action)
     case catFacts(CatFactsListBase.Action)
+    
+    case path(StackAction<Path.State, Path.Action>)
   }
+  
+  public init() { }
   
   public var body: some Reducer<State, Action> {
     CombineReducers {
@@ -37,12 +55,14 @@ public struct AppReducer {
 //        }
         
         return .none
-      }
+      }.forEach(\.path, action: \.path)
     }
   }
 }
 
-/// Conformance indicates a type produces an error tracked by ErrorIndicatorViewModel which requires a `sourceId`
-protocol ErrorProducer {
-  static var errorId: String { get }
+extension AppReducer {
+  @Reducer(state: .equatable, .codable, action: .equatable)
+  public enum Path {
+    case catFacts(CatFactsListBase)
+  }
 }

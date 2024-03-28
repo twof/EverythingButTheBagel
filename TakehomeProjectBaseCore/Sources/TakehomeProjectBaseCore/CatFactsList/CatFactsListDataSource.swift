@@ -6,7 +6,7 @@ public struct CatFactsListDataSource: ErrorProducer {
   static let errorId = String(describing: Self.self)
   public struct State: Codable, Equatable { public init() { } }
   
-  public enum Action {
+  public enum Action: Equatable {
     case fetchFacts(count: Int)
     case factsResponse(CatFactsResponseModel)
     case error(EquatableError)

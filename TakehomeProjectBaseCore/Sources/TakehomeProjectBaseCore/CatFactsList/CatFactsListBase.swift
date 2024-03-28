@@ -7,13 +7,16 @@ public struct CatFactsListBase {
     public var viewModel: CatFactsListViewModelReducer.State
     public var dataSource: CatFactsListDataSource.State
     
-    public init(viewModel: CatFactsListViewModelReducer.State, dataSource: CatFactsListDataSource.State) {
+    public init(
+      viewModel: CatFactsListViewModelReducer.State = .init(),
+      dataSource: CatFactsListDataSource.State = .init()
+    ) {
       self.viewModel = viewModel
       self.dataSource = dataSource
     }
   }
   
-  public enum Action {
+  public enum Action: Equatable {
     case viewModel(CatFactsListViewModelReducer.Action)
     case dataSource(CatFactsListDataSource.Action)
   }
