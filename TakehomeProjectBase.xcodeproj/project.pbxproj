@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		24483A3E2BB37DB6002BAED9 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24483A3D2BB37DB6002BAED9 /* ErrorView.swift */; };
+		24483A402BB3821F002BAED9 /* CatFactsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24483A3F2BB3821F002BAED9 /* CatFactsListView.swift */; };
+		24483A432BB54388002BAED9 /* BaseAppScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24483A422BB54388002BAED9 /* BaseAppScreen.swift */; };
 		248D90412BB0AF72005F7A40 /* TakehomeProjectBaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 248D90402BB0AF72005F7A40 /* TakehomeProjectBaseCore */; };
 		24BA5B1A2BB006810062084E /* TakehomeProjectBaseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24BA5B192BB006810062084E /* TakehomeProjectBaseApp.swift */; };
 		24BA5B1C2BB006810062084E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24BA5B1B2BB006810062084E /* ContentView.swift */; };
@@ -15,6 +18,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		24483A3D2BB37DB6002BAED9 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
+		24483A3F2BB3821F002BAED9 /* CatFactsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatFactsListView.swift; sourceTree = "<group>"; };
+		24483A422BB54388002BAED9 /* BaseAppScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAppScreen.swift; sourceTree = "<group>"; };
 		24BA5B162BB006810062084E /* TakehomeProjectBase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TakehomeProjectBase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24BA5B192BB006810062084E /* TakehomeProjectBaseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TakehomeProjectBaseApp.swift; sourceTree = "<group>"; };
 		24BA5B1B2BB006810062084E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -36,6 +42,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		24483A412BB5437A002BAED9 /* CatFactsScreen */ = {
+			isa = PBXGroup;
+			children = (
+				24483A3F2BB3821F002BAED9 /* CatFactsListView.swift */,
+			);
+			path = CatFactsScreen;
+			sourceTree = "<group>";
+		};
 		248D903F2BB0AF72005F7A40 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -65,8 +79,11 @@
 		24BA5B182BB006810062084E /* TakehomeProjectBase */ = {
 			isa = PBXGroup;
 			children = (
+				24483A412BB5437A002BAED9 /* CatFactsScreen */,
+				24483A422BB54388002BAED9 /* BaseAppScreen.swift */,
 				24BA5B192BB006810062084E /* TakehomeProjectBaseApp.swift */,
 				24BA5B1B2BB006810062084E /* ContentView.swift */,
+				24483A3D2BB37DB6002BAED9 /* ErrorView.swift */,
 				24BA5B1D2BB006820062084E /* Assets.xcassets */,
 				24BA5B1F2BB006820062084E /* Preview Content */,
 			);
@@ -177,7 +194,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24483A432BB54388002BAED9 /* BaseAppScreen.swift in Sources */,
 				24BA5B1C2BB006810062084E /* ContentView.swift in Sources */,
+				24483A3E2BB37DB6002BAED9 /* ErrorView.swift in Sources */,
+				24483A402BB3821F002BAED9 /* CatFactsListView.swift in Sources */,
 				24BA5B1A2BB006810062084E /* TakehomeProjectBaseApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

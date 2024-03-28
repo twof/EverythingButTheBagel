@@ -3,12 +3,26 @@ import Foundation
 
 struct Repository: LoggingContext {
   static let loggingCategory = "Networking"
+  static let shared = Repository()
+  
   @Dependency(\.networkRequest) var networkRequest
   @Dependency(\.cacheConfiguration) var cacheConfiguration
   
   /// Memory and disk capacity of the builtin URL cache. nil values will keep the defaults.
   init(memoryCapacity: Int? = nil, diskCapacity: Int? = nil) {
     cacheConfiguration(memoryCapacity, diskCapacity)
+  }
+  
+  func makeRequest<ResponseModel: Decodable>(
+    _ request: URLRequest,
+    modelType: ResponseModel.Type
+  ) async throws -> ResponseModel {
+    let data = try await self.makeRequest(request)
+    
+    let decoder = JSONDecoder()
+    return try logErrors {
+      try decoder.decode(modelType, from: data)
+    }
   }
   
   /// Send a request and do some processing on errors.
@@ -45,6 +59,18 @@ struct Repository: LoggingContext {
     case let .failure(error):
       throw NetworkRequestError.transportError(error.toEquatableError())
     }
+  }
+}
+
+extension Repository: DependencyKey {
+  static let liveValue: () -> Repository = { Repository.shared }
+  static let testValue: () -> Repository = unimplemented()
+}
+
+extension DependencyValues {
+  var repositoryGenerator: () -> Repository {
+    get { self[Repository.self] }
+    set { self[Repository.self] = newValue }
   }
 }
 
