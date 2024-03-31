@@ -1,5 +1,6 @@
 import SwiftUI
 import EverythingButTheBagelCore
+import Sprinkles
 
 struct ErrorView: ViewModifier {
   let vm: ErrorViewModel
@@ -15,6 +16,7 @@ struct ErrorView: ViewModifier {
             .bold()
 
           Text(vm.message)
+            .foregroundStyle(Color.textPrimary)
             .lineLimit(1)
             .truncationMode(.tail)
             .padding([.top, .bottom], 20)

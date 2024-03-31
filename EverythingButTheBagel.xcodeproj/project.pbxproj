@@ -13,6 +13,7 @@
 		2405CA6D2BB602A100AC80AD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA662BB5922900AC80AD /* ContentView.swift */; };
 		2405CA6E2BB602A100AC80AD /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA672BB5922900AC80AD /* ErrorView.swift */; };
 		2405CA6F2BB602A700AC80AD /* CatFactsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA652BB5922900AC80AD /* CatFactsListView.swift */; };
+		2421FC962BBA0C00000EFFD4 /* Sprinkles in Frameworks */ = {isa = PBXBuildFile; productRef = 2421FC952BBA0C00000EFFD4 /* Sprinkles */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		2405CA662BB5922900AC80AD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		2405CA672BB5922900AC80AD /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		2405CA682BB5923200AC80AD /* EverythingButTheBagelCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = EverythingButTheBagelCore; sourceTree = "<group>"; };
+		2421FC942BBA0B9E000EFFD4 /* Sprinkles */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Sprinkles; sourceTree = "<group>"; };
 		24BA5B162BB006810062084E /* EverythingButTheBagel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EverythingButTheBagel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24BA5B282BB0073D0062084E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -33,6 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2421FC962BBA0C00000EFFD4 /* Sprinkles in Frameworks */,
 				2405CA6A2BB5925000AC80AD /* EverythingButTheBagelCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -80,6 +83,7 @@
 		24BA5B0D2BB006810062084E = {
 			isa = PBXGroup;
 			children = (
+				2421FC942BBA0B9E000EFFD4 /* Sprinkles */,
 				2405CA682BB5923200AC80AD /* EverythingButTheBagelCore */,
 				2405CA5E2BB5922900AC80AD /* EverythingButTheBagel */,
 				24BA5B282BB0073D0062084E /* README.md */,
@@ -116,6 +120,7 @@
 			name = EverythingButTheBagel;
 			packageProductDependencies = (
 				2405CA692BB5925000AC80AD /* EverythingButTheBagelCore */,
+				2421FC952BBA0C00000EFFD4 /* Sprinkles */,
 			);
 			productName = EverythingButTheBagel;
 			productReference = 24BA5B162BB006810062084E /* EverythingButTheBagel.app */;
@@ -427,6 +432,10 @@
 		2405CA692BB5925000AC80AD /* EverythingButTheBagelCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = EverythingButTheBagelCore;
+		};
+		2421FC952BBA0C00000EFFD4 /* Sprinkles */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Sprinkles;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
