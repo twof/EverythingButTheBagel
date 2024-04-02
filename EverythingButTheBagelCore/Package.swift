@@ -18,7 +18,8 @@ let package = Package(
       from: "1.0.0"
     ),
     .package(url: "https://github.com/getsentry/sentry-cocoa", from: "8.22.2"),
-    .package(url: "https://github.com/twof/FunctionSpy", from: "1.0.0")
+    .package(url: "https://github.com/twof/FunctionSpy", from: "1.0.0"),
+    .package(url: "https://github.com/twof/ControllableScrollView", from: "1.0.0")
   ],
   targets: [
     .target(
@@ -28,7 +29,8 @@ let package = Package(
           name: "ComposableArchitecture",
           package: "swift-composable-architecture"
         ),
-        .product(name: "Sentry", package: "sentry-cocoa")
+        .product(name: "Sentry", package: "sentry-cocoa"),
+        .product(name: "ControllableScrollView", package: "controllablescrollview")
       ]
     ),
     .testTarget(

@@ -1,4 +1,5 @@
 {
+  "originHash" : "632149517aca51b2e595ac5a5ecc7c49ac99c51f4de643b90e44f7534f796899",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -6,6 +7,15 @@
       "location" : "https://github.com/pointfreeco/combine-schedulers",
       "state" : {
         "revision" : "9dc9cbe4bc45c65164fa653a563d8d8db61b09bb",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "controllablescrollview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/twof/ControllableScrollView",
+      "state" : {
+        "revision" : "5cb8ed69c4176a6c75e7deddf6f02616bdf59d10",
         "version" : "1.0.0"
       }
     },
@@ -136,5 +146,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

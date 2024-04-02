@@ -6,12 +6,12 @@ public struct CatFactsListViewModelReducer {
   public struct State: Equatable, Codable {
     public var facts: IdentifiedArrayOf<CatFactViewModel> = []
     public var loading = false
-    public var scrollPosition: Scroll.State
+    public var scrollPosition: Double
 
     public init(
       facts: IdentifiedArrayOf<CatFactViewModel> = [],
       loading: Bool = false,
-      scrollPosition: Scroll.State = .init()
+      scrollPosition: Double = 0.0
     ) {
       self.facts = facts
       self.loading = loading
@@ -22,7 +22,7 @@ public struct CatFactsListViewModelReducer {
   public enum Action: Equatable {
     case task
     case newFacts([CatFactModel])
-    case scroll(Scroll.Action)
+    case scroll(position: Double)
 
   }
 
@@ -37,7 +37,8 @@ public struct CatFactsListViewModelReducer {
         state.facts.removeAll()
         state.facts.append(contentsOf: factModels.map(CatFactViewModel.init(model:)))
         return .none
-      case .scroll:
+      case let .scroll(position):
+        state.scrollPosition = position
         return .none
       }
     }
