@@ -3,7 +3,7 @@ import ComposableArchitecture
 @Reducer
 public struct AppReducer {
   @ObservableState
-  public struct State: Equatable {
+  public struct State: Equatable, Codable {
     public var internetStatus: InternetStatusIndicator.State
     public var errors: ErrorIndicatorViewModel.State
     public var catFacts: CatFactsListBase.State

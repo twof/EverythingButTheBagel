@@ -8,7 +8,7 @@ struct BaseAppScreen<InnerView: View>: View {
   @Bindable var store: StoreOf<AppReducer>
   @ViewBuilder var view: () -> InnerView
 
-  init(
+  public init(
     store: StoreOf<AppReducer>,
     @ViewBuilder view: @escaping () -> InnerView
   ) {

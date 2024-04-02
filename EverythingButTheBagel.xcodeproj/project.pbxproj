@@ -52,13 +52,13 @@
 		2405CA5E2BB5922900AC80AD /* EverythingButTheBagel */ = {
 			isa = PBXGroup;
 			children = (
-				2405CA5F2BB5922900AC80AD /* EverythingButTheBagelApp.swift */,
-				2405CA602BB5922900AC80AD /* BaseAppScreen.swift */,
-				2405CA612BB5922900AC80AD /* Assets.xcassets */,
 				2405CA622BB5922900AC80AD /* Preview Content */,
+				24F401092BBBC9B9001EF583 /* Utils */,
 				2405CA642BB5922900AC80AD /* CatFactsScreen */,
 				2405CA662BB5922900AC80AD /* ContentView.swift */,
+				2405CA5F2BB5922900AC80AD /* EverythingButTheBagelApp.swift */,
 				2405CA672BB5922900AC80AD /* ErrorView.swift */,
+				2405CA612BB5922900AC80AD /* Assets.xcassets */,
 			);
 			path = EverythingButTheBagel;
 			sourceTree = "<group>";
@@ -126,6 +126,14 @@
 				24BA5B162BB006810062084E /* EverythingButTheBagel.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		24F401092BBBC9B9001EF583 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				2405CA602BB5922900AC80AD /* BaseAppScreen.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

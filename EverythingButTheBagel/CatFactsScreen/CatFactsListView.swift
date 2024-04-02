@@ -1,17 +1,25 @@
 import SwiftUI
 import ComposableArchitecture
 import EverythingButTheBagelCore
+import ControllableScrollView
 
 struct CatFactsListView: View {
   let store: StoreOf<CatFactsListViewModelReducer>
+  @State var scrollController = ScrollTrackerModel()
 
   var body: some View {
-    List {
-      ForEach(store.facts) { fact in
-        Text(fact.fact)
+    ControllableScrollView(scrollModel: $scrollController) {
+      LazyVStack {
+        ForEach(store.facts) { fact in
+          Text(fact.fact)
+        }
       }
-    }.task {
+    }
+    .task {
       await store.send(.task).finish()
+    }
+    .onChange(of: scrollController.position) { _, newValue in
+      store.send(.scroll(position: newValue))
     }
   }
 }

@@ -53,8 +53,8 @@ public struct CatFactModel: Codable, Equatable {
 }
 
 struct FetchCatFactsKey: DependencyKey {
-  static let liveValue: (_ count: Int) async throws -> CatFactsResponseModel = { _ in
-    let urlString = "https://catfact.ninja/facts?limit=5"
+  static let liveValue: (_ count: Int) async throws -> CatFactsResponseModel = { count in
+    let urlString = "https://catfact.ninja/facts?limit=\(count)"
     guard let url = URL(string: urlString) else {
       throw NetworkRequestError.malformedRequest(message: "Attempted to connect to a malformed URL: \(urlString)")
     }
