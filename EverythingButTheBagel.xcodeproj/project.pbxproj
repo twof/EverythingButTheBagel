@@ -31,7 +31,6 @@
 		2421FC9B2BBA1254000EFFD4 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		2421FC9C2BBA1254000EFFD4 /* .pre-commit-config.yaml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = ".pre-commit-config.yaml"; sourceTree = "<group>"; };
 		2421FC9D2BBA1281000EFFD4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		2421FC9E2BBA1352000EFFD4 /* downstream.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = downstream.yml; sourceTree = "<group>"; };
 		24BA5B162BB006810062084E /* EverythingButTheBagel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EverythingButTheBagel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24BA5B282BB0073D0062084E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -116,7 +115,6 @@
 				2421FC9C2BBA1254000EFFD4 /* .pre-commit-config.yaml */,
 				2421FC972BBA1254000EFFD4 /* .sentryclirc */,
 				2421FC9B2BBA1254000EFFD4 /* .swiftlint.yml */,
-				2421FC9E2BBA1352000EFFD4 /* downstream.yml */,
 			);
 			sourceTree = "<group>";
 		};

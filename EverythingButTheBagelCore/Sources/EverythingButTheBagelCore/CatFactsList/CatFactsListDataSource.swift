@@ -7,9 +7,13 @@ public struct CatFactsListDataSource: ErrorProducer {
   public struct State: Codable, Equatable { public init() { } }
 
   public enum Action: Equatable {
+    public enum Delegate: Equatable {
+      case factsResponse(CatFactsResponseModel)
+      case error(EquatableError)
+    }
+
     case fetchFacts(count: Int)
-    case factsResponse(CatFactsResponseModel)
-    case error(EquatableError)
+    case delegate(Delegate)
   }
 
   @Dependency(\.fetchCatFacts) var fetchCatFacts
@@ -20,15 +24,12 @@ public struct CatFactsListDataSource: ErrorProducer {
       case let .fetchFacts(count):
         return .run { send in
           let factsResponse = try await fetchCatFacts(count)
-          await send(.factsResponse(factsResponse))
+          await send(.delegate(.factsResponse(factsResponse)))
         } catch: { error, send in
-          await send(.error(error.toEquatableError()))
+          await send(.delegate(.error(error.toEquatableError())))
         }
-      case .factsResponse:
+      case .delegate:
         // This action acts as a delegate. The data source doesn't do anything with the data itself
-        return .none
-      case .error:
-        // Similar story with the error. Logging is
         return .none
       }
     }
@@ -52,6 +53,7 @@ public struct CatFactModel: Codable, Equatable {
   let fact: String
 }
 
+// Networking client for the
 struct FetchCatFactsKey: DependencyKey {
   static let liveValue: (_ count: Int) async throws -> CatFactsResponseModel = { count in
     let urlString = "https://catfact.ninja/facts?limit=\(count)"

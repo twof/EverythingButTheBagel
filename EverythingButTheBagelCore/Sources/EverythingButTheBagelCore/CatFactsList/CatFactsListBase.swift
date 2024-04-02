@@ -37,7 +37,7 @@ public struct CatFactsListBase {
         switch action {
         case let .dataSource(.factsResponse(response)):
           return .send(.viewModel(.newFacts(response.data)))
-        case .viewModel(.task):
+        case .viewModel(.delegate(.task)):
           return .send(.dataSource(.fetchFacts(count: 40)))
         case .dataSource, .viewModel:
           return .none

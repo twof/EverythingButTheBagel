@@ -20,7 +20,13 @@ public struct CatFactsListViewModelReducer {
   }
 
   public enum Action: Equatable {
-    case task
+    // The point of delegate actions is to alert parent reducers to some action.
+    public enum Delegate: Equatable {
+      // In this case, the parent is being alerted that the view did load.
+      case task
+    }
+
+    case delegate(Delegate)
     case newFacts([CatFactModel])
     case scroll(position: Double)
 
@@ -31,14 +37,14 @@ public struct CatFactsListViewModelReducer {
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case .task:
-        return .none
       case let .newFacts(factModels):
         state.facts.removeAll()
         state.facts.append(contentsOf: factModels.map(CatFactViewModel.init(model:)))
         return .none
       case let .scroll(position):
         state.scrollPosition = position
+        return .none
+      case .delegate:
         return .none
       }
     }
