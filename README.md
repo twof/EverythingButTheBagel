@@ -24,6 +24,16 @@
 - There is another target for integration tests which exercise live dependencies. This target would not be run on a regular basis and never in CI. It's primarily to give developers an easy way to exercise live dependencies (ie the websocket connection) without needing to navigate a full app.
 - I'm also using a library I wrote called [FunctionSpy](https://github.com/twof/FunctionSpy?tab=readme-ov-file), which allows me to test against the usage of dependencies.
 
+## Development Environment
+- Code is hosted on Github.
+- When a PR is opened, Github Actions are triggered that run the unit test target of the core package.
+  - Build artifacts are cached to allow for faster subsequent builds to save time and money.
+  - Github actions run on a macos instance because The Composable Architecture relies on Combine which has not been ported to Linux yet. Once that happens, unit tests could be run on a Linux instance which is much cheaper.
+- Locally, swiftlint presents warnings in Xcode to enforce a consistent coding style in the project.
+- Pre-commit hooks are also installed.
+  - Swiftlint is also run on commit to catch edits performed outside of Xcode and to ensure committed code meets style standards.
+  - A tool I created called Downstream is also run. Downstream alerts users when changes might indicate a need for docs to be updated.
+
 ## Future Directions
 - The UI is very simple. A lot of opportunity for design improvement there.
 - Loading is super quick on localhost, but with more latency we're going to want some sort of loading indicator

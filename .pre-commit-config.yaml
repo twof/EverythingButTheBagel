@@ -12,3 +12,7 @@ repos:
   rev: 0.54.0
   hooks:
     - id: swiftlint
+-   repo: https://github.com/twof/Downstream
+    rev: 0.3.0
+    hooks:
+    -   id: downstream

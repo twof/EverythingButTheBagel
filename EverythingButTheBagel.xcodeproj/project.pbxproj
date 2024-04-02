@@ -14,6 +14,7 @@
 		2405CA6E2BB602A100AC80AD /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA672BB5922900AC80AD /* ErrorView.swift */; };
 		2405CA6F2BB602A700AC80AD /* CatFactsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA652BB5922900AC80AD /* CatFactsListView.swift */; };
 		2421FC962BBA0C00000EFFD4 /* Sprinkles in Frameworks */ = {isa = PBXBuildFile; productRef = 2421FC952BBA0C00000EFFD4 /* Sprinkles */; };
+		2446F0642BBB827B00AF6C4F /* ControllableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2446F0632BBB827B00AF6C4F /* ControllableScrollView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,13 @@
 		2405CA672BB5922900AC80AD /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		2405CA682BB5923200AC80AD /* EverythingButTheBagelCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = EverythingButTheBagelCore; sourceTree = "<group>"; };
 		2421FC942BBA0B9E000EFFD4 /* Sprinkles */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Sprinkles; sourceTree = "<group>"; };
+		2421FC972BBA1254000EFFD4 /* .sentryclirc */ = {isa = PBXFileReference; lastKnownFileType = text; path = .sentryclirc; sourceTree = "<group>"; };
+		2421FC982BBA1254000EFFD4 /* swift.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = swift.yml; sourceTree = "<group>"; };
+		2421FC9B2BBA1254000EFFD4 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		2421FC9C2BBA1254000EFFD4 /* .pre-commit-config.yaml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = ".pre-commit-config.yaml"; sourceTree = "<group>"; };
+		2421FC9D2BBA1281000EFFD4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		2421FC9E2BBA1352000EFFD4 /* downstream.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = downstream.yml; sourceTree = "<group>"; };
+		2446F0632BBB827B00AF6C4F /* ControllableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllableScrollView.swift; sourceTree = "<group>"; };
 		24BA5B162BB006810062084E /* EverythingButTheBagel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EverythingButTheBagel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24BA5B282BB0073D0062084E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -46,6 +54,7 @@
 		2405CA5E2BB5922900AC80AD /* EverythingButTheBagel */ = {
 			isa = PBXGroup;
 			children = (
+				2446F0622BBB826700AF6C4F /* Utils */,
 				2405CA5F2BB5922900AC80AD /* EverythingButTheBagelApp.swift */,
 				2405CA602BB5922900AC80AD /* BaseAppScreen.swift */,
 				2405CA612BB5922900AC80AD /* Assets.xcassets */,
@@ -73,6 +82,30 @@
 			path = CatFactsScreen;
 			sourceTree = "<group>";
 		};
+		2421FC992BBA1254000EFFD4 /* workflows */ = {
+			isa = PBXGroup;
+			children = (
+				2421FC982BBA1254000EFFD4 /* swift.yml */,
+			);
+			path = workflows;
+			sourceTree = "<group>";
+		};
+		2421FC9A2BBA1254000EFFD4 /* .github */ = {
+			isa = PBXGroup;
+			children = (
+				2421FC992BBA1254000EFFD4 /* workflows */,
+			);
+			path = .github;
+			sourceTree = "<group>";
+		};
+		2446F0622BBB826700AF6C4F /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				2446F0632BBB827B00AF6C4F /* ControllableScrollView.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		248D903F2BB0AF72005F7A40 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -89,6 +122,12 @@
 				24BA5B282BB0073D0062084E /* README.md */,
 				24BA5B172BB006810062084E /* Products */,
 				248D903F2BB0AF72005F7A40 /* Frameworks */,
+				2421FC9A2BBA1254000EFFD4 /* .github */,
+				2421FC9D2BBA1281000EFFD4 /* .gitignore */,
+				2421FC9C2BBA1254000EFFD4 /* .pre-commit-config.yaml */,
+				2421FC972BBA1254000EFFD4 /* .sentryclirc */,
+				2421FC9B2BBA1254000EFFD4 /* .swiftlint.yml */,
+				2421FC9E2BBA1352000EFFD4 /* downstream.yml */,
 			);
 			sourceTree = "<group>";
 		};
@@ -215,6 +254,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2446F0642BBB827B00AF6C4F /* ControllableScrollView.swift in Sources */,
 				2405CA6C2BB6029D00AC80AD /* BaseAppScreen.swift in Sources */,
 				2405CA6F2BB602A700AC80AD /* CatFactsListView.swift in Sources */,
 				2405CA6B2BB6029200AC80AD /* EverythingButTheBagelApp.swift in Sources */,

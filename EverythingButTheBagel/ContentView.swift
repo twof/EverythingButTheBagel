@@ -1,24 +1,29 @@
-//
-//  ContentView.swift
-//  TakehomeProjectBase
-//
-//  Created by fnord on 3/23/24.
-//
-
 import SwiftUI
+import ComposableArchitecture
+import EverythingButTheBagelCore
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+  let store = Store(
+    initialState: Scroll.State(tracker: ScrollTrackerReducer.State()),
+    reducer: { Scroll(trackerId: ScrollTracker.id) }
+  )
+  var body: some View {
+    Button("Down") {
+      store.send(.scrollToPosition(store.tracker.totalOffset - 30))
     }
+    ControllableScrollView(store: store) {
+      LazyVStack {
+        ForEach(0..<100) { index in
+          Rectangle()
+            .fill(Color.green.gradient)
+            .frame(height: 50)
+            .id("\(index)")
+        }
+      }
+    }
+  }
 }
 
 #Preview {
-    ContentView()
+  ContentView()
 }

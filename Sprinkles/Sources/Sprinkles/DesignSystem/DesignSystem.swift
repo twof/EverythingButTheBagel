@@ -7,7 +7,7 @@ extension DesignSystem {
   public struct Colors {
     private init() { }
 
-    static let textPrimary = Color("TextPrimary")
+    static let textPrimary = Color(.textPrimary)
   }
 }
 
