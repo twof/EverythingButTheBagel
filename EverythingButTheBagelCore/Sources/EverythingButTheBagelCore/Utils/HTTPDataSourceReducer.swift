@@ -60,13 +60,12 @@ extension DataRequestClient: DependencyKey {
     DataRequestClient { urlString, cachePolicy in
       @Dependency(\.loggingClient) var loggingClient
       guard let url = URL(string: urlString) else {
-        let error = NetworkRequestError.malformedRequest(message: "Attempted to connect to a malformed URL: \(urlString)")
+        let error = NetworkRequestError.malformedURLError(urlString: urlString)
         loggingClient.log(level: .error(error: error.toEquatableError()), category: "Networking")
         throw error
       }
 
-      @Dependency(\.repositoryGenerator) var repositoryGenerator
-      let repository = repositoryGenerator()
+      let repository = Repository.shared
       var urlRequest = URLRequest(url: url)
       urlRequest.cachePolicy = cachePolicy
 

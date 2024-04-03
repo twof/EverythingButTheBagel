@@ -2,7 +2,7 @@ import Dependencies
 import Foundation
 
 struct Repository: LoggingContext {
-  static let loggingCategory = "Networking"
+  let loggingCategory = "Networking"
   static let shared = Repository()
 
   @Dependency(\.networkRequest) var networkRequest
@@ -62,23 +62,17 @@ struct Repository: LoggingContext {
   }
 }
 
-extension Repository: DependencyKey {
-  static let liveValue: () -> Repository = { Repository.shared }
-  static let testValue: () -> Repository = unimplemented()
-}
-
-extension DependencyValues {
-  var repositoryGenerator: () -> Repository {
-    get { self[Repository.self] }
-    set { self[Repository.self] = newValue }
-  }
-}
-
 enum NetworkRequestError: Error {
   case transportError(EquatableError)
   case serverError(statusCode: Int)
   case malformedRequest(message: String)
   case malformedResponse(message: String)
+}
+
+extension NetworkRequestError {
+  public static func malformedURLError(urlString: String) -> NetworkRequestError {
+    NetworkRequestError.malformedRequest(message: "Attempted to connect to a malformed URL: \(urlString)")
+  }
 }
 
 struct NetworkRequestKey: DependencyKey {
