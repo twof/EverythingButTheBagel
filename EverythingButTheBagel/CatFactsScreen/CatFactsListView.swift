@@ -16,7 +16,7 @@ struct CatFactsListView: View {
       }
     }
     .task {
-      await store.send(.task).finish()
+      await store.send(.delegate(.task)).finish()
     }
     .onChange(of: scrollController.position) { _, newValue in
       store.send(.scroll(position: newValue))
@@ -39,10 +39,7 @@ struct CatFactsListView: View {
 // Preview with live dependencies
 #Preview {
   let store = Store(
-    initialState: CatFactsListBase.State(
-      viewModel: .init(),
-      dataSource: CatFactsListDataSource.State()
-    ),
+    initialState: CatFactsListBase.State(),
     reducer: { CatFactsListBase() }
   )
   return CatFactsListView(

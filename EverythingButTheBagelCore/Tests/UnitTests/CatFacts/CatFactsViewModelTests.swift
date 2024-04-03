@@ -2,7 +2,6 @@ import XCTest
 @testable import EverythingButTheBagelCore
 import ComposableArchitecture
 
-
 class CatFactsViewModelTests: XCTestCase {
   @MainActor
   func testScroll() async throws {
