@@ -43,7 +43,9 @@ class DataRequestClientTests: XCTestCase {
 
   func testRequestWithInvalidURL() async throws {
     let response = ResponseModel(fact: "this is a response")
-    let urlString = "https:/catfacts.ninja"
+    // Creating an invalid URL according to URL.init(string:) is more difficult than I thought
+    // The only time I got it to return nil was with an empty string
+    let urlString = ""
 
     await withDependencies { dependencies in
       // Returns `returnVal` encoded to Data
@@ -58,6 +60,7 @@ class DataRequestClientTests: XCTestCase {
       }
       dependencies.cacheConfiguration = { _, _ in }
     } operation: {
+      let failureExpectation = expectation(description: "Method should throw an error")
       let client = DataRequestClient<ResponseModel>.liveValue
       do {
         // Error expected. We don't care about the response.
@@ -65,11 +68,16 @@ class DataRequestClientTests: XCTestCase {
           urlString: urlString,
           cachePolicy: .reloadIgnoringLocalCacheData
         )
+
+        XCTFail("Expected method to throw")
       } catch let NetworkRequestError.malformedRequest(message) {
         XCTAssertEqual(message, "Attempted to connect to a malformed URL: \(urlString)")
+        failureExpectation.fulfill()
       } catch {
         XCTFail("Unexpected error \(error.localizedDescription)")
       }
+
+      await fulfillment(of: [failureExpectation])
     }
   }
 }
