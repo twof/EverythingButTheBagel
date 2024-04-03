@@ -1,35 +1,43 @@
 import Dependencies
 import Foundation
 
-struct Repository: LoggingContext {
-  let loggingCategory = "Networking"
-  static let shared = Repository()
-
-  @Dependency(\.networkRequest) var networkRequest
-  @Dependency(\.cacheConfiguration) var cacheConfiguration
-
-  /// Memory and disk capacity of the builtin URL cache. nil values will keep the defaults.
-  init(memoryCapacity: Int? = nil, diskCapacity: Int? = nil) {
-    cacheConfiguration(memoryCapacity, diskCapacity)
+struct Repository<ResponseType: Decodable>: DependencyKey, StaticLoggingContext {
+  static var loggingCategory: String {
+    "Networking"
+  }
+  static var networkRequest: (URLRequest) async throws -> (Data, URLResponse) {
+    Dependency(\.networkRequest).wrappedValue
+  }
+  static var cacheConfiguration: (_ memoryCapacity: Int?, _ diskCapacity: Int?) -> Void {
+    Dependency(\.cacheConfiguration).wrappedValue
   }
 
-  func makeRequest<ResponseModel: Decodable>(
-    _ request: URLRequest,
-    modelType: ResponseModel.Type
-  ) async throws -> ResponseModel {
-    let data = try await self.makeRequest(request)
+  /// Send a request, attempt to parse respose to `ResponseType ` and do some processing on errors.
+  ///
+  /// Makes use of the built in cache. Cache policy can be set as a part of the the `request` parameter.
+  /// Any responses with a status code outside of the 200 range are treated as errors.
+  static var liveValue: (
+    _ request: URLRequest
+  ) async throws -> ResponseType {
+    { request in
+      let data = try await self.makeRequest(request)
 
-    let decoder = JSONDecoder()
-    return try logErrors {
-      try decoder.decode(modelType, from: data)
+      let decoder = JSONDecoder()
+      return try logErrors {
+        try decoder.decode(ResponseType.self, from: data)
+      }
     }
+  }
+
+  static var testValue: (URLRequest) async throws -> ResponseType {
+    unimplemented("repository")
   }
 
   /// Send a request and do some processing on errors.
   ///
   /// Makes use of the built in cache. Cache policy can be set as a part of the the `request` parameter.
   /// Any responses with a status code outside of the 200 range are treated as errors.
-  func makeRequest(_ request: URLRequest) async throws -> Data {
+  static func makeRequest(_ request: URLRequest) async throws -> Data {
     // This function just wraps `makeRequestInternal` and provides logging of errors
     try await logErrors {
       guard let url = request.url else {
@@ -37,17 +45,19 @@ struct Repository: LoggingContext {
         throw NetworkRequestError.malformedRequest(message: "URLRequest was missing a url")
       }
       log(.info(message: "Making a request to \(url), with policy \(request.cachePolicy)"))
-      return try await self.makeRequestInternal(request)
+      return try await makeRequestInternal(request)
     }
   }
 
-  private func makeRequestInternal(_ request: URLRequest) async throws -> Data {
+  private static func makeRequestInternal(_ request: URLRequest) async throws -> Data {
     // Map response to a HTTPURLResponse, or throw an error if that's not possible
     let result = await Result { try await networkRequest(request) }.flatMap { (data, response) in
       if let response = response as? HTTPURLResponse {
         return .success((data, response))
       } else {
-        return .failure(NetworkRequestError.malformedResponse(message: "Response was not an HTTPURLResponse"))
+        return .failure(NetworkRequestError.malformedResponse(
+          message: "Response was not an HTTPURLResponse"
+        ))
       }
     }
 
@@ -71,7 +81,9 @@ enum NetworkRequestError: Error {
 
 extension NetworkRequestError {
   public static func malformedURLError(urlString: String) -> NetworkRequestError {
-    NetworkRequestError.malformedRequest(message: "Attempted to connect to a malformed URL: \(urlString)")
+    NetworkRequestError.malformedRequest(
+      message: "Attempted to connect to a malformed URL: \(urlString)"
+    )
   }
 }
 
@@ -81,6 +93,7 @@ struct NetworkRequestKey: DependencyKey {
 }
 
 extension DependencyValues {
+  /// Wrapper around `URLSession.data(for:)`
   var networkRequest: (URLRequest) async throws -> (Data, URLResponse) {
     get { self[NetworkRequestKey.self] }
     set { self[NetworkRequestKey.self] = newValue }
@@ -90,7 +103,7 @@ extension DependencyValues {
 struct CacheConfigurationKey: DependencyKey {
   static var liveValue: (_ memoryCapacity: Int?, _ diskCapacity: Int?) -> Void = { memoryCapacity, diskCapacity in
     // According to docs, will evict contents from the cache if the capacity is set lower than the
-    // current contents
+    // size of the current contents
     if let memoryCapacity {
       URLSession.shared.configuration.urlCache?.memoryCapacity = memoryCapacity
     }
@@ -103,6 +116,12 @@ struct CacheConfigurationKey: DependencyKey {
 }
 
 extension DependencyValues {
+  /// Configures the capacity of memory and disk caches for `URLSession`.
+  ///
+  /// According to [a blog post](https://web.archive.org/web/20230608175638/https://zhuk.fi/subclassing-urlcache/) the default eviction policy for
+  /// `URLCache` is to delete *the entire cache* when the capacity limit is reached. For the time being this is acceptable, but
+  /// we may have to replace `URLCache` in the future with one with a more reasonable eviction policy ie LRU, LRU2, LFU
+  // TODO: Replace `URLCache`
   var cacheConfiguration: (_ memoryCapacity: Int?, _ diskCapacity: Int?) -> Void {
     get { self[CacheConfigurationKey.self] }
     set { self[CacheConfigurationKey.self] = newValue }

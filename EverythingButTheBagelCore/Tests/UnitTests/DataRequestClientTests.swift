@@ -5,9 +5,8 @@ import FunctionSpy
 
 // Since we're testing a live dependency these tests would normally be in the integration test
 // suite, but this specific dependency just combines a few other dependencies and doesn't make
-// any network requests itself. If it ever does start doing work itself,
-// these tests should be moved.
-// TODO: A lot of preamble in these tests. I want a way to simplify them.
+// any network requests itself. If it ever does start doing work itself, these tests should be
+// moved.
 class DataRequestClientTests: XCTestCase {
   @MainActor
   func testRequestWithValidURL() async throws {
@@ -15,17 +14,9 @@ class DataRequestClientTests: XCTestCase {
     let urlString = "https://catfacts.ninja"
 
     await withDependencies { dependencies in
-      // Returns `returnVal` encoded to Data
-      dependencies.networkRequest = { _ in
-        do {
-          let data = try JSONEncoder().encode(response)
-          return (data, HTTPURLResponse.success(url: urlString))
-        } catch {
-          XCTFail("Unexpected error \(error)")
-          return (Data(), URLResponse())
-        }
+      dependencies[Repository<ResponseModel>.self] = { _ in
+        response
       }
-      dependencies.cacheConfiguration = { _, _ in }
     } operation: {
       let client = DataRequestClient<ResponseModel>.liveValue
       do {
@@ -47,37 +38,24 @@ class DataRequestClientTests: XCTestCase {
     // The only time I got it to return nil was with an empty string
     let urlString = ""
 
-    await withDependencies { dependencies in
-      // Returns `returnVal` encoded to Data
-      dependencies.networkRequest = { _ in
-        do {
-          let data = try JSONEncoder().encode(response)
-          return (data, HTTPURLResponse.success(url: urlString))
-        } catch {
-          XCTFail("Unexpected error \(error)")
-          return (Data(), URLResponse())
-        }
-      }
-      dependencies.cacheConfiguration = { _, _ in }
-    } operation: {
-      let failureExpectation = expectation(description: "Method should throw an error")
-      let client = DataRequestClient<ResponseModel>.liveValue
-      do {
-        // Error expected. We don't care about the response.
-        _ = try await client.request(
-          urlString: urlString,
-          cachePolicy: .reloadIgnoringLocalCacheData
-        )
+    // No dependencies need to be overridden. Failure is expected prior to their use.
+    let failureExpectation = expectation(description: "Method should throw an error")
+    let client = DataRequestClient<ResponseModel>.liveValue
+    do {
+      // Error expected. We don't care about the response.
+      _ = try await client.request(
+        urlString: urlString,
+        cachePolicy: .reloadIgnoringLocalCacheData
+      )
 
-        XCTFail("Expected method to throw")
-      } catch let NetworkRequestError.malformedRequest(message) {
-        XCTAssertEqual(message, "Attempted to connect to a malformed URL: \(urlString)")
-        failureExpectation.fulfill()
-      } catch {
-        XCTFail("Unexpected error \(error.localizedDescription)")
-      }
-
-      await fulfillment(of: [failureExpectation])
+      XCTFail("Expected method to throw")
+    } catch let NetworkRequestError.malformedRequest(message) {
+      XCTAssertEqual(message, "Attempted to connect to a malformed URL: \(urlString)")
+      failureExpectation.fulfill()
+    } catch {
+      XCTFail("Unexpected error \(error.localizedDescription)")
     }
+
+    await fulfillment(of: [failureExpectation])
   }
 }

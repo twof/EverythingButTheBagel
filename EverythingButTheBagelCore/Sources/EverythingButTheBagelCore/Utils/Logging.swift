@@ -115,3 +115,37 @@ extension LoggingContext {
     }
   }
 }
+
+/// Area of interest for logging purposes
+protocol StaticLoggingContext {
+  /// A tag to be used by logs created by this type
+  static var loggingCategory: String { get }
+}
+
+extension StaticLoggingContext {
+  /// Logs at the provided level using the category defined by the protocol conformance
+  static func log(_ level: LogLevel) {
+    @Dependency(\.loggingClient) var loggingClient
+    loggingClient.log(level: level, category: loggingCategory)
+  }
+
+  /// Logs any errors throwin in the closure returning results and rethrowing errors
+  static func logErrors<RetType>(_ closure: () async throws -> RetType) async throws -> RetType {
+    do {
+      return try await closure()
+    } catch {
+      log(.error(error: error.toEquatableError()))
+      throw error
+    }
+  }
+
+  /// Logs any errors throwin in the closure returning results and rethrowing errors
+  static func logErrors<RetType>(_ closure: () throws -> RetType) throws -> RetType {
+    do {
+      return try closure()
+    } catch {
+      log(.error(error: error.toEquatableError()))
+      throw error
+    }
+  }
+}

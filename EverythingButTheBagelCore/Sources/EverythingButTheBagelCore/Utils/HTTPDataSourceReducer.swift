@@ -65,11 +65,11 @@ extension DataRequestClient: DependencyKey {
         throw error
       }
 
-      let repository = Repository.shared
+      @Dependency(Repository<ResponseType>.self) var repository
       var urlRequest = URLRequest(url: url)
       urlRequest.cachePolicy = cachePolicy
 
-      return try await repository.makeRequest(urlRequest, modelType: ResponseType.self)
+      return try await repository(urlRequest)
     }
   }
 
