@@ -14,6 +14,14 @@ public struct CatFactsResponseModel: Codable, Equatable {
   }
 }
 
+extension CatFactsResponseModel {
+  public static let mock = CatFactsResponseModel(
+    currentPage: 0,
+    data: [.init(fact: "first fact"), .init(fact: "second fact")],
+    nextPageUrl: nil
+  )
+}
+
 public struct CatFactModel: Codable, Equatable {
   let fact: String
 }
