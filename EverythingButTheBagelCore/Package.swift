@@ -18,7 +18,7 @@ let package = Package(
       from: "1.0.0"
     ),
     .package(url: "https://github.com/getsentry/sentry-cocoa", from: "8.22.2"),
-    .package(url: "https://github.com/twof/FunctionSpy", from: "1.0.0"),
+    .package(url: "https://github.com/twof/FunctionSpy", branch: "main"),
     .package(url: "https://github.com/twof/ControllableScrollView", from: "1.0.0")
   ],
   targets: [

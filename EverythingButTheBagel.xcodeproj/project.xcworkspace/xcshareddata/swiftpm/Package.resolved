@@ -1,5 +1,5 @@
 {
-  "originHash" : "632149517aca51b2e595ac5a5ecc7c49ac99c51f4de643b90e44f7534f796899",
+  "originHash" : "3e5b72c0c28a75d742cf49fa99b79d0926e21a1ad350c879c643a17bfcd396d6",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/twof/FunctionSpy",
       "state" : {
-        "revision" : "cd3ca83307590876eec0b4c5cd66a58d18a99efa",
-        "version" : "1.0.0"
+        "branch" : "main",
+        "revision" : "017921710ce68a6b730c8cef7c49a22477a4dc51"
       }
     },
     {

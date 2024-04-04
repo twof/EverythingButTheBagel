@@ -8,9 +8,6 @@ struct Repository<ResponseType: Decodable>: DependencyKey, StaticLoggingContext 
   static var networkRequest: (URLRequest) async throws -> (Data, URLResponse) {
     Dependency(\.networkRequest).wrappedValue
   }
-  static var cacheConfiguration: (_ memoryCapacity: Int?, _ diskCapacity: Int?) -> Void {
-    Dependency(\.cacheConfiguration).wrappedValue
-  }
 
   /// Send a request, attempt to parse respose to `ResponseType` and do some processing on errors.
   ///

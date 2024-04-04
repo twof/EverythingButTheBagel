@@ -33,19 +33,19 @@ public struct EquatableError: Error, Equatable, CustomStringConvertible {
   }
 }
 
-extension Error where Self: Equatable {
-  func toEquatableError() -> EquatableError {
-    // Avoid re-wrapping EquatableErrors
-    if let error = self as? EquatableError {
-      return error
-    }
-
-    return EquatableError(self)
-  }
-}
+//extension Error where Self: Equatable {
+//  public func toEquatableError() -> EquatableError {
+//    // Avoid re-wrapping EquatableErrors
+//    if let error = self as? EquatableError {
+//      return error
+//    }
+//
+//    return EquatableError(self)
+//  }
+//}
 
 extension Error {
-  func toEquatableError() -> EquatableError {
+  public func toEquatableError() -> EquatableError {
     // Avoid re-wrapping EquatableErrors
     if let error = self as? EquatableError {
       return error
