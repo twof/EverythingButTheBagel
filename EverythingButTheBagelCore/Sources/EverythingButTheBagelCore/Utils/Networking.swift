@@ -12,7 +12,7 @@ struct Repository<ResponseType: Decodable>: DependencyKey, StaticLoggingContext 
     Dependency(\.cacheConfiguration).wrappedValue
   }
 
-  /// Send a request, attempt to parse respose to `ResponseType ` and do some processing on errors.
+  /// Send a request, attempt to parse respose to `ResponseType` and do some processing on errors.
   ///
   /// Makes use of the built in cache. Cache policy can be set as a part of the the `request` parameter.
   /// Any responses with a status code outside of the 200 range are treated as errors.

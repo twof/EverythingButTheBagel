@@ -33,7 +33,6 @@ class DataRequestClientTests: XCTestCase {
   }
 
   func testRequestWithInvalidURL() async throws {
-    let response = ResponseModel(fact: "this is a response")
     // Creating an invalid URL according to URL.init(string:) is more difficult than I thought
     // The only time I got it to return nil was with an empty string
     let urlString = ""

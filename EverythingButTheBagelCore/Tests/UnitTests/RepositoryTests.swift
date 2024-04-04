@@ -1,8 +1,10 @@
-//
-//  File.swift
-//
-//
-//  Created by fnord on 3/24/24.
-//
+import XCTest
+@testable import EverythingButTheBagelCore
+import Dependencies
 
-import Foundation
+class RepositoryTests: XCTestCase {
+  @MainActor
+  func testMakeRequestHappyPath() async throws {
+
+  }
+}
