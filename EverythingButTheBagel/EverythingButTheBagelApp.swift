@@ -22,8 +22,13 @@ struct EverythingButTheBagelApp: App {
     let documentCache = DocumentsCache(key: "app-state")
 
     // Load from cache and write to it on every event
-    return Store(initialState: documentCache.load() ?? AppReducer.State(), reducer: {
-      AppReducer().caching(cache: documentCache)
-    })
+    return Store(
+      initialState:
+//        documentCache.load() ??
+        AppReducer.State(),
+      reducer: {
+        AppReducer().caching(cache: documentCache)
+      }
+    )
   }
 }

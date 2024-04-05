@@ -36,12 +36,20 @@ public struct CatFactsListBase {
       Reduce { _, action in
         switch action {
         case let .dataSource(.delegate(.response(response))):
-          return .send(.viewModel(.newFacts(response.data)))
+          return .merge(
+            .send(.viewModel(.newFacts(response.data))),
+            .send(.viewModel(.isLoading(false)))
+          )
+        case .dataSource(.delegate(.error)):
+          return .send(.viewModel(.isLoading(false)))
         case .viewModel(.delegate(.task)):
           return .send(.dataSource(.fetch(
             url: catFactsURL(count: 40),
             cachePolicy: .reloadIgnoringLocalCacheData
           )))
+
+        case .dataSource(.fetch):
+          return .send(.viewModel(.isLoading(true)))
         case .dataSource, .viewModel:
           return .none
         }

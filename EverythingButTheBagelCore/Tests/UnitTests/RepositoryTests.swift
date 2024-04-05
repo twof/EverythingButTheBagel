@@ -8,7 +8,7 @@ class RepositoryTests: XCTestCase {
 
   @MainActor
   func testMakeRequestHappyPath() async throws {
-    try await withMockRepository { networkSpy, repository in
+    try await withMockRepository { _, repository in
       let response = try await repository(.init(url: .mock))
       XCTAssertEqual(response, testResponse)
     }
@@ -16,9 +16,9 @@ class RepositoryTests: XCTestCase {
 
   @MainActor
   func testMakeRequestInvalidJsonData() async throws {
-    try await withMockRepository(responseData: Data()) { networkSpy, repository in
+    try await withMockRepository(responseData: Data()) { _, repository in
       await assertThrowsError {
-        let _ = try await repository(.init(url: .mock))
+        _ = try await repository(.init(url: .mock))
       } errorMatches: { error in
         if case let DecodingError.dataCorrupted(context) = error.base {
           return context.debugDescription == "The given data was not valid JSON."
@@ -31,11 +31,11 @@ class RepositoryTests: XCTestCase {
 
   @MainActor
   func testMakeRequestMissingURL() async throws {
-    try await withMockRepository { networkSpy, repository in
+    try await withMockRepository { _, repository in
       await assertThrowsError {
         var request = URLRequest(url: .mock)
         request.url = nil
-        let _ = try await repository(request)
+        _ = try await repository(request)
       } errorMatches: { error in
         return error == NetworkRequestError
           .malformedRequest(message: "URLRequest was missing a url")
@@ -46,9 +46,9 @@ class RepositoryTests: XCTestCase {
 
   @MainActor
   func testMakeRequestNonHTTPResponse() async throws {
-    try await withMockRepository(response: URLResponse()) { networkSpy, repository in
+    try await withMockRepository(response: URLResponse()) { _, repository in
       await assertThrowsError {
-        let _ = try await repository(.init(url: .mock))
+        _ = try await repository(.init(url: .mock))
       } errorMatches: { error in
         return error == NetworkRequestError.transportError(
           NetworkRequestError
@@ -65,9 +65,9 @@ class RepositoryTests: XCTestCase {
     let response = HTTPURLResponse.fail(url: URL.mock.absoluteString)
     try await withMockRepository(
       response: response
-    ) { networkSpy, repository in
+    ) { _, repository in
       await assertThrowsError {
-        let _ = try await repository(.init(url: .mock))
+        _ = try await repository(.init(url: .mock))
       } errorMatches: { error in
         return error == NetworkRequestError.serverError(statusCode: response.statusCode)
         .toEquatableError()

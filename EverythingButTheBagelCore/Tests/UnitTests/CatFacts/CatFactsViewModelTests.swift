@@ -28,7 +28,7 @@ class CatFactsViewModelTests: XCTestCase {
     ]
 
     await store.send(.newFacts(facts)) { state in
-      state.facts = IdentifiedArray(uniqueElements: facts.map(CatFactViewModel.init(model:)))
+      state.status = .loaded(data: facts.map(CatFactViewModel.init(model:)).toIdentifiedArray)
     }
   }
 
@@ -56,7 +56,7 @@ class CatFactsViewModelTests: XCTestCase {
     ]
 
     await store.send(.newFacts(facts)) { state in
-      state.facts = IdentifiedArray(uniqueElements: facts.map(CatFactViewModel.init(model:)))
+      state.status = .loaded(data: facts.map(CatFactViewModel.init(model:)).toIdentifiedArray)
     }
 
     let newFacts = [
@@ -65,7 +65,7 @@ class CatFactsViewModelTests: XCTestCase {
     ]
 
     await store.send(.newFacts(newFacts)) { state in
-      state.facts = IdentifiedArray(uniqueElements: newFacts.map(CatFactViewModel.init(model:)))
+      state.status = .loaded(data: newFacts.map(CatFactViewModel.init(model:)).toIdentifiedArray)
     }
   }
 
@@ -77,5 +77,30 @@ class CatFactsViewModelTests: XCTestCase {
 
     // No change expected. Task is a delegate action.
     await store.send(.delegate(.task))
+  }
+
+  @MainActor
+  func testIsLoading() async throws {
+    let store = TestStore(initialState: CatFactsListViewModelReducer.State()) {
+      CatFactsListViewModelReducer()
+    }
+
+    await store.send(.isLoading(true)) { state in
+      /*
+       When loading, display a loading indicator
+       If there is no content, show shimmering placeholders
+       If there is content, just show the loading indicator
+
+       I need some way to get rid of placeholders when loading completes
+        two lists, one of placeholders and one of data,
+        when loading, display placeholders contatenated with data
+        only apply shimmer to placeholders
+       */
+      state.status = .loading(data: [], placeholders: .placeholders)
+    }
+
+    await store.send(.isLoading(false)) { state in
+      state.status = .loaded(data: [])
+    }
   }
 }

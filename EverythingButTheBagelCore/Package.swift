@@ -10,7 +10,8 @@ let package = Package(
   products: [
     .library(
       name: "EverythingButTheBagelCore",
-      targets: ["EverythingButTheBagelCore"])
+      targets: ["EverythingButTheBagelCore"]
+    )
   ],
   dependencies: [
     .package(

@@ -12,13 +12,17 @@ class CatFactsBaseTests: XCTestCase {
 
     await store.send(.dataSource(.delegate(.response(response))))
     await store.receive(.viewModel(.newFacts(response.data))) { state in
-      state.viewModel.facts = response.data.map(CatFactViewModel.init(model:)).toIdentifiedArray
+      state.viewModel.status = .loaded(
+        data: response.data.map(CatFactViewModel.init(model:)).toIdentifiedArray
+      )
     }
+
+    // Loading starts out false, no change expected
+    await store.receive(.viewModel(.isLoading(false)))
   }
 
   @MainActor
   func testFetchOnTask() async throws {
-    let response = CatFactsResponseModel(currentPage: 0, data: [.init(fact: "first fact"), .init(fact: "second fact")], nextPageUrl: nil)
     let store = TestStore(initialState: CatFactsListBase.State()) {
       CatFactsListBase()
     } withDependencies: { dependencies in
@@ -31,11 +35,9 @@ class CatFactsBaseTests: XCTestCase {
 
     await store.send(.viewModel(.delegate(.task)))
     await store.receive(\.dataSource.fetch)
-  }
-}
 
-extension Collection where Element: Identifiable {
-  var toIdentifiedArray: IdentifiedArrayOf<Element> {
-    IdentifiedArrayOf(uniqueElements: self)
+    await store.receive(.viewModel(.isLoading(true))) { state in
+      state.viewModel.status = .loading(data: [], placeholders: .placeholders)
+    }
   }
 }

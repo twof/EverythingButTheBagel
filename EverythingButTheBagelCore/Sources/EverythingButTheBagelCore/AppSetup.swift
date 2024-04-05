@@ -5,4 +5,8 @@ public func appSetup() {
   // Registers with remote logging service
   @Dependency(\.loggingClient) var client
   client.setup()
+
+  @Dependency(\.cacheConfiguration) var cacheConfig
+  // Using the default config for now
+  cacheConfig(nil, nil)
 }

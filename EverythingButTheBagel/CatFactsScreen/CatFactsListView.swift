@@ -2,6 +2,8 @@ import SwiftUI
 import ComposableArchitecture
 import EverythingButTheBagelCore
 import ControllableScrollView
+import Sprinkles
+import Shimmer
 
 struct CatFactsListView: View {
   let store: StoreOf<CatFactsListViewModelReducer>
@@ -9,17 +11,33 @@ struct CatFactsListView: View {
 
   var body: some View {
     ControllableScrollView(scrollModel: $scrollController) {
-      LazyVStack {
-        ForEach(store.facts) { fact in
-          Text(fact.fact)
+      LazyVStack(spacing: 0) {
+        ForEach(store.status.data) { fact in
+          CatFactListItem(vm: fact)
+        }
+
+        ForEach(store.status.placeholders) { fact in
+          CatFactListItem(vm: fact)
+        }
+        .if(store.isLoading) { view in
+          view
+            .redacted(reason: .placeholder)
+            .shimmering()
         }
       }
+
     }
+    .scrollDisabled(store.isLoading)
     .task {
       await store.send(.delegate(.task)).finish()
     }
     .onChange(of: scrollController.position) { _, newValue in
       store.send(.scroll(position: newValue))
+    }
+    .overlay {
+      if store.isLoading {
+        ProgressView()
+      }
     }
   }
 }
@@ -28,7 +46,7 @@ struct CatFactsListView: View {
 #Preview {
   CatFactsListView(
     store: Store(
-      initialState: CatFactsListViewModelReducer.State(),
+      initialState: CatFactsListViewModelReducer.State(status: .loading(data: [CatFactViewModel(fact: "Hey there I'm a cat")], placeholders: .placeholders)),
       reducer: {
         CatFactsListViewModelReducer()
       }

@@ -62,7 +62,7 @@ class StaticLoggingContextTests: XCTestCase {
       let testReturn = "test"
       let retVal = try await testClient.logErrors {
         // To force async
-        await Task{}.value
+        await Task {}.value
         return testReturn
       }
 
@@ -81,7 +81,7 @@ class StaticLoggingContextTests: XCTestCase {
       do {
         try await testClient.logErrors {
           // To force async
-          await Task{}.value
+          await Task {}.value
           throw testError
         }
 

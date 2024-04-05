@@ -33,7 +33,7 @@ public struct EquatableError: Error, Equatable, CustomStringConvertible {
   }
 }
 
-//extension Error where Self: Equatable {
+// extension Error where Self: Equatable {
 //  public func toEquatableError() -> EquatableError {
 //    // Avoid re-wrapping EquatableErrors
 //    if let error = self as? EquatableError {
@@ -42,7 +42,7 @@ public struct EquatableError: Error, Equatable, CustomStringConvertible {
 //
 //    return EquatableError(self)
 //  }
-//}
+// }
 
 extension Error {
   public func toEquatableError() -> EquatableError {

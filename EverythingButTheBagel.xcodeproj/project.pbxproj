@@ -14,6 +14,7 @@
 		2405CA6E2BB602A100AC80AD /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA672BB5922900AC80AD /* ErrorView.swift */; };
 		2405CA6F2BB602A700AC80AD /* CatFactsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA652BB5922900AC80AD /* CatFactsListView.swift */; };
 		2421FC962BBA0C00000EFFD4 /* Sprinkles in Frameworks */ = {isa = PBXBuildFile; productRef = 2421FC952BBA0C00000EFFD4 /* Sprinkles */; };
+		247285FE2BBF8B1700E35F17 /* CatFactListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247285FD2BBF8B1700E35F17 /* CatFactListItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		2421FC9B2BBA1254000EFFD4 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		2421FC9C2BBA1254000EFFD4 /* .pre-commit-config.yaml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = ".pre-commit-config.yaml"; sourceTree = "<group>"; };
 		2421FC9D2BBA1281000EFFD4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		247285FD2BBF8B1700E35F17 /* CatFactListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatFactListItem.swift; sourceTree = "<group>"; };
 		24BA5B162BB006810062084E /* EverythingButTheBagel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EverythingButTheBagel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24BA5B282BB0073D0062084E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -74,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				2405CA652BB5922900AC80AD /* CatFactsListView.swift */,
+				247285FD2BBF8B1700E35F17 /* CatFactListItem.swift */,
 			);
 			path = CatFactsScreen;
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2405CA6C2BB6029D00AC80AD /* BaseAppScreen.swift in Sources */,
+				247285FE2BBF8B1700E35F17 /* CatFactListItem.swift in Sources */,
 				2405CA6F2BB602A700AC80AD /* CatFactsListView.swift in Sources */,
 				2405CA6B2BB6029200AC80AD /* EverythingButTheBagelApp.swift in Sources */,
 				2405CA6D2BB602A100AC80AD /* ContentView.swift in Sources */,
