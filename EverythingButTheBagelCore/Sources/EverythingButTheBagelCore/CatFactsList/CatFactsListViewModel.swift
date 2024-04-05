@@ -5,8 +5,6 @@ public struct CatFactsListViewModelReducer {
   @ObservableState
   public struct State: Equatable, Codable {
     public var status: Status
-//    public var facts: IdentifiedArrayOf<CatFactViewModel> = []
-//    public var loading = false
     public var scrollPosition: Double
 
     public var isLoading: Bool {
@@ -17,13 +15,9 @@ public struct CatFactsListViewModelReducer {
     }
 
     public init(
-//      facts: IdentifiedArrayOf<CatFactViewModel> = [],
-//      loading: Bool = false,
       status: Status = .loaded(data: []),
       scrollPosition: Double = 0.0
     ) {
-      //      self.facts = facts
-      //      self.loading = loading
       self.scrollPosition = scrollPosition
       self.status = status
     }
@@ -48,18 +42,13 @@ public struct CatFactsListViewModelReducer {
     Reduce { state, action in
       switch action {
       case let .newFacts(factModels):
-//        state.facts.removeAll()
-//        state.facts.append(contentsOf: factModels.map(CatFactViewModel.init(model:)))
         state.status = .loaded(data: factModels.map(CatFactViewModel.init(model:)).toIdentifiedArray)
         return .none
       case let .scroll(position):
         state.scrollPosition = position
         return .none
       case let .isLoading(isLoading):
-        let data = switch state.status {
-        case let .loaded(data): data
-        case let .loading(data, _): data
-        }
+        let data = state.status.data
 
         state.status = isLoading
           ? .loading(data: data, placeholders: .placeholders)

@@ -9,6 +9,11 @@ struct CatFactsListView: View {
   let store: StoreOf<CatFactsListViewModelReducer>
   @State var scrollController = ScrollTrackerModel()
 
+  init(store: StoreOf<CatFactsListViewModelReducer>) {
+    self.store = store
+    self.scrollController = ScrollTrackerModel()
+  }
+
   var body: some View {
     ControllableScrollView(scrollModel: $scrollController) {
       LazyVStack(spacing: 0) {
@@ -25,10 +30,11 @@ struct CatFactsListView: View {
             .shimmering()
         }
       }
-
     }
     .scrollDisabled(store.isLoading)
     .task {
+      // Scroll to set position on load
+      self.scrollController.scroll(position: store.scrollPosition)
       await store.send(.delegate(.task)).finish()
     }
     .onChange(of: scrollController.position) { _, newValue in

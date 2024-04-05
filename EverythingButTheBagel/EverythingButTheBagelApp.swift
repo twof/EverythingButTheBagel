@@ -10,6 +10,7 @@ struct EverythingButTheBagelApp: App {
     self.store = Self.createStore()
     EverythingButTheBagelCore.appSetup()
   }
+
   var body: some Scene {
     WindowGroup {
       BaseAppScreen(store: store, view: {
@@ -21,10 +22,10 @@ struct EverythingButTheBagelApp: App {
   static func createStore() -> StoreOf<AppReducer> {
     let documentCache = DocumentsCache(key: "app-state")
 
-    // Load from cache and write to it on every event
+    // Load from cache and write to it on every action
     return Store(
       initialState:
-//        documentCache.load() ??
+        documentCache.load() ??
         AppReducer.State(),
       reducer: {
         AppReducer().caching(cache: documentCache)
