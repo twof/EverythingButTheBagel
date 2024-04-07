@@ -13,22 +13,25 @@ public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorPro
       case error(EquatableError)
     }
 
-    case fetch(url: String, cachePolicy: NSURLRequest.CachePolicy)
+    case fetch(url: String, cachePolicy: NSURLRequest.CachePolicy, retry: Int = 0)
     case delegate(Delegate)
   }
 
   var errorId: String
+  let maxRetries: Int
 
-  init(errorId: String) {
+  init(errorId: String, maxRetries: Int = 5) {
     self.errorId = errorId
+    self.maxRetries = maxRetries
   }
 
   @Dependency(DataRequestClient<ResponseType>.self) var fetchDataClient
+  @Dependency(\.continuousClock) var clock
 
   public var body: some ReducerOf<Self> {
     Reduce { _, action in
       switch action {
-      case let .fetch(urlString, cachePolicy):
+      case let .fetch(urlString, cachePolicy, retry):
         return .run { send in
           let response = try await fetchDataClient.request(
             urlString: urlString,
@@ -37,12 +40,29 @@ public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorPro
           await send(.delegate(.response(response)))
         } catch: { error, send in
           await send(.delegate(.error(error.toEquatableError())))
+
+          // Begin doing exponential backoff
+          if retry < maxRetries {
+            do {
+              try await clock.sleep(for: .milliseconds(Self.backoffDuration(retry: retry)))
+              await send(.fetch(url: urlString, cachePolicy: cachePolicy, retry: retry + 1))
+            } catch {
+              // This is expected to throw on cancelation which is an error we don't have to deal with
+              return
+            }
+          }
         }
       case .delegate:
         // This action acts as a delegate. The data source doesn't do anything with the data itself.
         return .none
       }
     }
+  }
+
+  static func backoffDuration(retry: Int) -> Int {
+    let exponent = NSDecimalNumber(value: pow(2, Double(retry))).intValue
+    let waitMilliseconds: Int = 100 + exponent
+    return waitMilliseconds
   }
 }
 
