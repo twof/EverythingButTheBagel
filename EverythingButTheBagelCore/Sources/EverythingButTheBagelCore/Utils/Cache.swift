@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import Foundation
+import Dependencies
 
 public protocol Caching {
   var key: String { get }
@@ -7,7 +8,9 @@ public protocol Caching {
   func load<Value: Decodable>() -> Value?
 }
 
-public final class DocumentsCache: Caching {
+public final class DocumentsCache: Caching, LoggingContext {
+  let loggingCategory: String = "Cache"
+
   public init(
     key: String,
     fileManager: FileManager = .default,
@@ -24,24 +27,29 @@ public final class DocumentsCache: Caching {
   }
 
   public let key: String
-  let decoder: JSONDecoder
-  let encoder: JSONEncoder
+  private let decoder: JSONDecoder
+  private let encoder: JSONEncoder
   let fileUrl: URL
 
+  @Dependency(\.fileClient) var fileClient
+
   public func save<Value: Encodable>(_ value: Value) {
-    let data = try? encoder.encode(value)
-    try? data?.write(to: fileUrl)
+    try? logErrors {
+      let data = try encoder.encode(value)
+      try fileClient.write(fileUrl, data)
+    }
   }
 
   public func load<Value: Decodable>() -> Value? {
-    guard let data = try? Data(contentsOf: fileUrl) else { return nil }
-    return try? decoder.decode(Value.self, from: data)
+    try? logErrors {
+      let data = try fileClient.read(fileUrl)
+      return try decoder.decode(Value.self, from: data)
+    }
   }
 }
 
 public extension Reducer where State: Codable {
   func caching(cache: Caching) -> Reduce<Self.State, Self.Action> {
-
     return Reduce<Self.State, Self.Action> { state, action in
       let effect = self.reduce(into: &state, action: action)
       let newState = state
@@ -52,5 +60,31 @@ public extension Reducer where State: Codable {
         effect
       )
     }
+  }
+}
+
+@DependencyClient
+struct FileClient {
+  let read: (_ url: URL) throws -> Data
+  let write: (_ url: URL, _ data: Data) throws -> Void
+}
+
+extension FileClient: DependencyKey {
+  static var liveValue = FileClient { url in
+    try Data(contentsOf: url)
+  } write: { url, data in
+    try data.write(to: url)
+  }
+
+  static var testValue = FileClient(
+    read: unimplemented("FileClient read"),
+    write: unimplemented("FileClient write")
+  )
+}
+
+extension DependencyValues {
+  var fileClient: FileClient {
+    get { self[FileClient.self] }
+    set { self[FileClient.self] = newValue }
   }
 }
