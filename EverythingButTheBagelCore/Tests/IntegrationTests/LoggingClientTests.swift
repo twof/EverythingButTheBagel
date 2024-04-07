@@ -3,9 +3,10 @@ import XCTest
 import Dependencies
 import FunctionSpy
 
-@MainActor
 class LoggingClientTests: XCTestCase {
   // Expected to set info breadcrumbs with sentry and print to console
+  @MainActor
+
   func testLogInfo() {
     let testRemoteLoggingClient = RemoteLoggingClient.clientSpy()
 
@@ -26,6 +27,7 @@ class LoggingClientTests: XCTestCase {
   }
 
   // Expected to set waring breadcrumbs with sentry and print to console
+  @MainActor
   func testLogWarning() {
     let testRemoteLoggingClient = RemoteLoggingClient.clientSpy()
     let category = "Test Category"
@@ -47,6 +49,7 @@ class LoggingClientTests: XCTestCase {
   }
 
   // Expected to send error to sentry and print to console
+  @MainActor
   func testLogError() {
     let testRemoteLoggingClient = RemoteLoggingClient.clientSpy()
     let category = "Test Category"
