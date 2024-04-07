@@ -148,9 +148,7 @@ class HTTPDataSourceTests: XCTestCase {
   func testFetchRetriesUntilCanceled() async throws {
     let error = NetworkRequestError.malformedRequest(message: "Malformed URL")
     let clock = TestClock()
-    var count = 0
     let maxRetries = 5
-    let responseModel = ResponseModel(fact: "Cats have fur usually")
 
     let store = TestStore(initialState: DataSource.State(), reducer: {
       DataSource(errorId: "test", maxRetries: maxRetries)

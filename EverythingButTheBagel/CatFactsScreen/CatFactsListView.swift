@@ -57,7 +57,7 @@ struct CatFactsListView: View {
         CatFactsListViewModelReducer()
       }
     )
-  )
+  ).preferredColorScheme(.dark)
 }
 
 // Preview with live dependencies

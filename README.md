@@ -19,6 +19,13 @@
   - Out of the box, SwiftUI doesn't allow developers to track and set absolute scroll position programatically, so I created [a package for that](https://github.com/twof/ControllableScrollView).
 - Code is separated into a core, platform agnostic package to contain all business logic and tests, and a parent project that contains platform-specific and UI code.
   - It's expected that as much logic as possible is put into the core package and that UI code is never put in the core package to optimize for testability and coverage.
+- Since we're keeping all SwiftUI code out of the core package, another package called `Sprinkles` has been created to manage reusable design system and UI utilities.
+
+## Networking
+- HTTP fetches are performed by `HTTPDataSourceReducer` which is optimized for reusability. Any reducer which has some HTTP dependency would be expected to use it.
+  - It uses the built-in `URLCache`. `URLCache` has some downsides (documented in code) and I'd expect to replace it with something else eventually.
+  - It handles error logging for networking related activities.
+  - It performs expotential backoff retries up to a configured maximum number and is responsive to task cancellation.
 
 ## Logging
 - [Sentry](https://sentry.io/welcome/) is being used as the remote logging service. There are many other services that do effectively the same thing, but this is one I've liked in the past.
@@ -37,9 +44,9 @@
   - Github actions run on a macOS instance because The Composable Architecture relies on Combine which has not been ported to Linux yet. Once that happens, unit tests could be run on a Linux instance which is much cheaper.
 - Additionally, an Xcode Cloud pipeline is set up to archive the app and release to TestFlight
 - Locally, swiftlint presents warnings in Xcode to enforce a consistent coding style in the project.
-- Pre-commit hooks are also installed.
+- Pre-commit hooks are installed.
   - Swiftlint is also run on commit to catch edits performed outside of Xcode and to ensure committed code meets style standards.
-  - A tool I created called [Downstream](https://github.com/twof/Downstream) is also run. Downstream alerts users when changes might indicate a need for docs to be updated. For example, changes to `Package.swift` could indicate a new dependency has been added and I should probably talk about it in the README.
+  - A tool I created called [Downstream](https://github.com/twof/Downstream) is run on commit. Downstream alerts users when changes might indicate a need for docs to be updated. For example, changes to `Package.swift` could indicate a new dependency has been added and I should probably talk about it in the README.
 
 ## Future Directions
 - The UI is very simple. A lot of opportunity for design improvement there.
