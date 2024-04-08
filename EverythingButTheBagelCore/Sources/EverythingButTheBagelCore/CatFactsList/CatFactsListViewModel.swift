@@ -28,6 +28,7 @@ public struct CatFactsListViewModelReducer {
     public enum Delegate: Equatable {
       // In this case, the parent is being alerted that the view did load.
       case task
+      case nextPage
     }
 
     case delegate(Delegate)
@@ -42,11 +43,13 @@ public struct CatFactsListViewModelReducer {
     Reduce { state, action in
       switch action {
       case let .newFacts(factModels):
-        state.status = .loaded(data: factModels.map(CatFactViewModel.init(model:)).toIdentifiedArray)
+        state.status = .loaded(data: state.status.data + (factModels.map(CatFactViewModel.init(model:)).toIdentifiedArray))
         return .none
+
       case let .scroll(position):
         state.scrollPosition = position
         return .none
+
       case let .isLoading(isLoading):
         let data = state.status.data
 
@@ -54,6 +57,7 @@ public struct CatFactsListViewModelReducer {
           ? .loading(data: data, placeholders: .placeholders)
           : .loaded(data: data)
         return .none
+
       case .delegate:
         return .none
       }
@@ -78,12 +82,14 @@ extension Status {
     switch self {
     case .loaded: []
     case let .loading(_, placeholders): placeholders
+        .prefix(max(1, 7 - data.count))
+        .toIdentifiedArray
     }
   }
 
-  public var factsList: IdentifiedArrayOf<CatFactViewModel> {
-    // Return a list of data + placeholders up to 20 elements
-    (self.data + self.placeholders.suffix(max(0, 20 - self.data.count)))
+  /// When this element comes on screen, start loading the next page
+  public var loadingElement: CatFactViewModel {
+    self.data[back: 2]
   }
 }
 

@@ -49,11 +49,16 @@ class CacheTests: XCTestCase {
       }
 
       let exampleState = ExampleReducer.State(fact: fact)
-      let exampleData = try JSONEncoder().encode(exampleState)
 
       XCTAssertEqual(readSpy.callCount, 0)
       XCTAssertEqual(writeSpy.callCount, 1)
-      XCTAssertEqual(writeSpy.callParams[0].1, exampleData)
+
+      let decodedSpyData = try JSONDecoder().decode(
+        ExampleReducer.State.self,
+        from: writeSpy.callParams[0].1
+      )
+
+      XCTAssertEqual(decodedSpyData, exampleState)
     }
   }
 

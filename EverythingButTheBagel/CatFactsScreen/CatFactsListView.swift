@@ -19,6 +19,11 @@ struct CatFactsListView: View {
       LazyVStack(spacing: 0) {
         ForEach(store.status.data) { fact in
           CatFactListItem(vm: fact)
+            .onAppear {
+              if fact == store.status.loadingElement {
+                store.send(.delegate(.nextPage))
+              }
+            }
         }
 
         ForEach(store.status.placeholders) { fact in

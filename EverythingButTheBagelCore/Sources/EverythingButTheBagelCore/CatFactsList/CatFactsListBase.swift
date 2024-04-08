@@ -1,18 +1,25 @@
 import ComposableArchitecture
+import Foundation
 
 @Reducer
 public struct CatFactsListBase {
+  public static let baseURL = "https://catfact.ninja/facts?page=1"
+
   @ObservableState
   public struct State: Codable, Equatable {
     public var viewModel: CatFactsListViewModelReducer.State
     public var dataSource: HTTPDataSourceReducer<CatFactsResponseModel>.State
 
+    var nextPage: URL?
+
     public init(
       viewModel: CatFactsListViewModelReducer.State = .init(),
-      dataSource: HTTPDataSourceReducer<CatFactsResponseModel>.State = .init()
+      dataSource: HTTPDataSourceReducer<CatFactsResponseModel>.State = .init(),
+      nextPage: URL? = URL(string: CatFactsListBase.baseURL)
     ) {
       self.viewModel = viewModel
       self.dataSource = dataSource
+      self.nextPage = nextPage
     }
   }
 
@@ -33,23 +40,43 @@ public struct CatFactsListBase {
       }
       // The base reducer is primarily responsable for routing data from the data source to
       // the view model, and user interactions from the view model to the data source
-      Reduce { _, action in
+      Reduce { state, action in
         switch action {
         case let .dataSource(.delegate(.response(response))):
+          state.nextPage = response.nextPageUrl
+
           return .merge(
             .send(.viewModel(.newFacts(response.data))),
             .send(.viewModel(.isLoading(false)))
           )
+
         case .dataSource(.delegate(.error)):
           return .send(.viewModel(.isLoading(false)))
+
         case .viewModel(.delegate(.task)):
-          return .send(.dataSource(.fetch(
-            url: catFactsURL(count: 40),
-            cachePolicy: .reloadIgnoringLocalCacheData
-          )))
+          // Only do the initial fetch if we're not loading from the cache
+          if state.viewModel.status.data.isEmpty, let nextPage = state.nextPage?.absoluteString {
+            return .send(.dataSource(.fetch(
+              url: catFactsURL(baseUrl: nextPage, count: 40),
+              cachePolicy: .reloadIgnoringLocalCacheData
+            )))
+          }
+
+          return .none
+
+        case .viewModel(.delegate(.nextPage)):
+          if let nextPage = state.nextPage?.absoluteString {
+            return .send(.dataSource(.fetch(
+              url: catFactsURL(baseUrl: nextPage, count: 40),
+              cachePolicy: .reloadIgnoringLocalCacheData
+            )))
+          }
+
+          return .none
 
         case .dataSource(.fetch):
           return .send(.viewModel(.isLoading(true)))
+
         case .dataSource, .viewModel:
           return .none
         }
@@ -57,7 +84,7 @@ public struct CatFactsListBase {
     }
   }
 
-  private func catFactsURL(count: Int) -> String {
-    "https://catfact.ninja/facts?limit=\(count)"
+  private func catFactsURL(baseUrl: String, count: Int) -> String {
+    return "\(baseUrl)&limit=\(count)"
   }
 }
