@@ -15,13 +15,13 @@
 		2405CA6F2BB602A700AC80AD /* CatFactsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA652BB5922900AC80AD /* CatFactsListView.swift */; };
 		2421FC962BBA0C00000EFFD4 /* Sprinkles in Frameworks */ = {isa = PBXBuildFile; productRef = 2421FC952BBA0C00000EFFD4 /* Sprinkles */; };
 		247285FE2BBF8B1700E35F17 /* CatFactListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247285FD2BBF8B1700E35F17 /* CatFactListItem.swift */; };
-		247286022BBFE52B00E35F17 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2405CA612BB5922900AC80AD /* Assets.xcassets */; };
+		247286042BC4A20C00E35F17 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 247286032BC4A20C00E35F17 /* Assets.xcassets */; };
+		247286062BC4A2FD00E35F17 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 247286052BC4A2FD00E35F17 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2405CA5F2BB5922900AC80AD /* EverythingButTheBagelApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverythingButTheBagelApp.swift; sourceTree = "<group>"; };
 		2405CA602BB5922900AC80AD /* BaseAppScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAppScreen.swift; sourceTree = "<group>"; };
-		2405CA612BB5922900AC80AD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2405CA632BB5922900AC80AD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2405CA652BB5922900AC80AD /* CatFactsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatFactsListView.swift; sourceTree = "<group>"; };
 		2405CA662BB5922900AC80AD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -35,6 +35,8 @@
 		2421FC9D2BBA1281000EFFD4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		247285FD2BBF8B1700E35F17 /* CatFactListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatFactListItem.swift; sourceTree = "<group>"; };
 		247286012BBFE2D700E35F17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		247286032BC4A20C00E35F17 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../../../.Trash/Assets.xcassets; sourceTree = "<group>"; };
+		247286052BC4A2FD00E35F17 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		24BA5B162BB006810062084E /* EverythingButTheBagel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EverythingButTheBagel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24BA5B282BB0073D0062084E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -62,7 +64,8 @@
 				2405CA662BB5922900AC80AD /* ContentView.swift */,
 				2405CA5F2BB5922900AC80AD /* EverythingButTheBagelApp.swift */,
 				2405CA672BB5922900AC80AD /* ErrorView.swift */,
-				2405CA612BB5922900AC80AD /* Assets.xcassets */,
+				247286032BC4A20C00E35F17 /* Assets.xcassets */,
+				247286052BC4A2FD00E35F17 /* LaunchScreen.storyboard */,
 			);
 			path = EverythingButTheBagel;
 			sourceTree = "<group>";
@@ -206,7 +209,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				247286022BBFE52B00E35F17 /* Assets.xcassets in Resources */,
+				247286042BC4A20C00E35F17 /* Assets.xcassets in Resources */,
+				247286062BC4A2FD00E35F17 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,7 +408,7 @@
 				INFOPLIST_FILE = EverythingButTheBagel/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -441,7 +445,7 @@
 				INFOPLIST_FILE = EverythingButTheBagel/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
