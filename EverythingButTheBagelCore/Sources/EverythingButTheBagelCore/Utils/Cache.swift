@@ -21,8 +21,10 @@ public final class DocumentsCache: Caching, LoggingContext {
     self.decoder = decoder
     self.encoder = encoder
 
+    // Using the `cachesDirectory` which hides the cache file from the user and allows the
+    // OS to clear the cache if it needs to free up space
     self.fileUrl = fileManager
-      .urls(for: .documentDirectory, in: .userDomainMask)[0]
+      .urls(for: .cachesDirectory, in: .userDomainMask)[0]
       .appendingPathComponent("\(key).json")
   }
 
@@ -70,10 +72,11 @@ struct FileClient {
 }
 
 extension FileClient: DependencyKey {
+  /// Performs an encrypted write to the provided `URL`
   static var liveValue = FileClient { url in
     try Data(contentsOf: url)
   } write: { url, data in
-    try data.write(to: url)
+    try data.write(to: url, options: [.completeFileProtection])
   }
 
   static var testValue = FileClient(
