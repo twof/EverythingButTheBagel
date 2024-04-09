@@ -9,19 +9,16 @@ public struct CatFactsListBase {
   public struct State: Codable, Equatable {
     public var viewModel: CatFactsListViewModelReducer.State
     public var dataSource: HTTPDataSourceReducer<CatFactsResponseModel>.State
-    public var refreshDataSource: HTTPDataSourceReducer<CatFactsResponseModel>.State
 
     var nextPage: URL?
 
     public init(
       viewModel: CatFactsListViewModelReducer.State = .init(),
       dataSource: HTTPDataSourceReducer<CatFactsResponseModel>.State = .init(),
-      refreshDataSource: HTTPDataSourceReducer<CatFactsResponseModel>.State = .init(),
       nextPage: URL? = URL(string: CatFactsListBase.baseURL)
     ) {
       self.viewModel = viewModel
       self.dataSource = dataSource
-      self.refreshDataSource = refreshDataSource
       self.nextPage = nextPage
     }
   }
@@ -42,10 +39,9 @@ public struct CatFactsListBase {
       Scope(state: \.dataSource, action: \.dataSource) {
         HTTPDataSourceReducer<CatFactsResponseModel>(errorId: "CatFactsDataSource")
       }
-      // TODO: I don't love having two different http data sources here, but there needs to be
-      // a way to tell the view model to reset its list of facts on refresh, and I don't want to
-      // thread that through the data source type.
-      Scope(state: \.refreshDataSource, action: \.refreshDataSource) {
+      // Refresh actions are routed separately so that we know for which responses we should
+      // reset the view's list content
+      Scope(state: \.dataSource, action: \.refreshDataSource) {
         HTTPDataSourceReducer<CatFactsResponseModel>(errorId: "CatFactsDataSource")
       }
       // The base reducer is primarily responsable for routing data from the data source to
