@@ -10,6 +10,7 @@
 
 ## UI
 - During loading, a spinner is displayed and shimmering placeholders are shown to the user.
+- Example app icon and launch screen are included
 
 ## Architecture Notes
 - This project uses [The Composable Architecture](https://github.com/pointfreeco/swift-composable-architecture) which is similar to other unidirectional dataflow architectures like [Redux](https://redux.js.org/). It makes use of reducers, stores, and state machines with a focus on testability.

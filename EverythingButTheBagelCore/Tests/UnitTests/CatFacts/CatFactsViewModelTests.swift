@@ -33,6 +33,31 @@ class CatFactsViewModelTests: XCTestCase {
   }
 
   @MainActor
+  func testNewFactsReset() async throws {
+    let facts = [
+      CatFactModel(fact: "Some cats are big"),
+      CatFactModel(fact: "Some cats are small")
+    ]
+
+    let store = TestStore(
+      initialState: CatFactsListViewModelReducer.State(
+        status: .loaded(data: facts.map(CatFactViewModel.init(model:)).toIdentifiedArray)
+      )
+    ) {
+      CatFactsListViewModelReducer()
+    }
+
+    let newFacts = [
+      CatFactModel(fact: "Some cats are really big"),
+      CatFactModel(fact: "Some cats are really small")
+    ]
+
+    await store.send(.newFacts(newFacts, strategy: .reset)) { state in
+      state.status = .loaded(data: newFacts.map(CatFactViewModel.init(model:)).toIdentifiedArray)
+    }
+  }
+
+  @MainActor
   func testEmptyNewFacts() async throws {
     let store = TestStore(initialState: CatFactsListViewModelReducer.State()) {
       CatFactsListViewModelReducer()

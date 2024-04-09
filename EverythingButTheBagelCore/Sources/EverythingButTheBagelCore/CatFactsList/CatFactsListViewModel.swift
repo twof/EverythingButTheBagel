@@ -29,10 +29,16 @@ public struct CatFactsListViewModelReducer {
       // In this case, the parent is being alerted that the view did load.
       case task
       case nextPage
+      case refresh
+    }
+
+    public enum NewFactsStrategy: Equatable {
+      case reset
+      case append
     }
 
     case delegate(Delegate)
-    case newFacts([CatFactModel])
+    case newFacts([CatFactModel], strategy: NewFactsStrategy = .append)
     case scroll(position: Double)
     case isLoading(Bool)
   }
@@ -42,8 +48,15 @@ public struct CatFactsListViewModelReducer {
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case let .newFacts(factModels):
-        state.status = .loaded(data: state.status.data + (factModels.map(CatFactViewModel.init(model:)).toIdentifiedArray))
+      case let .newFacts(factModels, strategy):
+        let newVms = factModels.map(CatFactViewModel.init(model:)).toIdentifiedArray
+        switch strategy {
+        case .append:
+          state.status = .loaded(data: state.status.data + newVms)
+        case .reset:
+          state.status = .loaded(data: newVms)
+        }
+
         return .none
 
       case let .scroll(position):

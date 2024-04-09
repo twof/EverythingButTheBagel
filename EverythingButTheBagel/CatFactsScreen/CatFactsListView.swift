@@ -50,6 +50,9 @@ struct CatFactsListView: View {
         ProgressView()
       }
     }
+    .refreshable {
+      store.send(.delegate(.refresh))
+    }
   }
 }
 

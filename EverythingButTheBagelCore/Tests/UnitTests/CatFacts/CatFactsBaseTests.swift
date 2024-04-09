@@ -101,4 +101,22 @@ class CatFactsBaseTests: XCTestCase {
 
     await store.send(.viewModel(.delegate(.nextPage)))
   }
+
+  @MainActor
+  func testFetchOnRefresh() async throws {
+    let store = TestStore(
+      initialState: CatFactsListBase.State(nextPage: nil)
+    ) {
+      CatFactsListBase()
+    } withDependencies: { dependencies in
+      dependencies[DataRequestClient<CatFactsResponseModel>.self] = .init(request: { _, _ in CatFactsResponseModel.mock })
+    }
+
+    store.exhaustivity = .off
+
+    await store.send(.viewModel(.delegate(.refresh)))
+    await store.receive(\.refreshDataSource.fetch)
+    await store.receive(.refreshDataSource(.delegate(.response(CatFactsResponseModel.mock))))
+    await store.receive(.viewModel(.newFacts(CatFactsResponseModel.mock.data, strategy: .reset)))
+  }
 }
