@@ -1,8 +1,14 @@
 import Foundation
 
 extension Collection {
-  subscript(back i: Int) -> Iterator.Element {
-    let backBy = i + 1
+  subscript(back index: Int) -> Iterator.Element? {
+    guard !isEmpty else { return nil }
+
+    let backBy = index + 1
+
+    if self.count < index {
+      return self.first
+    }
 
     return self[self.index(self.endIndex, offsetBy: -backBy)]
   }

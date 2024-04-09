@@ -19,8 +19,8 @@ struct CatFactsListView: View {
       LazyVStack(spacing: 0) {
         ForEach(store.status.data) { fact in
           CatFactListItem(vm: fact)
-            .onAppear {
-              if fact == store.status.loadingElement {
+            .if(fact == store.status.loadingElement) { view in
+              view.onAppear {
                 store.send(.delegate(.nextPage))
               }
             }
@@ -33,6 +33,10 @@ struct CatFactsListView: View {
           view
             .redacted(reason: .placeholder)
             .shimmering()
+        }
+
+        if store.status.data.isEmpty, !store.isLoading {
+          emptyListView()
         }
       }
     }
@@ -56,11 +60,30 @@ struct CatFactsListView: View {
   }
 }
 
+@ViewBuilder func emptyListView() -> some View {
+  VStack(spacing: 15) {
+    Image(systemName: "questionmark.circle.fill")
+      .resizable()
+      .aspectRatio(contentMode: .fit)
+      .frame(width: 50)
+      .foregroundStyle(.red)
+
+    Text("No facts here! Pull to refresh to check again.")
+      .font(.title3)
+      .multilineTextAlignment(.center)
+  }
+  .padding()
+}
+
+#Preview {
+  emptyListView()
+}
+
 // Configurable preview
 #Preview {
   CatFactsListView(
     store: Store(
-      initialState: CatFactsListViewModelReducer.State(status: .loading(data: [CatFactViewModel(fact: "Hey there I'm a cat")], placeholders: .placeholders)),
+      initialState: CatFactsListViewModelReducer.State(status: .loaded(data: [])),
       reducer: {
         CatFactsListViewModelReducer()
       }

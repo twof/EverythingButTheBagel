@@ -101,7 +101,8 @@ extension Status {
   }
 
   /// When this element comes on screen, start loading the next page
-  public var loadingElement: CatFactViewModel {
+  /// Returns nil when there are no elements in `data` and the first element when there are fewer than 3
+  public var loadingElement: CatFactViewModel? {
     self.data[back: 2]
   }
 }
@@ -121,7 +122,11 @@ public struct CatFactViewModel: Codable, Equatable, Identifiable {
 
 extension CatFactViewModel {
   public static let placeholders = (0..<20).map {
-    CatFactViewModel(fact: "Example of a long fact Example of a long fact Example of a long fact Example of a long fact Example of a long fact Example of a long fact Example of a long fact Example of a long fact \($0)")
+    CatFactViewModel(
+      fact: "Example of a long fact Example of a long fact Example of a long fact"
+      + "Example of a long fact Example of a long fact Example of a long fact Example of a long"
+      + "fact Example of a long fact \($0)"
+    )
   }
 }
 

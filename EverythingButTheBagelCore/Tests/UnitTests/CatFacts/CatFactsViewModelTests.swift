@@ -114,12 +114,7 @@ class CatFactsViewModelTests: XCTestCase {
       /*
        When loading, display a loading indicator
        If there is no content, show shimmering placeholders
-       If there is content, just show the loading indicator
-
-       I need some way to get rid of placeholders when loading completes
-        two lists, one of placeholders and one of data,
-        when loading, display placeholders contatenated with data
-        only apply shimmer to placeholders
+       If there is content, just show the loading indicator + 1 placeholder
        */
       state.status = .loading(data: [], placeholders: .placeholders)
     }
@@ -129,30 +124,44 @@ class CatFactsViewModelTests: XCTestCase {
     }
   }
 
-  @MainActor
   func testLoadingElement() {
-    let status = Status.loaded(data: [.init(fact: "1"), .init(fact: "2"), .init(fact: "3"), .init(fact: "4")])
+    let status = Status.loaded(
+      data: [.init(fact: "1"), .init(fact: "2"), .init(fact: "3"), .init(fact: "4")]
+    )
     XCTAssertEqual(status.loadingElement, .init(fact: "2"))
   }
 
-  @MainActor
   func testSinglePlaceholderOnManyElements() {
     // We keep a single placeholder at the bottom of the list to indicate loading
-    let status = Status.loading(data: [.init(fact: "1"), .init(fact: "2"), .init(fact: "3"), .init(fact: "4"), .init(fact: "5"), .init(fact: "6"), .init(fact: "7"), .init(fact: "8"), .init(fact: "9"), .init(fact: "10"), .init(fact: "11"), .init(fact: "12"), .init(fact: "13"), .init(fact: "14"), .init(fact: "15"), .init(fact: "16")], placeholders: .placeholders)
+    let status = Status.loading(
+      data: (0...20).map { CatFactViewModel(fact: "\($0)") }.toIdentifiedArray,
+      placeholders: .placeholders
+    )
     XCTAssertEqual(status.placeholders.count, 1)
   }
 
-  @MainActor
   func testAFewPlaceholdersOnLessElements() {
     // We keep a more placeholders to fill up the screen during loading
-    let status = Status.loading(data: [.init(fact: "1"), .init(fact: "2"), .init(fact: "3")], placeholders: .placeholders)
+    let status = Status.loading(
+      data: [.init(fact: "1"), .init(fact: "2"), .init(fact: "3")],
+      placeholders: .placeholders
+    )
     XCTAssertEqual(status.placeholders.count, 4)
   }
 
-  @MainActor
   func testNoPlaceholdersWhenNotLoading() {
     // We keep a single placeholder at the bottom of the list to indicate loading
     let status = Status.loaded(data: [.init(fact: "1"), .init(fact: "2"), .init(fact: "3")])
     XCTAssertEqual(status.placeholders.count, 0)
+  }
+
+  func testIsLoadingState() {
+    let loadedState = CatFactsListViewModelReducer.State(status: .loaded(data: []))
+    XCTAssertFalse(loadedState.isLoading)
+
+    let loadingState = CatFactsListViewModelReducer.State(
+      status: .loading(data: [], placeholders: [])
+    )
+    XCTAssertTrue(loadingState.isLoading)
   }
 }
