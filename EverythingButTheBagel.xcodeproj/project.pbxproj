@@ -10,10 +10,10 @@
 		2405CA6A2BB5925000AC80AD /* EverythingButTheBagelCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2405CA692BB5925000AC80AD /* EverythingButTheBagelCore */; };
 		2405CA6B2BB6029200AC80AD /* EverythingButTheBagelApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA5F2BB5922900AC80AD /* EverythingButTheBagelApp.swift */; };
 		2405CA6C2BB6029D00AC80AD /* BaseAppScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA602BB5922900AC80AD /* BaseAppScreen.swift */; };
-		2405CA6D2BB602A100AC80AD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA662BB5922900AC80AD /* ContentView.swift */; };
 		2405CA6E2BB602A100AC80AD /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA672BB5922900AC80AD /* ErrorView.swift */; };
 		2405CA6F2BB602A700AC80AD /* CatFactsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA652BB5922900AC80AD /* CatFactsListView.swift */; };
 		2421FC962BBA0C00000EFFD4 /* Sprinkles in Frameworks */ = {isa = PBXBuildFile; productRef = 2421FC952BBA0C00000EFFD4 /* Sprinkles */; };
+		2465CC6C2BC61AAA001B9AF0 /* LocalizedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2465CC6B2BC61AAA001B9AF0 /* LocalizedText.swift */; };
 		247285FE2BBF8B1700E35F17 /* CatFactListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247285FD2BBF8B1700E35F17 /* CatFactListItem.swift */; };
 		247286042BC4A20C00E35F17 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 247286032BC4A20C00E35F17 /* Assets.xcassets */; };
 		247286062BC4A2FD00E35F17 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 247286052BC4A2FD00E35F17 /* LaunchScreen.storyboard */; };
@@ -24,7 +24,6 @@
 		2405CA602BB5922900AC80AD /* BaseAppScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAppScreen.swift; sourceTree = "<group>"; };
 		2405CA632BB5922900AC80AD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		2405CA652BB5922900AC80AD /* CatFactsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatFactsListView.swift; sourceTree = "<group>"; };
-		2405CA662BB5922900AC80AD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		2405CA672BB5922900AC80AD /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		2405CA682BB5923200AC80AD /* EverythingButTheBagelCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = EverythingButTheBagelCore; sourceTree = "<group>"; };
 		2421FC942BBA0B9E000EFFD4 /* Sprinkles */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Sprinkles; sourceTree = "<group>"; };
@@ -33,6 +32,7 @@
 		2421FC9B2BBA1254000EFFD4 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		2421FC9C2BBA1254000EFFD4 /* .pre-commit-config.yaml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = ".pre-commit-config.yaml"; sourceTree = "<group>"; };
 		2421FC9D2BBA1281000EFFD4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		2465CC6B2BC61AAA001B9AF0 /* LocalizedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedText.swift; sourceTree = "<group>"; };
 		247285FD2BBF8B1700E35F17 /* CatFactListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatFactListItem.swift; sourceTree = "<group>"; };
 		247286012BBFE2D700E35F17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		247286032BC4A20C00E35F17 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../../../.Trash/Assets.xcassets; sourceTree = "<group>"; };
@@ -61,7 +61,6 @@
 				2405CA622BB5922900AC80AD /* Preview Content */,
 				24F401092BBBC9B9001EF583 /* Utils */,
 				2405CA642BB5922900AC80AD /* CatFactsScreen */,
-				2405CA662BB5922900AC80AD /* ContentView.swift */,
 				2405CA5F2BB5922900AC80AD /* EverythingButTheBagelApp.swift */,
 				2405CA672BB5922900AC80AD /* ErrorView.swift */,
 				247286032BC4A20C00E35F17 /* Assets.xcassets */,
@@ -139,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				2405CA602BB5922900AC80AD /* BaseAppScreen.swift */,
+				2465CC6B2BC61AAA001B9AF0 /* LocalizedText.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -191,6 +191,8 @@
 			knownRegions = (
 				en,
 				Base,
+				"es-419",
+				es,
 			);
 			mainGroup = 24BA5B0D2BB006810062084E;
 			packageReferences = (
@@ -260,11 +262,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2465CC6C2BC61AAA001B9AF0 /* LocalizedText.swift in Sources */,
 				2405CA6C2BB6029D00AC80AD /* BaseAppScreen.swift in Sources */,
 				247285FE2BBF8B1700E35F17 /* CatFactListItem.swift in Sources */,
 				2405CA6F2BB602A700AC80AD /* CatFactsListView.swift in Sources */,
 				2405CA6B2BB6029200AC80AD /* EverythingButTheBagelApp.swift in Sources */,
-				2405CA6D2BB602A100AC80AD /* ContentView.swift in Sources */,
 				2405CA6E2BB602A100AC80AD /* ErrorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -331,6 +333,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -387,6 +390,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

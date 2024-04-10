@@ -36,7 +36,7 @@ struct CatFactsListView: View {
         }
 
         if store.status.data.isEmpty, !store.isLoading {
-          emptyListView()
+          emptyListView(localizedText: store.state.emptyListMessage)
         }
       }
     }
@@ -60,7 +60,7 @@ struct CatFactsListView: View {
   }
 }
 
-@ViewBuilder func emptyListView() -> some View {
+@ViewBuilder func emptyListView(localizedText: LocalizedTextState) -> some View {
   VStack(spacing: 15) {
     Image(systemName: "questionmark.circle.fill")
       .resizable()
@@ -68,7 +68,7 @@ struct CatFactsListView: View {
       .frame(width: 50)
       .foregroundStyle(.red)
 
-    Text("No facts here! Pull to refresh to check again.")
+    LocalizedText(localizedText)
       .font(.title3)
       .multilineTextAlignment(.center)
   }
@@ -76,7 +76,8 @@ struct CatFactsListView: View {
 }
 
 #Preview {
-  emptyListView()
+  emptyListView(localizedText: LocalizedTextState(text: "No facts here! Pull to refresh to check again."))
+    .environment(\.locale, .init(identifier: "es"))
 }
 
 // Configurable preview
@@ -88,7 +89,9 @@ struct CatFactsListView: View {
         CatFactsListViewModelReducer()
       }
     )
-  ).preferredColorScheme(.dark)
+  )
+  .preferredColorScheme(.dark)
+  .environment(\.locale, .init(identifier: "es"))
 }
 
 // Preview with live dependencies

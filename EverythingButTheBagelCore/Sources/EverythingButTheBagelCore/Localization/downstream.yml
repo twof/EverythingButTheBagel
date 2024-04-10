@@ -1,0 +1,4 @@
+associations:
+  Localizable.xcstrings:
+    - LocalizedTextState.swift
+    - LocalizationTests.swift

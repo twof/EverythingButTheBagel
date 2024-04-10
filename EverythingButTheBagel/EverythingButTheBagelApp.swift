@@ -13,9 +13,19 @@ struct EverythingButTheBagelApp: App {
 
   var body: some Scene {
     WindowGroup {
-      BaseAppScreen(store: store, view: {
-        CatFactsListView(store: store.scope(state: \.catFacts.viewModel, action: \.catFacts.viewModel))
-      })
+      CatFactsListView(
+        store: Store(
+          initialState: CatFactsListViewModelReducer.State(status: .loaded(data: [])),
+          reducer: {
+            CatFactsListViewModelReducer()
+          }
+        )
+      )
+      .preferredColorScheme(.dark)
+      .environment(\.locale, .init(identifier: "es"))
+//      BaseAppScreen(store: store, view: {
+//        CatFactsListView(store: store.scope(state: \.catFacts.viewModel, action: \.catFacts.viewModel))
+//      })
     }
   }
 

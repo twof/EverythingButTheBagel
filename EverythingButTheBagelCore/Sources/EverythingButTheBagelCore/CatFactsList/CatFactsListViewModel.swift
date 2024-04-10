@@ -1,9 +1,16 @@
 import ComposableArchitecture
+import Foundation
 
 @Reducer
 public struct CatFactsListViewModelReducer {
   @ObservableState
   public struct State: Equatable, Codable {
+    public let emptyListMessage = LocalizedTextState(text: String(
+      localized: "No facts here! Pull to refresh to check again.",
+      bundle: .module,
+      comment: "Message to let the user know that there are no list items, but not due to an error."
+    ))
+
     public var status: Status
     public var scrollPosition: Double
 
@@ -21,10 +28,18 @@ public struct CatFactsListViewModelReducer {
       self.scrollPosition = scrollPosition
       self.status = status
     }
+
+    enum CodingKeys: CodingKey {
+      // swiftlint:disable:next identifier_name
+      case _status
+      // swiftlint:disable:next identifier_name
+      case _scrollPosition
+    }
   }
 
   public enum Action: Equatable {
     // The point of delegate actions is to alert parent reducers to some action.
+    // swiftlint:disable:next nesting
     public enum Delegate: Equatable {
       // In this case, the parent is being alerted that the view did load.
       case task
@@ -32,6 +47,7 @@ public struct CatFactsListViewModelReducer {
       case refresh
     }
 
+    // swiftlint:disable:next nesting
     public enum NewFactsStrategy: Equatable {
       case reset
       case append
@@ -42,6 +58,8 @@ public struct CatFactsListViewModelReducer {
     case scroll(position: Double)
     case isLoading(Bool)
   }
+
+  @Dependency(\.locale) var locale
 
   public init() {}
 

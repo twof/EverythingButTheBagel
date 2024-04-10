@@ -4,6 +4,7 @@ import PackageDescription
 
 let package = Package(
   name: "EverythingButTheBagelCore",
+  defaultLocalization: "en",
   platforms: [
     .iOS(.v17), .macOS(.v14)
   ],
@@ -32,6 +33,9 @@ let package = Package(
         ),
         .product(name: "Sentry", package: "sentry-cocoa"),
         .product(name: "ControllableScrollView", package: "controllablescrollview")
+      ],
+      resources: [
+        .process("Localization/Localizable.xcstrings")
       ]
     ),
     .testTarget(
