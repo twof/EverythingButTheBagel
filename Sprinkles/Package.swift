@@ -16,7 +16,8 @@ let package = Package(
     )
   ],
   dependencies: [
-    .package(url: "https://github.com/markiv/SwiftUI-Shimmer", branch: "main")
+    .package(url: "https://github.com/markiv/SwiftUI-Shimmer", branch: "main"),
+    .package(url: "https://github.com/nalexn/ViewInspector", from: "0.9.10")
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -29,6 +30,9 @@ let package = Package(
     ),
     .testTarget(
       name: "SprinklesTests",
-      dependencies: ["Sprinkles"])
+      dependencies: [
+        "Sprinkles",
+        .product(name: "ViewInspector", package: "ViewInspector")
+      ])
   ]
 )

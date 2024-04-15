@@ -35,7 +35,7 @@ struct CatFactsListView: View {
             .shimmering()
         }
 
-        if store.status.data.isEmpty, !store.isLoading {
+        if store.status == .loaded(data: []) {
           emptyListView(localizedText: store.state.emptyListMessage)
         }
       }

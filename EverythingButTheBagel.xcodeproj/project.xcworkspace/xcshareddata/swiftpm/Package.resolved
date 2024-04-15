@@ -1,5 +1,5 @@
 {
-  "originHash" : "478d68a452e958773797444b98f839f455aaaae2a1e2bfed0134e94be5d45ca3",
+  "originHash" : "98f24708e15bb0d35ef0fffdc718ade33a9b645dbdb4947c3daa392002e371ee",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -143,6 +143,15 @@
       "state" : {
         "branch" : "main",
         "revision" : "5659a623567cefe258d1e3e67cb65585fbb6ecb6"
+      }
+    },
+    {
+      "identity" : "viewinspector",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nalexn/ViewInspector",
+      "state" : {
+        "revision" : "67319287749b83f39dcc2f20edd520c610c012fd",
+        "version" : "0.9.10"
       }
     },
     {

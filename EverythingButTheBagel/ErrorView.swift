@@ -30,6 +30,9 @@ struct ErrorView: ViewModifier {
             .clipShape(RoundedRectangle(cornerRadius: 10))
         }
         .padding([.leading, .trailing])
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Error")
+        .accessibilityValue(vm.message)
       }
     }
   }

@@ -13,19 +13,20 @@ struct EverythingButTheBagelApp: App {
 
   var body: some Scene {
     WindowGroup {
-      CatFactsListView(
-        store: Store(
-          initialState: CatFactsListViewModelReducer.State(status: .loaded(data: [])),
-          reducer: {
-            CatFactsListViewModelReducer()
-          }
-        )
-      )
-      .preferredColorScheme(.dark)
-      .environment(\.locale, .init(identifier: "es"))
-//      BaseAppScreen(store: store, view: {
-//        CatFactsListView(store: store.scope(state: \.catFacts.viewModel, action: \.catFacts.viewModel))
-//      })
+//      Image(systemName: "questionmark.circle.fill")
+//      CatFactsListView(
+//        store: Store(
+//          initialState: CatFactsListViewModelReducer.State(status: .loaded(data: [])),
+//          reducer: {
+//            CatFactsListViewModelReducer()
+//          }
+//        )
+//      )
+//      .preferredColorScheme(.dark)
+//      .environment(\.locale, .init(identifier: "es"))
+      BaseAppScreen(store: store, view: {
+        CatFactsListView(store: store.scope(state: \.catFacts.viewModel, action: \.catFacts.viewModel))
+      })
     }
   }
 
