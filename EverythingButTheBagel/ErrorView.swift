@@ -17,8 +17,8 @@ struct ErrorView: ViewModifier {
 
           Text(vm.message)
             .foregroundStyle(Color.textPrimary)
-            .lineLimit(1)
-            .truncationMode(.tail)
+//            .lineLimit(1)
+//            .truncationMode(.tail)
             .padding([.top, .bottom], 20)
 
           Spacer()

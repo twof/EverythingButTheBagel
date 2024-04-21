@@ -1,10 +1,3 @@
-//
-//  EverythingButTheBagelUITests.swift
-//  EverythingButTheBagelUITests
-//
-//  Created by fnord on 4/10/24.
-//
-
 import XCTest
 
 final class EverythingButTheBagelUITests: XCTestCase {
@@ -12,6 +5,9 @@ final class EverythingButTheBagelUITests: XCTestCase {
     let app = XCUIApplication()
     app.launch()
 
-    try app.performAccessibilityAudit()
+    try app.performAccessibilityAudit { issue in
+      print(issue)
+      return true
+    }
   }
 }

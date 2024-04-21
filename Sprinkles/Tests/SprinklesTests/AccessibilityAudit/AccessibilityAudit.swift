@@ -2,6 +2,14 @@ import SwiftUI
 import ViewInspector
 import XCTest
 
+/*
+ Unhandled rules:
+ - If text falls outside of the screen and it can't be scrolled to, then that qualifies as clipping.
+  - Test case: Very long string in a text view not in a scroll view
+ - Text clipping at larger dynamic type generally.
+ - Text truncation at larger sizes qualifies as clipping
+ */
+
 extension View {
   func accessibilityAudit() {
     let allSubviews = try! self.inspect().findAll { _ in true }

@@ -24,9 +24,12 @@ struct EverythingButTheBagelApp: App {
 //      )
 //      .preferredColorScheme(.dark)
 //      .environment(\.locale, .init(identifier: "es"))
-      BaseAppScreen(store: store, view: {
-        CatFactsListView(store: store.scope(state: \.catFacts.viewModel, action: \.catFacts.viewModel))
-      })
+      Text("Hello")
+        .withError(vm: .init(id: "0", message: "Oh no! Something went wrong"))
+
+//      BaseAppScreen(store: store, view: {
+//        CatFactsListView(store: store.scope(state: \.catFacts.viewModel, action: \.catFacts.viewModel))
+//      })
     }
   }
 
