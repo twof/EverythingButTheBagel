@@ -47,11 +47,16 @@ public struct AppReducer {
         CatFactsListBase()
       }
 
+      // TODO: I'm not happy with this error routing setup. It's going to become a huge
+      // pain as we add more screens.
       Reduce { _, action in
         switch action {
         case let .catFacts(.dataSource(.delegate(.error(error, sourceId, errorId)))):
           let errorVm = ErrorViewModel(id: errorId, message: error.localizedDescription)
           return .send(.errors(.newError(sourceId: sourceId, errorVm)))
+
+        case let .catFacts(.dataSource(.delegate(.clearError(sourceId, errorId)))):
+          return .send(.errors(.clearError(sourceId: sourceId, errorId: errorId)))
 
         default: return .none
         }

@@ -50,5 +50,4 @@ extension View {
 #Preview {
   Text("Hello")
     .withError(vm: .init(id: UUID(), message: "Oh no! Something went wrong"))
-
 }

@@ -26,7 +26,7 @@ public struct ErrorIndicatorViewModel {
 
   public enum Action: Equatable {
     case newError(sourceId: String, ErrorViewModel)
-    case clearError(sourceId: String, ErrorViewModel)
+    case clearError(sourceId: String, errorId: ErrorViewModel.ID)
   }
 
   public init() {}
@@ -37,8 +37,8 @@ public struct ErrorIndicatorViewModel {
       case let .newError(sourceId, error):
         state.errors[sourceId, default: []].append(error)
         return .none
-      case let .clearError(sourceId, error):
-        state.errors[sourceId]?.remove(error)
+      case let .clearError(sourceId, errorId):
+        state.errors[sourceId]?.remove(id: errorId)
         return .none
       }
     }

@@ -11,6 +11,7 @@ public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorPro
     public enum Delegate: Equatable, ErrorReportingAction {
       case response(ResponseType)
       case error(EquatableError, sourceId: String, errorId: UUID)
+      case clearError(sourceId: String, errorId: UUID)
     }
 
     case fetch(url: String, cachePolicy: NSURLRequest.CachePolicy, retry: Int = 0, requestId: UUID? = nil)
@@ -38,6 +39,12 @@ public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorPro
             urlString: urlString,
             cachePolicy: cachePolicy
           )
+
+          // Got a successful response, clear any existing errors for this request
+          if let requestId = requestId {
+            await send(.delegate(.clearError(sourceId: errorSourceId, errorId: requestId)))
+          }
+
           await send(.delegate(.response(response)))
         } catch: { error, send in
           let requestId = requestId ?? uuid()
