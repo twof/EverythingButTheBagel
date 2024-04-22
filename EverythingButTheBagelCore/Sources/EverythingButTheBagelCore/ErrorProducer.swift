@@ -1,4 +1,4 @@
 /// Conformance indicates a type produces an error tracked by `ErrorIndicatorViewModel` which requires a `sourceId`
 protocol ErrorProducer {
-  var errorId: String { get }
+  var errorSourceId: String { get }
 }

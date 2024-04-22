@@ -65,9 +65,10 @@ class CatFactsBaseTests: XCTestCase {
       CatFactsListBase()
     } withDependencies: { dependencies in
       dependencies[DataRequestClient<CatFactsResponseModel>.self] = .init(request: { _, _ in CatFactsResponseModel.mock })
+      dependencies.uuid = .incrementing
     }
 
-    await store.send(.dataSource(.delegate(.error(ExampleError.malformedJson.toEquatableError()))))
+    await store.send(.dataSource(.delegate(.error(ExampleError.malformedJson.toEquatableError(), sourceId: CatFactsListBase.errorSourceId, errorId: .init(0)))))
     await store.receive(\.viewModel.isLoading)
   }
 

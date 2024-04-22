@@ -25,7 +25,7 @@ struct BaseAppScreen<InnerView: View>: View {
 // Live preview. Hits network.
 #Preview {
   let store = Store(
-    initialState: AppReducer.State(errors: .init(errors: ["anything": [.init(id: "0", message: "Something went wrong")]])),
+    initialState: AppReducer.State(errors: .init(errors: ["anything": [.init(id: UUID(), message: "Something went wrong")]])),
     reducer: { AppReducer() }
   )
   return BaseAppScreen(

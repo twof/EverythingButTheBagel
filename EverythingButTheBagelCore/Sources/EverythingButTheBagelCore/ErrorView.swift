@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import Foundation
 
 @Reducer
 public struct ErrorIndicatorViewModel {
@@ -42,10 +43,10 @@ public struct ErrorIndicatorViewModel {
 }
 
 public struct ErrorViewModel: Codable, Equatable, Identifiable {
-  public let id: String
+  public let id: UUID
   public let message: String
 
-  public init(id: String, message: String) {
+  public init(id: UUID, message: String) {
     self.id = id
     self.message = message
   }

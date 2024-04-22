@@ -17,8 +17,6 @@ struct ErrorView: ViewModifier {
 
           Text(vm.message)
             .foregroundStyle(Color.textPrimary)
-//            .lineLimit(1)
-//            .truncationMode(.tail)
             .padding([.top, .bottom], 20)
 
           Spacer()
@@ -51,6 +49,6 @@ extension View {
 
 #Preview {
   Text("Hello")
-    .withError(vm: .init(id: "0", message: "Oh no! Something went wrong"))
+    .withError(vm: .init(id: UUID(), message: "Oh no! Something went wrong"))
 
 }

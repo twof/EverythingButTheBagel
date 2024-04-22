@@ -7,31 +7,32 @@ import Foundation
 public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorProducer {
   public struct State: Codable, Equatable { public init() { } }
 
-  public enum Action: Equatable {
-    public enum Delegate: Equatable {
+  public enum Action: Equatable, ErrorReportingDelegate {
+    public enum Delegate: Equatable, ErrorReportingAction {
       case response(ResponseType)
-      case error(EquatableError)
+      case error(EquatableError, sourceId: String, errorId: UUID)
     }
 
-    case fetch(url: String, cachePolicy: NSURLRequest.CachePolicy, retry: Int = 0)
+    case fetch(url: String, cachePolicy: NSURLRequest.CachePolicy, retry: Int = 0, requestId: UUID? = nil)
     case delegate(Delegate)
   }
 
-  var errorId: String
+  var errorSourceId: String
   let maxRetries: Int
 
-  init(errorId: String, maxRetries: Int = 5) {
-    self.errorId = errorId
+  init(errorSourceId: String, maxRetries: Int = 5) {
+    self.errorSourceId = errorSourceId
     self.maxRetries = maxRetries
   }
 
   @Dependency(DataRequestClient<ResponseType>.self) var fetchDataClient
   @Dependency(\.continuousClock) var clock
+  @Dependency(\.uuid) var uuid
 
   public var body: some ReducerOf<Self> {
     Reduce { _, action in
       switch action {
-      case let .fetch(urlString, cachePolicy, retry):
+      case let .fetch(urlString, cachePolicy, retry, requestId):
         return .run { send in
           let response = try await fetchDataClient.request(
             urlString: urlString,
@@ -39,13 +40,14 @@ public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorPro
           )
           await send(.delegate(.response(response)))
         } catch: { error, send in
-          await send(.delegate(.error(error.toEquatableError())))
+          let requestId = requestId ?? uuid()
+          await send(.delegate(.error(error.toEquatableError(), sourceId: self.errorSourceId, errorId: requestId)))
 
           // Begin doing exponential backoff
           if retry < maxRetries {
             do {
               try await clock.sleep(for: .milliseconds(Self.backoffDuration(retry: retry)))
-              await send(.fetch(url: urlString, cachePolicy: cachePolicy, retry: retry + 1))
+              await send(.fetch(url: urlString, cachePolicy: cachePolicy, retry: retry + 1, requestId: requestId))
             } catch {
               // This is expected to throw on cancelation which is an error we don't have to deal with
               return

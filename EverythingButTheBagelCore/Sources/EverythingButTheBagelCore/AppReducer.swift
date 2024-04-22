@@ -47,12 +47,14 @@ public struct AppReducer {
         CatFactsListBase()
       }
 
-      Reduce { _, _ in
-//        switch action {
-//        case let .catFacts(.dataSource(.error(error))):
-//          let errorVm = ErrorViewModel(id: <#T##String#>, message: <#T##String#>)
-//          return .send(.errors(.newError(sourceId: CatFactsListDataSource.errorId, )))
-//        }
+      Reduce { _, action in
+        switch action {
+        case let .catFacts(.dataSource(.delegate(.error(error, sourceId, errorId)))):
+          let errorVm = ErrorViewModel(id: errorId, message: error.localizedDescription)
+          return .send(.errors(.newError(sourceId: sourceId, errorVm)))
+
+        default: return .none
+        }
 
         return .none
       }.forEach(\.path, action: \.path)

@@ -17,7 +17,7 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/pointfreeco/swift-composable-architecture",
-      from: "1.0.0"
+      branch: "shared-state-beta"
     ),
     .package(url: "https://github.com/getsentry/sentry-cocoa", from: "8.23.0"),
     .package(url: "https://github.com/twof/FunctionSpy", branch: "main"),

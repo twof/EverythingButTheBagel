@@ -4,6 +4,7 @@ import Foundation
 @Reducer
 public struct CatFactsListBase {
   public static let baseURL = "https://catfact.ninja/facts?page=1"
+  public static let errorSourceId = "CatFactsDataSource"
 
   @ObservableState
   public struct State: Codable, Equatable {
@@ -37,12 +38,12 @@ public struct CatFactsListBase {
         CatFactsListViewModelReducer()
       }
       Scope(state: \.dataSource, action: \.dataSource) {
-        HTTPDataSourceReducer<CatFactsResponseModel>(errorId: "CatFactsDataSource")
+        HTTPDataSourceReducer<CatFactsResponseModel>(errorSourceId: CatFactsListBase.errorSourceId)
       }
       // Refresh actions are routed separately so that we know for which responses we should
       // reset the view's list content
       Scope(state: \.dataSource, action: \.refreshDataSource) {
-        HTTPDataSourceReducer<CatFactsResponseModel>(errorId: "CatFactsDataSource")
+        HTTPDataSourceReducer<CatFactsResponseModel>(errorSourceId: CatFactsListBase.errorSourceId)
       }
       // The base reducer is primarily responsable for routing data from the data source to
       // the view model, and user interactions from the view model to the data source
