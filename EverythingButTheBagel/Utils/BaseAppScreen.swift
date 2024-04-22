@@ -5,11 +5,11 @@ import ComposableArchitecture
 /// Containter view that holds content, but displayes global information like errors
 /// and connection status
 struct BaseAppScreen<InnerView: View>: View {
-  @Bindable var store: StoreOf<AppReducer>
+  @Bindable var store: StoreOf<ErrorIndicatorViewModel>
   @ViewBuilder var view: () -> InnerView
 
   public init(
-    store: StoreOf<AppReducer>,
+    store: StoreOf<ErrorIndicatorViewModel>,
     @ViewBuilder view: @escaping () -> InnerView
   ) {
     self.store = store
@@ -18,7 +18,7 @@ struct BaseAppScreen<InnerView: View>: View {
 
   var body: some View {
     view()
-      .withError(vm: store.errors.error())
+      .withError(vm: store.state.error())
   }
 }
 
@@ -29,7 +29,7 @@ struct BaseAppScreen<InnerView: View>: View {
     reducer: { AppReducer() }
   )
   return BaseAppScreen(
-    store: store
+    store: store.scope(state: \.errors, action: \.errors)
   ) {
     CatFactsListView(store: store.scope(state: \.catFacts.viewModel, action: \.catFacts.viewModel))
   }

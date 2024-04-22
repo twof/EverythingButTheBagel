@@ -27,7 +27,7 @@ struct EverythingButTheBagelApp: App {
 //      Text("Hello")
 //        .withError(vm: .init(id: "0", message: "Oh no! Something went wrong"))
 
-      BaseAppScreen(store: store, view: {
+      BaseAppScreen(store: store.scope(state: \.errors, action: \.errors), view: {
         CatFactsListView(store: store.scope(state: \.catFacts.viewModel, action: \.catFacts.viewModel))
       })
     }

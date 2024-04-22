@@ -3,6 +3,7 @@ import Foundation
 
 @Reducer
 public struct ErrorIndicatorViewModel {
+  @ObservableState
   public struct State: Equatable, Codable {
     /// Source IDs to list of errors
     ///
@@ -27,6 +28,8 @@ public struct ErrorIndicatorViewModel {
     case newError(sourceId: String, ErrorViewModel)
     case clearError(sourceId: String, ErrorViewModel)
   }
+
+  public init() {}
 
   public var body: some Reducer<State, Action> {
     Reduce { state, action in

@@ -55,8 +55,6 @@ public struct AppReducer {
 
         default: return .none
         }
-
-        return .none
       }.forEach(\.path, action: \.path)
     }
   }
