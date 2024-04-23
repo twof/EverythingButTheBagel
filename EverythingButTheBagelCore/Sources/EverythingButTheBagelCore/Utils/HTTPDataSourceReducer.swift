@@ -18,6 +18,11 @@ public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorPro
     case delegate(Delegate)
   }
 
+  public enum RequestError: Error {
+    /// Hit max retries, not retrying any more
+    case maxRetries
+  }
+
   var errorSourceId: String
   let maxRetries: Int
 
@@ -48,17 +53,22 @@ public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorPro
           await send(.delegate(.response(response)))
         } catch: { error, send in
           let requestId = requestId ?? uuid()
-          await send(.delegate(.error(error.toEquatableError(), sourceId: self.errorSourceId, errorId: requestId)))
 
           // Begin doing exponential backoff
           if retry < maxRetries {
+            await send(.delegate(.error(error.toEquatableError(), sourceId: self.errorSourceId, errorId: requestId)))
             do {
               try await clock.sleep(for: .milliseconds(Self.backoffDuration(retry: retry)))
               await send(.fetch(url: urlString, cachePolicy: cachePolicy, retry: retry + 1, requestId: requestId))
             } catch {
-              // This is expected to throw on cancelation which is an error we don't have to deal with
+              // This is only expected to throw on cancelation which is an error we don't
+              // have to deal with
+//              await send(.delegate(.clearError(sourceId: self.errorSourceId, errorId: requestId)))
+
               return
             }
+          } else {
+            await send(.delegate(.error(RequestError.maxRetries.toEquatableError(), sourceId: self.errorSourceId, errorId: requestId)))
           }
         }
       case .delegate:

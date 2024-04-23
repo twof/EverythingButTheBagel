@@ -104,9 +104,7 @@ class HTTPDataSourceTests: XCTestCase {
     ))
 
     // No state change expected from delegates
-    await store.receive(.delegate(.error(error.toEquatableError(), sourceId: sourceId, errorId: .init(0))))
-
-    // TODO: Should send a different error when max retries hit
+    await store.receive(.delegate(.error(DataSource.RequestError.maxRetries.toEquatableError(), sourceId: sourceId, errorId: .init(0))))
   }
 
   @MainActor
@@ -185,5 +183,7 @@ class HTTPDataSourceTests: XCTestCase {
     await task.cancel()
 
     // TODO: We risk not clearing the errors from canceled requests
+
+    await store.finish(timeout: .seconds(2))
   }
 }
