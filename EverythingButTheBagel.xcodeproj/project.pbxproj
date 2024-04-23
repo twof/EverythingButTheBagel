@@ -43,6 +43,7 @@
 		2421FC9B2BBA1254000EFFD4 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		2421FC9C2BBA1254000EFFD4 /* .pre-commit-config.yaml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = ".pre-commit-config.yaml"; sourceTree = "<group>"; };
 		2421FC9D2BBA1281000EFFD4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		2446E2D62BD79F7F001A96CD /* PictureOfTheDayCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PictureOfTheDayCore; sourceTree = "<group>"; };
 		2465CC6B2BC61AAA001B9AF0 /* LocalizedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedText.swift; sourceTree = "<group>"; };
 		247285FD2BBF8B1700E35F17 /* CatFactListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatFactListItem.swift; sourceTree = "<group>"; };
 		247286012BBFE2D700E35F17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -142,6 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				24A1FF0C2BCCDE1D00583C55 /* Assets.xcassets */,
+				2446E2D62BD79F7F001A96CD /* PictureOfTheDayCore */,
 				2421FC942BBA0B9E000EFFD4 /* Sprinkles */,
 				2405CA682BB5923200AC80AD /* EverythingButTheBagelCore */,
 				2405CA5E2BB5922900AC80AD /* EverythingButTheBagel */,
