@@ -48,11 +48,7 @@ public struct AppReducer {
       }
 
       Scope(state: \State.catFacts, action: \.catFacts) {
-        CatBase(
-          baseUrl: "https://catfact.ninja/facts?page=1&limit=40",
-          errorSourceId: "CatFactsDataSource",
-          viewModelReducer: CatFactsListViewModelReducer()
-        ).nextPage { response in
+        CatBase.catFacts.nextPage { response in
           response.nextPageUrl?.appending(queryItems: [.init(name: "limit", value: "40")])
         }
       }

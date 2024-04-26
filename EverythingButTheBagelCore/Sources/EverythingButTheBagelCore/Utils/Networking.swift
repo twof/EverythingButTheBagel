@@ -69,7 +69,7 @@ struct Repository<ResponseType: Decodable>: DependencyKey, StaticLoggingContext 
   }
 }
 
-enum NetworkRequestError: Error {
+public enum NetworkRequestError: Error {
   case transportError(EquatableError)
   case serverError(statusCode: Int)
   case malformedRequest(message: String)

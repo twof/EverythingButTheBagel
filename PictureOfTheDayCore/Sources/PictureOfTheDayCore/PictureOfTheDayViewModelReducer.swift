@@ -5,7 +5,7 @@ import EverythingButTheBagelCore
 @Reducer
 public struct PictureOfTheDayViewModelReducer {
   @ObservableState
-  public struct State: Equatable, Codable {
+  public struct State: Equatable, Codable, ListViewModelState {
     public let emptyListMessage = LocalizedTextState(
       text: String(
         localized: "No pictures here! Pull to refresh to check again.",
@@ -15,7 +15,7 @@ public struct PictureOfTheDayViewModelReducer {
       stringCatalogLocation: .stringCatalog()
     )
 
-    public var status: Status
+    public var status: ListViewModelStatus<PictureOfTheDayViewModel>
     public var scrollPosition: Double
 
     public var isLoading: Bool {
@@ -26,7 +26,7 @@ public struct PictureOfTheDayViewModelReducer {
     }
 
     public init(
-      status: Status = .loaded(data: []),
+      status: ListViewModelStatus<PictureOfTheDayViewModel> = .loaded(data: []),
       scrollPosition: Double = 0.0
     ) {
       self.scrollPosition = scrollPosition
@@ -41,24 +41,9 @@ public struct PictureOfTheDayViewModelReducer {
     }
   }
 
-  public enum Action: Equatable {
-    // The point of delegate actions is to alert parent reducers to some action.
-    // swiftlint:disable:next nesting
-    public enum Delegate: Equatable {
-      // In this case, the parent is being alerted that the view did load.
-      case task
-      case nextPage
-      case refresh
-    }
-
-    // swiftlint:disable:next nesting
-    public enum NewElementsStrategy: Equatable {
-      case reset
-      case append
-    }
-
-    case delegate(Delegate)
-    case newElements([POTDResponseModel], strategy: NewElementsStrategy = .append)
+  public enum Action: Equatable, ListViewModelAction {
+    case delegate(ListViewModelDelegate)
+    case newResponse([POTDResponseModel], strategy: NewResponseStrategy = .append)
     case scroll(position: Double)
     case isLoading(Bool)
   }
@@ -70,8 +55,8 @@ public struct PictureOfTheDayViewModelReducer {
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case let .newElements(newElements, strategy):
-        let newVms = newElements.map(PictureOfTheDayViewModel.init(model:)).toIdentifiedArray
+      case let .newResponse(newResponse, strategy):
+        let newVms = newResponse.map(PictureOfTheDayViewModel.init(model:)).toIdentifiedArray
         switch strategy {
         case .append:
           state.status = .loaded(data: state.status.data + newVms)
@@ -97,35 +82,6 @@ public struct PictureOfTheDayViewModelReducer {
         return .none
       }
     }
-  }
-}
-
-public enum Status: Codable, Equatable {
-  case loading(data: IdentifiedArrayOf<PictureOfTheDayViewModel>, placeholders: IdentifiedArrayOf<PictureOfTheDayViewModel>)
-  case loaded(data: IdentifiedArrayOf<PictureOfTheDayViewModel>)
-}
-
-extension Status {
-  public var data: IdentifiedArrayOf<PictureOfTheDayViewModel> {
-    switch self {
-    case let .loaded(data): data
-    case let .loading(data, _): data
-    }
-  }
-
-  public var placeholders: IdentifiedArrayOf<PictureOfTheDayViewModel> {
-    switch self {
-    case .loaded: []
-    case let .loading(_, placeholders): placeholders
-        .prefix(max(1, 7 - data.count))
-        .toIdentifiedArray
-    }
-  }
-
-  /// When this element comes on screen, start loading the next page
-  /// Returns nil when there are no elements in `data` and the first element when there are fewer than 3
-  public var loadingElement: PictureOfTheDayViewModel? {
-    self.data[back: 2]
   }
 }
 
