@@ -25,103 +25,103 @@ class ListFeatureBaseTests: XCTestCase {
     await store.receive(.viewModel(.isLoading(false)))
   }
 
-//  @MainActor
-//  func testFetchOnTask() async throws {
-//    let store = TestStore(initialState: .init()) {
-//      Feature.catFacts
-//    } withDependencies: { dependencies in
-//      dependencies[DataRequestClient<CatFactsResponseModel>.self] = .init(request: { _, _ in CatFactsResponseModel.mock })
-//    }
-//
-//    // Fetch is going to do a bunch of other work that we don't care about
-//    // Already covered in other tests
-//    store.exhaustivity = .off
-//
-//    await store.send(.viewModel(.delegate(.task)))
-//    await store.receive(\.dataSource.fetch)
-//
-//    await store.receive(.viewModel(.isLoading(true))) { state in
-//      state.viewModel.status = .loading(data: [], placeholders: .placeholders)
-//    }
-//  }
-//
-//  @MainActor
-//  func testDontFetchIfDataAlreadyLoaded() async throws {
-//    let store = TestStore(
-//      initialState: CatFactsListBase.State(viewModel: .init(status: .loaded(data: .placeholders)))
-//    ) {
-//      CatFactsListBase()
-//    } withDependencies: { dependencies in
-//      dependencies[DataRequestClient<CatFactsResponseModel>.self] = .init(request: { _, _ in CatFactsResponseModel.mock })
-//    }
-//
-//    await store.send(.viewModel(.delegate(.task)))
-//  }
-//
-//  @MainActor
-//  func testOnError() async throws {
-//    let reducer = CatFactsListBase()
-//    let store = TestStore(
-//      initialState: CatFactsListBase.State()
-//    ) {
-//      reducer
-//    } withDependencies: { dependencies in
-//      dependencies[DataRequestClient<CatFactsResponseModel>.self] = .init(request: { _, _ in CatFactsResponseModel.mock })
-//      dependencies.uuid = .incrementing
-//    }
-//
-//    await store.send(.dataSource(.delegate(.error(ExampleError.malformedJson.toEquatableError(), sourceId: reducer.baseUrl, errorId: .init(0)))))
-//    await store.receive(\.viewModel.isLoading)
-//  }
-//
-//  @MainActor
-//  func testNextPageWhenPageExists() async throws {
-//    let store = TestStore(
-//      initialState: CatFactsListBase.State(nextPageUrl: .mock)
-//    ) {
-//      CatFactsListBase()
-//    } withDependencies: { dependencies in
-//      dependencies[DataRequestClient<CatFactsResponseModel>.self] = .init(request: { _, _ in CatFactsResponseModel.mock })
-//    }
-//
-//    store.exhaustivity = .off
-//
-//    await store.send(.viewModel(.delegate(.nextPage)))
-//    await store.receive(\.dataSource.fetch)
-//  }
-//
-//  @MainActor
-//  func testNextPageWhenPageDoesNotExist() async throws {
-//    let store = TestStore(
-//      initialState: CatFactsListBase.State()
-//    ) {
-//      CatFactsListBase()
-//    } withDependencies: { dependencies in
-//      dependencies[DataRequestClient<CatFactsResponseModel>.self] = .init(request: { _, _ in CatFactsResponseModel.mock })
-//    }
-//
-//    store.exhaustivity = .off
-//
-//    await store.send(.viewModel(.delegate(.nextPage)))
-//  }
-//
-//  @MainActor
-//  func testFetchOnRefresh() async throws {
-//    let store = TestStore(
-//      initialState: CatFactsListBase.State(nextPageUrl: nil)
-//    ) {
-//      CatFactsListBase()
-//    } withDependencies: { dependencies in
-//      dependencies[DataRequestClient<CatFactsResponseModel>.self] = .init(request: { _, _ in CatFactsResponseModel.mock })
-//    }
-//
-//    store.exhaustivity = .off
-//
-//    await store.send(.viewModel(.delegate(.refresh)))
-//    await store.receive(\.refreshDataSource.fetch)
-//    await store.receive(.refreshDataSource(.delegate(.response(CatFactsResponseModel.mock))))
-//    await store.receive(.viewModel(.newResponse(CatFactsResponseModel.mock, strategy: .reset)))
-//  }
+  @MainActor
+  func testFetchOnTask() async throws {
+    let store = TestStore(initialState: .init()) {
+      Feature.test
+    } withDependencies: { dependencies in
+      dependencies[DataRequestClient<TestResponseModel>.self] = .init(request: { _, _ in TestResponseModel.mock })
+    }
+
+    // Fetch is going to do a bunch of other work that we don't care about
+    // Already covered in other tests
+    store.exhaustivity = .off
+
+    await store.send(.viewModel(.delegate(.task)))
+    await store.receive(\.dataSource.fetch)
+
+    await store.receive(.viewModel(.isLoading(true))) { state in
+      state.viewModel.status = .loading(data: [], placeholders: .placeholders)
+    }
+  }
+
+  @MainActor
+  func testDontFetchIfDataAlreadyLoaded() async throws {
+    let store = TestStore(
+      initialState: Feature.State(viewModel: .init(status: .loaded(data: .placeholders)))
+    ) {
+      Feature.test
+    } withDependencies: { dependencies in
+      dependencies[DataRequestClient<TestResponseModel>.self] = .init(request: { _, _ in TestResponseModel.mock })
+    }
+
+    await store.send(.viewModel(.delegate(.task)))
+  }
+
+  @MainActor
+  func testOnError() async throws {
+    let reducer = Feature.test
+    let store = TestStore(
+      initialState: Feature.State()
+    ) {
+      reducer
+    } withDependencies: { dependencies in
+      dependencies[DataRequestClient<TestResponseModel>.self] = .init(request: { _, _ in TestResponseModel.mock })
+      dependencies.uuid = .incrementing
+    }
+
+    await store.send(.dataSource(.delegate(.error(ExampleError.malformedJson.toEquatableError(), sourceId: reducer.baseUrl, errorId: .init(0)))))
+    await store.receive(\.viewModel.isLoading)
+  }
+
+  @MainActor
+  func testNextPageWhenPageExists() async throws {
+    let store = TestStore(
+      initialState: Feature.State(nextPageUrl: .mock)
+    ) {
+      Feature.test
+    } withDependencies: { dependencies in
+      dependencies[DataRequestClient<TestResponseModel>.self] = .init(request: { _, _ in TestResponseModel.mock })
+    }
+
+    store.exhaustivity = .off
+
+    await store.send(.viewModel(.delegate(.nextPage)))
+    await store.receive(\.dataSource.fetch)
+  }
+
+  @MainActor
+  func testNextPageWhenPageDoesNotExist() async throws {
+    let store = TestStore(
+      initialState: Feature.State()
+    ) {
+      Feature.test
+    } withDependencies: { dependencies in
+      dependencies[DataRequestClient<TestResponseModel>.self] = .init(request: { _, _ in TestResponseModel.mock })
+    }
+
+    store.exhaustivity = .off
+
+    await store.send(.viewModel(.delegate(.nextPage)))
+  }
+
+  @MainActor
+  func testFetchOnRefresh() async throws {
+    let store = TestStore(
+      initialState: Feature.State(nextPageUrl: nil)
+    ) {
+      Feature.test
+    } withDependencies: { dependencies in
+      dependencies[DataRequestClient<TestResponseModel>.self] = .init(request: { _, _ in TestResponseModel.mock })
+    }
+
+    store.exhaustivity = .off
+
+    await store.send(.viewModel(.delegate(.refresh)))
+    await store.receive(\.refreshDataSource.fetch)
+    await store.receive(.refreshDataSource(.delegate(.response(TestResponseModel.mock))))
+    await store.receive(.viewModel(.newResponse(TestResponseModel.mock, strategy: .reset)))
+  }
 }
 
 typealias Feature = ListFeatureBase<TestViewModelReducer, TestResponseModel>
@@ -135,8 +135,8 @@ extension Feature {
 }
 
 extension Feature.State {
-  init() {
-    self.init(viewModel: .init())
+  init(nextPageUrl: URL? = nil) {
+    self.init(viewModel: .init(), nextPageUrl: nextPageUrl)
   }
 }
 
