@@ -5,6 +5,8 @@ import EverythingButTheBagelCore
 public typealias PictureOfTheDayBase = ListFeatureBase<PictureOfTheDayViewModelReducer, [POTDResponseModel]>
 
 public extension PictureOfTheDayBase {
+  private static let errorSourceId = "PictureOfTheDayDataSource"
+
   private static var urlString: String {
     @Dependency(\.apiKeys) var apiKeys
     return "https://api.nasa.gov/planetary/apod&count=20&api_key=\(apiKeys.potd())"
@@ -15,7 +17,7 @@ public extension PictureOfTheDayBase {
       @Dependency(\.loggingClient) var loggingClient
       loggingClient.log(
         level: .error(error: NetworkRequestError.malformedURLError(urlString: urlString).toEquatableError()),
-        category: "PictureOfTheDayDataSource"
+        category: Self.errorSourceId
       )
 
       return nil
@@ -39,7 +41,7 @@ public extension PictureOfTheDayBase {
   init() {
     self.init(
       baseUrl: Self.urlString,
-      errorSourceId: "PictureOfTheDayDataSource",
+      errorSourceId: Self.errorSourceId,
       viewModelReducer: PictureOfTheDayViewModelReducer()
     )
   }

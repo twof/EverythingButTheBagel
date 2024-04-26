@@ -51,6 +51,7 @@
 		24BA5B162BB006810062084E /* EverythingButTheBagel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EverythingButTheBagel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24BA5B282BB0073D0062084E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		24D775EF2BDB5B2600F5BA9B /* CatFactsUI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CatFactsUI; sourceTree = "<group>"; };
+		24D775F22BDBA68100F5BA9B /* PictureOfTheDayUI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PictureOfTheDayUI; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				24A1FF0C2BCCDE1D00583C55 /* Assets.xcassets */,
+				24D775F22BDBA68100F5BA9B /* PictureOfTheDayUI */,
 				24D775EF2BDB5B2600F5BA9B /* CatFactsUI */,
 				246A11732BD862B60071A9DB /* AppCore */,
 				241CEDDE2BD858B500BC1DCF /* CatFactsCore */,

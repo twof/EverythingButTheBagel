@@ -1,5 +1,4 @@
 import SwiftUI
-import EverythingButTheBagelCore
 import Shimmer
 import CatFactsCore
 
