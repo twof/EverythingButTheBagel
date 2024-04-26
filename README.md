@@ -8,6 +8,15 @@
 - Packages will start downloading automatically
 - Run the project on an iOS 17 device or simulator
 
+## Project Structure
+- The project is broken up into modules in the form of Swift Packages. Each feature gets two modules, one for business logic and one for UI Components.
+- There are also three packages with shared resources used by the other modules.
+  - `EverythingButTheBagelCore` contains utilities and general purpose reducers.
+  - `Sprinkles` contains general purpose UI components.
+  - `GarlicTestUtils` (within `EverythingButTheBagelCore`) contains utilities for unit and integration testing.
+- Business logic packages have high test coverage.
+- This structure helps with build time as the project scales because developers can work within a single package, and the compiler can more effectively cache for incremental builds.
+
 ## UI
 - During loading, a spinner is displayed and shimmering placeholders are shown to the user.
 - Example app icon and launch screen are included
@@ -18,9 +27,6 @@
 - Full app state is cached to and read from disk on startup. As the app expands there would be additional security and performance concerns with this setup that are not addressed here.
   - Because `ViewModel`s are used, in addition to the data model, view state is also cached including small things like scroll position. When the user opens the app, we want them to be able to pick up right where they left off.
   - Out of the box, SwiftUI doesn't allow developers to track and set absolute scroll position programatically, so I created [a package for that](https://github.com/twof/ControllableScrollView).
-- Code is separated into a core, platform agnostic package to contain all business logic and tests, and a parent project that contains platform-specific and UI code.
-  - It's expected that as much logic as possible is put into the core package and that UI code is never put in the core package to optimize for testability and coverage.
-- Since we're keeping all SwiftUI code out of the core package, another package called `Sprinkles` has been created to manage reusable design system and UI utilities.
 
 ## Networking
 - HTTP fetches are performed by `HTTPDataSourceReducer` which is optimized for reusability. Any reducer which has some HTTP dependency would be expected to use it.

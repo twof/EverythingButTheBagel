@@ -16,7 +16,8 @@ public extension CatFactsListBase.State {
   init(nextPageUrl: URL? = nil) {
     self.init(
       viewModel: .init(),
-      nextPageUrl: nextPageUrl)
+      nextPageUrl: nextPageUrl
+    )
   }
 }
 
