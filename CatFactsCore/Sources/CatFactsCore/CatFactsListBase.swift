@@ -15,16 +15,7 @@ public extension CatFactsListBase {
 public extension CatFactsListBase.State {
   init(nextPageUrl: URL? = nil) {
     self.init(
-      viewModel: .init(
-        emptyListMessage: LocalizedTextState(
-          text: String(
-            localized: "No facts here! Pull to refresh to check again.",
-            bundle: .module,
-            comment: "Message to let the user know that there are no list items, but not due to an error."
-          ),
-          stringCatalogLocation: .catFactsStringCatalog
-        )
-      ),
+      viewModel: .init(),
       nextPageUrl: nextPageUrl)
   }
 }

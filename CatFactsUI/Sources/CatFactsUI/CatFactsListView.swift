@@ -85,9 +85,9 @@ public struct CatFactsListView: View {
 #Preview {
   CatFactsListView(
     store: Store(
-      initialState: CatFactsListViewModelReducer.State(status: .loaded(data: [])),
+      initialState: CatFactsListViewModelReducer.State(),
       reducer: {
-        CatFactsListViewModelReducer()
+        CatFactsListViewModelReducer.catFacts
       }
     )
   )
