@@ -1,6 +1,9 @@
 import SwiftUI
 import EverythingButTheBagelCore
 import ComposableArchitecture
+import AppCore
+import Sprinkles
+import CatFactsUI
 
 /// Containter view that holds content, but displayes global information like errors
 /// and connection status

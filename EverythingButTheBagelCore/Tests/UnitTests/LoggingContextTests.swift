@@ -1,4 +1,5 @@
 @testable import EverythingButTheBagelCore
+import GarlicTestUtils
 import XCTest
 import Dependencies
 import FunctionSpy

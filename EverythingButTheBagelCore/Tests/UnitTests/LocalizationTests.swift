@@ -1,10 +1,18 @@
 import XCTest
 @testable import EverythingButTheBagelCore
 import ComposableArchitecture
+import Foundation
 
 class LocalizationTests: XCTestCase {
   func testStringLocalizationExists() throws {
-    let state = CatFactsListViewModelReducer.State().emptyListMessage
+    let state = LocalizedTextState(
+      text: String(
+        localized: "No facts here! Pull to refresh to check again.",
+        bundle: .module,
+        comment: "Message to let the user know that there are no list items, but not due to an error."
+      ),
+      stringCatalogLocation: .stringCatalog()
+    )
 
     // Check that english localization matches original
     withDependencies { dependencies in
@@ -22,7 +30,10 @@ class LocalizationTests: XCTestCase {
   }
 
   func testStringLocalizationDoesNotExist() throws {
-    let state = LocalizedTextState(text: "Something that doesn't exist")
+    let state = LocalizedTextState(
+      text: "Something that doesn't exist",
+      stringCatalogLocation: .stringCatalog()
+    )
 
     // Check that english localization matches original
     withDependencies { dependencies in
@@ -40,7 +51,14 @@ class LocalizationTests: XCTestCase {
   }
 
   func testStringExistsButLocalizationDoesnt() throws {
-    let state = CatFactsListViewModelReducer.State().emptyListMessage
+    let state = LocalizedTextState(
+      text: String(
+        localized: "No facts here! Pull to refresh to check again.",
+        bundle: .module,
+        comment: "Message to let the user know that there are no list items, but not due to an error."
+      ),
+      stringCatalogLocation: .stringCatalog()
+    )
 
     // Check that english localization matches original
     withDependencies { dependencies in

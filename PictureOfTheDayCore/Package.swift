@@ -5,11 +5,15 @@ import PackageDescription
 
 let package = Package(
     name: "PictureOfTheDayCore",
+    defaultLocalization: "en",
+    platforms: [
+      .iOS(.v17), .macOS(.v14)
+    ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "PictureOfTheDayCore",
-            targets: ["PictureOfTheDayCore"]),
+            targets: ["PictureOfTheDayCore"])
     ],
     dependencies: [
       .package(
@@ -19,7 +23,8 @@ let package = Package(
       .package(url: "https://github.com/getsentry/sentry-cocoa", from: "8.23.0"),
       .package(url: "https://github.com/twof/FunctionSpy", branch: "main"),
       .package(url: "https://github.com/twof/ControllableScrollView", from: "1.0.0"),
-      .package(url: "https://github.com/thebarndog/swift-dotenv.git", from: "2.0.0")
+      .package(url: "https://github.com/thebarndog/swift-dotenv.git", from: "2.0.0"),
+      .package(path: "../EverythingButTheBagelCore")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -33,15 +38,29 @@ let package = Package(
               ),
               .product(name: "Sentry", package: "sentry-cocoa"),
               .product(name: "ControllableScrollView", package: "controllablescrollview"),
-              .product(name: "SwiftDotenv", package: "swift-dotenv")
+              .product(name: "SwiftDotenv", package: "swift-dotenv"),
+              .product(name: "EverythingButTheBagelCore", package: "EverythingButTheBagelCore")
+            ],
+            resources: [
+              .process("prod.env")
             ]
         ),
         .testTarget(
-            name: "PictureOfTheDayCoreTests",
-            dependencies: [
-              "FunctionSpy",
-              "PictureOfTheDayCore"
-            ]
+          name: "PictureOfTheDayUnitTests",
+          dependencies: [
+            "FunctionSpy",
+            "PictureOfTheDayCore"
+          ]
         ),
+        .testTarget(
+          name: "PictureOfTheDayIntegrationTests",
+          dependencies: [
+            "FunctionSpy",
+            "PictureOfTheDayCore"
+          ]
+//          resources: [
+//            .process("prod.env")
+//          ]
+        )
     ]
 )

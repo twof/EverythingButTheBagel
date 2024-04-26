@@ -12,6 +12,10 @@ let package = Package(
     .library(
       name: "EverythingButTheBagelCore",
       targets: ["EverythingButTheBagelCore"]
+    ),
+    .library(
+      name: "GarlicTestUtils",
+      targets: ["GarlicTestUtils"]
     )
   ],
   dependencies: [
@@ -33,23 +37,31 @@ let package = Package(
         ),
         .product(name: "Sentry", package: "sentry-cocoa"),
         .product(name: "ControllableScrollView", package: "controllablescrollview")
-      ],
-      resources: [
-        .process("Localization/Localizable.xcstrings")
+      ]
+    ),
+    .target(
+      name: "GarlicTestUtils",
+      dependencies: [
+        "EverythingButTheBagelCore"
       ]
     ),
     .testTarget(
       name: "UnitTests",
       dependencies: [
         "FunctionSpy",
-        "EverythingButTheBagelCore"
+        "EverythingButTheBagelCore",
+        "GarlicTestUtils"
+      ],
+      resources: [
+        .process("Localizable.xcstrings")
       ]
     ),
     .testTarget(
       name: "IntegrationTests",
       dependencies: [
         "FunctionSpy",
-        "EverythingButTheBagelCore"
+        "EverythingButTheBagelCore",
+        "GarlicTestUtils"
       ]
     )
   ]

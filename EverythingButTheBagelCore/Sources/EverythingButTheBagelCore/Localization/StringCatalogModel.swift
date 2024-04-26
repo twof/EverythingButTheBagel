@@ -7,7 +7,7 @@ struct StringCatalogModel: Codable {
 }
 
 struct StringCatalogString: Codable {
-  let comment: String
+  let comment: String?
   let localizations: [String: StringCatalogLocalization]
 }
 

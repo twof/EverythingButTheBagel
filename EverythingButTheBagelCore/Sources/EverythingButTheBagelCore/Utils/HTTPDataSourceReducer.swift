@@ -26,7 +26,7 @@ public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorPro
   var errorSourceId: String
   let maxRetries: Int
 
-  init(errorSourceId: String, maxRetries: Int = 5) {
+  public init(errorSourceId: String, maxRetries: Int = 5) {
     self.errorSourceId = errorSourceId
     self.maxRetries = maxRetries
   }

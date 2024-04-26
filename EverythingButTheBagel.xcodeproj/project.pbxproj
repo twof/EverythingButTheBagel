@@ -10,14 +10,12 @@
 		2405CA6A2BB5925000AC80AD /* EverythingButTheBagelCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2405CA692BB5925000AC80AD /* EverythingButTheBagelCore */; };
 		2405CA6B2BB6029200AC80AD /* EverythingButTheBagelApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA5F2BB5922900AC80AD /* EverythingButTheBagelApp.swift */; };
 		2405CA6C2BB6029D00AC80AD /* BaseAppScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA602BB5922900AC80AD /* BaseAppScreen.swift */; };
-		2405CA6E2BB602A100AC80AD /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA672BB5922900AC80AD /* ErrorView.swift */; };
-		2405CA6F2BB602A700AC80AD /* CatFactsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA652BB5922900AC80AD /* CatFactsListView.swift */; };
 		2421FC962BBA0C00000EFFD4 /* Sprinkles in Frameworks */ = {isa = PBXBuildFile; productRef = 2421FC952BBA0C00000EFFD4 /* Sprinkles */; };
-		2465CC6C2BC61AAA001B9AF0 /* LocalizedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2465CC6B2BC61AAA001B9AF0 /* LocalizedText.swift */; };
-		247285FE2BBF8B1700E35F17 /* CatFactListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247285FD2BBF8B1700E35F17 /* CatFactListItem.swift */; };
 		247286062BC4A2FD00E35F17 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 247286052BC4A2FD00E35F17 /* LaunchScreen.storyboard */; };
 		248EB2DB2BC7752500D81670 /* EverythingButTheBagelUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 248EB2DA2BC7752500D81670 /* EverythingButTheBagelUITests.swift */; };
 		24A1FF0D2BCCDE1D00583C55 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24A1FF0C2BCCDE1D00583C55 /* Assets.xcassets */; };
+		24D775EC2BDB5AC200F5BA9B /* AppCore in Frameworks */ = {isa = PBXBuildFile; productRef = 24D775EB2BDB5AC200F5BA9B /* AppCore */; };
+		24D775F12BDB602F00F5BA9B /* CatFactsUI in Frameworks */ = {isa = PBXBuildFile; productRef = 24D775F02BDB602F00F5BA9B /* CatFactsUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,9 +32,8 @@
 		2405CA5F2BB5922900AC80AD /* EverythingButTheBagelApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverythingButTheBagelApp.swift; sourceTree = "<group>"; };
 		2405CA602BB5922900AC80AD /* BaseAppScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAppScreen.swift; sourceTree = "<group>"; };
 		2405CA632BB5922900AC80AD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		2405CA652BB5922900AC80AD /* CatFactsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatFactsListView.swift; sourceTree = "<group>"; };
-		2405CA672BB5922900AC80AD /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		2405CA682BB5923200AC80AD /* EverythingButTheBagelCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = EverythingButTheBagelCore; sourceTree = "<group>"; };
+		241CEDDE2BD858B500BC1DCF /* CatFactsCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CatFactsCore; sourceTree = "<group>"; };
 		2421FC942BBA0B9E000EFFD4 /* Sprinkles */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Sprinkles; sourceTree = "<group>"; };
 		2421FC972BBA1254000EFFD4 /* .sentryclirc */ = {isa = PBXFileReference; lastKnownFileType = text; path = .sentryclirc; sourceTree = "<group>"; };
 		2421FC982BBA1254000EFFD4 /* swift.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = swift.yml; sourceTree = "<group>"; };
@@ -44,8 +41,7 @@
 		2421FC9C2BBA1254000EFFD4 /* .pre-commit-config.yaml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = ".pre-commit-config.yaml"; sourceTree = "<group>"; };
 		2421FC9D2BBA1281000EFFD4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		2446E2D62BD79F7F001A96CD /* PictureOfTheDayCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PictureOfTheDayCore; sourceTree = "<group>"; };
-		2465CC6B2BC61AAA001B9AF0 /* LocalizedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedText.swift; sourceTree = "<group>"; };
-		247285FD2BBF8B1700E35F17 /* CatFactListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatFactListItem.swift; sourceTree = "<group>"; };
+		246A11732BD862B60071A9DB /* AppCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppCore; sourceTree = "<group>"; };
 		247286012BBFE2D700E35F17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		247286052BC4A2FD00E35F17 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		248EB2D82BC7752500D81670 /* EverythingButTheBagelUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EverythingButTheBagelUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,6 +50,7 @@
 		24A1FF0C2BCCDE1D00583C55 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Sprinkles/Sources/Sprinkles/Assets.xcassets; sourceTree = "<group>"; };
 		24BA5B162BB006810062084E /* EverythingButTheBagel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EverythingButTheBagel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24BA5B282BB0073D0062084E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		24D775EF2BDB5B2600F5BA9B /* CatFactsUI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CatFactsUI; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,7 +65,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24D775EC2BDB5AC200F5BA9B /* AppCore in Frameworks */,
 				2421FC962BBA0C00000EFFD4 /* Sprinkles in Frameworks */,
+				24D775F12BDB602F00F5BA9B /* CatFactsUI in Frameworks */,
 				2405CA6A2BB5925000AC80AD /* EverythingButTheBagelCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -82,9 +81,7 @@
 				247286012BBFE2D700E35F17 /* Info.plist */,
 				2405CA622BB5922900AC80AD /* Preview Content */,
 				24F401092BBBC9B9001EF583 /* Utils */,
-				2405CA642BB5922900AC80AD /* CatFactsScreen */,
 				2405CA5F2BB5922900AC80AD /* EverythingButTheBagelApp.swift */,
-				2405CA672BB5922900AC80AD /* ErrorView.swift */,
 				247286052BC4A2FD00E35F17 /* LaunchScreen.storyboard */,
 			);
 			path = EverythingButTheBagel;
@@ -96,15 +93,6 @@
 				2405CA632BB5922900AC80AD /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		2405CA642BB5922900AC80AD /* CatFactsScreen */ = {
-			isa = PBXGroup;
-			children = (
-				2405CA652BB5922900AC80AD /* CatFactsListView.swift */,
-				247285FD2BBF8B1700E35F17 /* CatFactListItem.swift */,
-			);
-			path = CatFactsScreen;
 			sourceTree = "<group>";
 		};
 		2421FC992BBA1254000EFFD4 /* workflows */ = {
@@ -143,6 +131,9 @@
 			isa = PBXGroup;
 			children = (
 				24A1FF0C2BCCDE1D00583C55 /* Assets.xcassets */,
+				24D775EF2BDB5B2600F5BA9B /* CatFactsUI */,
+				246A11732BD862B60071A9DB /* AppCore */,
+				241CEDDE2BD858B500BC1DCF /* CatFactsCore */,
 				2446E2D62BD79F7F001A96CD /* PictureOfTheDayCore */,
 				2421FC942BBA0B9E000EFFD4 /* Sprinkles */,
 				2405CA682BB5923200AC80AD /* EverythingButTheBagelCore */,
@@ -172,7 +163,6 @@
 			isa = PBXGroup;
 			children = (
 				2405CA602BB5922900AC80AD /* BaseAppScreen.swift */,
-				2465CC6B2BC61AAA001B9AF0 /* LocalizedText.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -216,6 +206,8 @@
 			packageProductDependencies = (
 				2405CA692BB5925000AC80AD /* EverythingButTheBagelCore */,
 				2421FC952BBA0C00000EFFD4 /* Sprinkles */,
+				24D775EB2BDB5AC200F5BA9B /* AppCore */,
+				24D775F02BDB602F00F5BA9B /* CatFactsUI */,
 			);
 			productName = EverythingButTheBagel;
 			productReference = 24BA5B162BB006810062084E /* EverythingButTheBagel.app */;
@@ -334,12 +326,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2465CC6C2BC61AAA001B9AF0 /* LocalizedText.swift in Sources */,
 				2405CA6C2BB6029D00AC80AD /* BaseAppScreen.swift in Sources */,
-				247285FE2BBF8B1700E35F17 /* CatFactListItem.swift in Sources */,
-				2405CA6F2BB602A700AC80AD /* CatFactsListView.swift in Sources */,
 				2405CA6B2BB6029200AC80AD /* EverythingButTheBagelApp.swift in Sources */,
-				2405CA6E2BB602A100AC80AD /* ErrorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -625,6 +613,14 @@
 		2421FC952BBA0C00000EFFD4 /* Sprinkles */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Sprinkles;
+		};
+		24D775EB2BDB5AC200F5BA9B /* AppCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppCore;
+		};
+		24D775F02BDB602F00F5BA9B /* CatFactsUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CatFactsUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

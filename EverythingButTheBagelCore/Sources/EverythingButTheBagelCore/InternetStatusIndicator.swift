@@ -56,6 +56,8 @@ public struct InternetStatusIndicator {
 
   @Dependency(\.networkStatus) var networkStatus
 
+  public init() {}
+
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {

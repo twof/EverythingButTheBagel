@@ -2,6 +2,7 @@ import ComposableArchitecture
 import XCTest
 @testable import EverythingButTheBagelCore
 import FunctionSpy
+import GarlicTestUtils
 
 // Since we're testing a live dependency these tests would normally be in the integration test
 // suite, but this specific dependency just combines a few other dependencies and doesn't make

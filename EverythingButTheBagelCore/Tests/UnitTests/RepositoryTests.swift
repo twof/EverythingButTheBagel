@@ -2,6 +2,7 @@ import XCTest
 @testable import EverythingButTheBagelCore
 import Dependencies
 import FunctionSpy
+import GarlicTestUtils
 
 class RepositoryTests: XCTestCase {
   let testResponse = ResponseModel(fact: "This is a test")

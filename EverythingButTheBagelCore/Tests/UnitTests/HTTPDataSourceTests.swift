@@ -1,6 +1,7 @@
 import XCTest
 @testable import EverythingButTheBagelCore
 import ComposableArchitecture
+import GarlicTestUtils
 
 class HTTPDataSourceTests: XCTestCase {
   typealias DataSource = HTTPDataSourceReducer<ResponseModel>

@@ -1,6 +1,8 @@
 import SwiftUI
 import EverythingButTheBagelCore
 import ComposableArchitecture
+import AppCore
+import CatFactsUI
 
 @main
 struct EverythingButTheBagelApp: App {

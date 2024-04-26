@@ -2,6 +2,7 @@
 import XCTest
 import Dependencies
 import FunctionSpy
+import GarlicTestUtils
 
 class StaticLoggingContextTests: XCTestCase {
   @MainActor

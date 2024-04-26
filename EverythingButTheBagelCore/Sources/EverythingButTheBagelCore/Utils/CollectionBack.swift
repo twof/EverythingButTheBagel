@@ -1,6 +1,6 @@
 import Foundation
 
-extension Collection {
+public extension Collection {
   subscript(back index: Int) -> Iterator.Element? {
     guard !isEmpty else { return nil }
 

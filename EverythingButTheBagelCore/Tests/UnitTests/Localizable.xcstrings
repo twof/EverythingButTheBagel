@@ -1,0 +1,17 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "No facts here! Pull to refresh to check again." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡No hay hechos aquí! Tire para actualizar y volver a comprobarlo."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

@@ -50,6 +50,16 @@
                ReferencedContainer = "container:EverythingButTheBagel.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "CatFactsUnitTests"
+               BuildableName = "CatFactsUnitTests"
+               BlueprintName = "CatFactsUnitTests"
+               ReferencedContainer = "container:CatFactsCore">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

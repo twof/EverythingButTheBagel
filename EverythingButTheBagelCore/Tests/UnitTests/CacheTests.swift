@@ -2,6 +2,7 @@ import ComposableArchitecture
 import XCTest
 @testable import EverythingButTheBagelCore
 import FunctionSpy
+import GarlicTestUtils
 
 class CacheTests: XCTestCase {
   let model = ResponseModel(fact: "This is a test")
