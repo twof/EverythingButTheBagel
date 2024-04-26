@@ -4,18 +4,20 @@ import CatFactsCore
 
 @Reducer
 public struct AppReducer {
+  public typealias CatBase = ListFeatureBase<CatFactsListViewModelReducer, CatFactsResponseModel>
+
   @ObservableState
   public struct State: Equatable, Codable {
     public var internetStatus: InternetStatusIndicator.State
     public var errors: ErrorIndicatorViewModel.State
-    public var catFacts: CatFactsListBase.State
+    public var catFacts: CatBase.State
 
     public var path = StackState<Path.State>()
 
     public init(
       internetStatus: InternetStatusIndicator.State = .init(),
       errors: ErrorIndicatorViewModel.State = .init(),
-      catFacts: CatFactsListBase.State = .init(),
+      catFacts: CatBase.State = .init(viewModel: .init()),
       path: StackState<Path.State> = StackState<Path.State>()
     ) {
       self.internetStatus = internetStatus
@@ -28,7 +30,7 @@ public struct AppReducer {
   public enum Action {
     case internetStatus(InternetStatusIndicator.Action)
     case errors(ErrorIndicatorViewModel.Action)
-    case catFacts(CatFactsListBase.Action)
+    case catFacts(CatBase.Action)
 
     case path(StackAction<Path.State, Path.Action>)
   }
@@ -46,18 +48,26 @@ public struct AppReducer {
       }
 
       Scope(state: \State.catFacts, action: \.catFacts) {
-        CatFactsListBase()
+        CatBase(
+          baseUrl: "https://catfact.ninja/facts?page=1&limit=40",
+          errorSourceId: "CatFactsDataSource",
+          viewModelReducer: CatFactsListViewModelReducer()
+        ).nextPage { response in
+          response.nextPageUrl?.appending(queryItems: [.init(name: "limit", value: "40")])
+        }
       }
 
       // TODO: I'm not happy with this error routing setup. It's going to become a huge
       // pain as we add more screens.
       Reduce { _, action in
         switch action {
-        case let .catFacts(.dataSource(.delegate(.error(error, sourceId, errorId)))):
+        case let .catFacts(.dataSource(.delegate(.error(error, sourceId, errorId)))),
+             let .catFacts(.refreshDataSource(.delegate(.error(error, sourceId, errorId)))):
           let errorVm = ErrorViewModel(id: errorId, message: error.localizedDescription)
           return .send(.errors(.newError(sourceId: sourceId, errorVm)))
 
-        case let .catFacts(.dataSource(.delegate(.clearError(sourceId, errorId)))):
+        case let .catFacts(.dataSource(.delegate(.clearError(sourceId, errorId)))),
+             let .catFacts(.refreshDataSource(.delegate(.clearError(sourceId, errorId)))):
           return .send(.errors(.clearError(sourceId: sourceId, errorId: errorId)))
 
         default: return .none
@@ -70,6 +80,6 @@ public struct AppReducer {
 extension AppReducer {
   @Reducer(state: .equatable, .codable, action: .equatable)
   public enum Path {
-    case catFacts(CatFactsListBase)
+    case catFacts(CatBase)
   }
 }

@@ -99,7 +99,7 @@ public struct CatFactsListView: View {
 #Preview {
   let store = Store(
     initialState: CatFactsListBase.State(),
-    reducer: { CatFactsListBase() }
+    reducer: { CatFactsListBase.catFacts }
   )
   return CatFactsListView(
     store: store.scope(state: \.viewModel, action: \.viewModel)

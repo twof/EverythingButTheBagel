@@ -4,16 +4,18 @@ import XCTest
 import ComposableArchitecture
 import GarlicTestUtils
 
-class CatFactsBaseTests: XCTestCase {
+class ListFeatureBaseTests: XCTestCase {
+  typealias Feature = ListFeatureBase<CatFactsListViewModelReducer, CatFactsResponseModel>
+
   @MainActor
   func testUpdateFactsOnResponse() async throws {
     let response = CatFactsResponseModel.mock
-    let store = TestStore(initialState: CatFactsListBase.State()) {
-      CatFactsListBase()
+    let store = TestStore(initialState: .init()) {
+      Feature.catFacts
     }
 
     await store.send(.dataSource(.delegate(.response(response)))) { state in
-      state.nextPage = response.nextPageUrl
+      state.nextPageUrl = response.nextPageUrl?.appending(queryItems: [.init(name: "limit", value: "40")])
     }
 
     await store.receive(.viewModel(.newResponse(response))) { state in
@@ -28,8 +30,8 @@ class CatFactsBaseTests: XCTestCase {
 
   @MainActor
   func testFetchOnTask() async throws {
-    let store = TestStore(initialState: CatFactsListBase.State()) {
-      CatFactsListBase()
+    let store = TestStore(initialState: .init()) {
+      Feature.catFacts
     } withDependencies: { dependencies in
       dependencies[DataRequestClient<CatFactsResponseModel>.self] = .init(request: { _, _ in CatFactsResponseModel.mock })
     }

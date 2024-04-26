@@ -2,9 +2,15 @@ import ComposableArchitecture
 import Foundation
 
 public struct CatFactsResponseModel: Codable, Equatable {
-  let currentPage: Int
-  let data: [CatFactModel]
-  let nextPageUrl: URL?
+  public let currentPage: Int
+  public let data: [CatFactModel]
+  public let nextPageUrl: URL?
+
+  public init(currentPage: Int = 0, data: [CatFactModel], nextPageUrl: URL? = nil) {
+    self.currentPage = currentPage
+    self.data = data
+    self.nextPageUrl = nextPageUrl
+  }
 
   // API uses snake case keys
   enum CodingKeys: String, CodingKey {
@@ -18,7 +24,7 @@ extension CatFactsResponseModel {
   public static let mock = CatFactsResponseModel(
     currentPage: 0,
     data: [.init(fact: "first fact"), .init(fact: "second fact")],
-    nextPageUrl: nil
+    nextPageUrl: URL(string: "https://catfact.ninja/facts?page=2")
   )
 }
 

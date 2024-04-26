@@ -28,7 +28,7 @@ class CatFactsViewModelTests: XCTestCase {
       CatFactModel(fact: "Some cats are small")
     ]
 
-    await store.send(.newFacts(facts)) { state in
+    await store.send(.newResponse(CatFactsResponseModel(data: facts))) { state in
       state.status = .loaded(data: facts.map(CatFactViewModel.init(model:)).toIdentifiedArray)
     }
   }
@@ -53,7 +53,7 @@ class CatFactsViewModelTests: XCTestCase {
       CatFactModel(fact: "Some cats are really small")
     ]
 
-    await store.send(.newFacts(newFacts, strategy: .reset)) { state in
+    await store.send(.newResponse(CatFactsResponseModel(data: newFacts), strategy: .reset)) { state in
       state.status = .loaded(data: newFacts.map(CatFactViewModel.init(model:)).toIdentifiedArray)
     }
   }
@@ -64,10 +64,8 @@ class CatFactsViewModelTests: XCTestCase {
       CatFactsListViewModelReducer()
     }
 
-    let facts: [CatFactModel] = []
-
     // No change expected
-    await store.send(.newFacts(facts))
+    await store.send(.newResponse(CatFactsResponseModel(data: [])))
   }
 
   @MainActor
@@ -81,7 +79,7 @@ class CatFactsViewModelTests: XCTestCase {
       CatFactModel(fact: "Some cats are small")
     ]
 
-    await store.send(.newFacts(facts)) { state in
+    await store.send(.newResponse(CatFactsResponseModel(data: facts))) { state in
       state.status = .loaded(data: facts.map(CatFactViewModel.init(model:)).toIdentifiedArray)
     }
 
@@ -90,7 +88,7 @@ class CatFactsViewModelTests: XCTestCase {
       CatFactModel(fact: "Some cats are very small")
     ]
 
-    await store.send(.newFacts(newFacts)) { state in
+    await store.send(.newResponse(CatFactsResponseModel(data: newFacts))) { state in
       state.status = .loaded(data: state.status.data + newFacts.map(CatFactViewModel.init(model:)).toIdentifiedArray)
     }
   }
@@ -126,7 +124,7 @@ class CatFactsViewModelTests: XCTestCase {
   }
 
   func testLoadingElement() {
-    let status = Status.loaded(
+    let status = ListViewModelStatus<CatFactViewModel>.loaded(
       data: [.init(fact: "1"), .init(fact: "2"), .init(fact: "3"), .init(fact: "4")]
     )
     XCTAssertEqual(status.loadingElement, .init(fact: "2"))
@@ -134,7 +132,7 @@ class CatFactsViewModelTests: XCTestCase {
 
   func testSinglePlaceholderOnManyElements() {
     // We keep a single placeholder at the bottom of the list to indicate loading
-    let status = Status.loading(
+    let status = ListViewModelStatus.loading(
       data: (0...20).map { CatFactViewModel(fact: "\($0)") }.toIdentifiedArray,
       placeholders: .placeholders
     )
@@ -143,7 +141,7 @@ class CatFactsViewModelTests: XCTestCase {
 
   func testAFewPlaceholdersOnLessElements() {
     // We keep a more placeholders to fill up the screen during loading
-    let status = Status.loading(
+    let status = ListViewModelStatus.loading(
       data: [.init(fact: "1"), .init(fact: "2"), .init(fact: "3")],
       placeholders: .placeholders
     )
@@ -152,7 +150,7 @@ class CatFactsViewModelTests: XCTestCase {
 
   func testNoPlaceholdersWhenNotLoading() {
     // We keep a single placeholder at the bottom of the list to indicate loading
-    let status = Status.loaded(data: [.init(fact: "1"), .init(fact: "2"), .init(fact: "3")])
+    let status = ListViewModelStatus<CatFactViewModel>.loaded(data: [.init(fact: "1"), .init(fact: "2"), .init(fact: "3")])
     XCTAssertEqual(status.placeholders.count, 0)
   }
 

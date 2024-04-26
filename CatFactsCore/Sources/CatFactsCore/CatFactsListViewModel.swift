@@ -5,7 +5,7 @@ import EverythingButTheBagelCore
 @Reducer
 public struct CatFactsListViewModelReducer {
   @ObservableState
-  public struct State: Equatable, Codable {
+  public struct State: Equatable, Codable, ListViewModelState {
     public let emptyListMessage = LocalizedTextState(
       text: String(
         localized: "No facts here! Pull to refresh to check again.",
@@ -15,7 +15,7 @@ public struct CatFactsListViewModelReducer {
       stringCatalogLocation: .stringCatalog()
     )
 
-    public var status: Status
+    public var status: ListViewModelStatus<CatFactViewModel>
     public var scrollPosition: Double
 
     public var isLoading: Bool {
@@ -26,7 +26,7 @@ public struct CatFactsListViewModelReducer {
     }
 
     public init(
-      status: Status = .loaded(data: []),
+      status: ListViewModelStatus<CatFactViewModel> = .loaded(data: []),
       scrollPosition: Double = 0.0
     ) {
       self.scrollPosition = scrollPosition
@@ -41,24 +41,9 @@ public struct CatFactsListViewModelReducer {
     }
   }
 
-  public enum Action: Equatable {
-    // The point of delegate actions is to alert parent reducers to some action.
-    // swiftlint:disable:next nesting
-    public enum Delegate: Equatable {
-      // In this case, the parent is being alerted that the view did load.
-      case task
-      case nextPage
-      case refresh
-    }
-
-    // swiftlint:disable:next nesting
-    public enum NewFactsStrategy: Equatable {
-      case reset
-      case append
-    }
-
-    case delegate(Delegate)
-    case newFacts([CatFactModel], strategy: NewFactsStrategy = .append)
+  public enum Action: Equatable, ListViewModelAction {
+    case delegate(ListViewModelDelegate)
+    case newResponse(CatFactsResponseModel, strategy: NewResponseStrategy = .append)
     case scroll(position: Double)
     case isLoading(Bool)
   }
@@ -70,8 +55,8 @@ public struct CatFactsListViewModelReducer {
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
-      case let .newFacts(factModels, strategy):
-        let newVms = factModels.map(CatFactViewModel.init(model:)).toIdentifiedArray
+      case let .newResponse(response, strategy):
+        let newVms = response.data.map(CatFactViewModel.init(model:)).toIdentifiedArray
         switch strategy {
         case .append:
           state.status = .loaded(data: state.status.data + newVms)
@@ -97,35 +82,6 @@ public struct CatFactsListViewModelReducer {
         return .none
       }
     }
-  }
-}
-
-public enum Status: Codable, Equatable {
-  case loading(data: IdentifiedArrayOf<CatFactViewModel>, placeholders: IdentifiedArrayOf<CatFactViewModel>)
-  case loaded(data: IdentifiedArrayOf<CatFactViewModel>)
-}
-
-extension Status {
-  public var data: IdentifiedArrayOf<CatFactViewModel> {
-    switch self {
-    case let .loaded(data): data
-    case let .loading(data, _): data
-    }
-  }
-
-  public var placeholders: IdentifiedArrayOf<CatFactViewModel> {
-    switch self {
-    case .loaded: []
-    case let .loading(_, placeholders): placeholders
-        .prefix(max(1, 7 - data.count))
-        .toIdentifiedArray
-    }
-  }
-
-  /// When this element comes on screen, start loading the next page
-  /// Returns nil when there are no elements in `data` and the first element when there are fewer than 3
-  public var loadingElement: CatFactViewModel? {
-    self.data[back: 2]
   }
 }
 
