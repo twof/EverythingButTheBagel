@@ -63,23 +63,24 @@ class ListFeatureBaseTests: XCTestCase {
 
   @MainActor
   func testOnError() async throws {
+    let reducer = CatFactsListBase()
     let store = TestStore(
       initialState: CatFactsListBase.State()
     ) {
-      CatFactsListBase()
+      reducer
     } withDependencies: { dependencies in
       dependencies[DataRequestClient<CatFactsResponseModel>.self] = .init(request: { _, _ in CatFactsResponseModel.mock })
       dependencies.uuid = .incrementing
     }
 
-    await store.send(.dataSource(.delegate(.error(ExampleError.malformedJson.toEquatableError(), sourceId: CatFactsListBase.errorSourceId, errorId: .init(0)))))
+    await store.send(.dataSource(.delegate(.error(ExampleError.malformedJson.toEquatableError(), sourceId: reducer.baseUrl, errorId: .init(0)))))
     await store.receive(\.viewModel.isLoading)
   }
 
   @MainActor
   func testNextPageWhenPageExists() async throws {
     let store = TestStore(
-      initialState: CatFactsListBase.State()
+      initialState: CatFactsListBase.State(nextPageUrl: .mock)
     ) {
       CatFactsListBase()
     } withDependencies: { dependencies in
@@ -95,7 +96,7 @@ class ListFeatureBaseTests: XCTestCase {
   @MainActor
   func testNextPageWhenPageDoesNotExist() async throws {
     let store = TestStore(
-      initialState: CatFactsListBase.State(nextPage: nil)
+      initialState: CatFactsListBase.State()
     ) {
       CatFactsListBase()
     } withDependencies: { dependencies in
@@ -110,7 +111,7 @@ class ListFeatureBaseTests: XCTestCase {
   @MainActor
   func testFetchOnRefresh() async throws {
     let store = TestStore(
-      initialState: CatFactsListBase.State(nextPage: nil)
+      initialState: CatFactsListBase.State(nextPageUrl: nil)
     ) {
       CatFactsListBase()
     } withDependencies: { dependencies in

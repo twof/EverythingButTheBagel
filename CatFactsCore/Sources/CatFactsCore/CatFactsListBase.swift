@@ -13,8 +13,8 @@ public extension CatFactsListBase {
 }
 
 public extension CatFactsListBase.State {
-  init() {
-    self.init(viewModel: .init())
+  init(nextPageUrl: URL? = nil) {
+    self.init(viewModel: .init(), nextPageUrl: nextPageUrl)
   }
 }
 

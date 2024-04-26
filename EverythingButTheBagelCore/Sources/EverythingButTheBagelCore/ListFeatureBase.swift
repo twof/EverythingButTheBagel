@@ -64,10 +64,10 @@ public struct ListFeatureBase<
   ViewModel: Reducer,
   ResponseType: Codable & Equatable
 > where
-ViewModel.State: Codable & Equatable,
-ViewModel.Action: Equatable & ListViewModelAction,
-ViewModel.Action.ResponseModel == ResponseType,
-ViewModel.State: ListViewModelState {
+  ViewModel.State: Codable & Equatable,
+  ViewModel.Action: Equatable & ListViewModelAction,
+  ViewModel.Action.ResponseModel == ResponseType,
+  ViewModel.State: ListViewModelState {
   public typealias DataSource = HTTPDataSourceReducer<ResponseType>
 
   @ObservableState
@@ -79,10 +79,12 @@ ViewModel.State: ListViewModelState {
 
     public init(
       viewModel: ViewModel.State,
-      dataSource: HTTPDataSourceReducer<ResponseType>.State = .init()
+      dataSource: HTTPDataSourceReducer<ResponseType>.State = .init(),
+      nextPageUrl: URL? = nil
     ) {
       self.viewModel = viewModel
       self.dataSource = dataSource
+      self.nextPageUrl = nextPageUrl
     }
   }
 
@@ -92,10 +94,10 @@ ViewModel.State: ListViewModelState {
     case refreshDataSource(DataSource.Action)
   }
 
-  private let baseUrl: String
-  private let errorSourceId: String
-  private var viewModelReducer: ViewModel
-  private var nextPageGenerator: ((ResponseType) -> URL?)?
+  let baseUrl: String
+  let errorSourceId: String
+  private(set) var viewModelReducer: ViewModel
+  private(set) var nextPageGenerator: ((ResponseType) -> URL?)?
 
   public init(baseUrl: String, errorSourceId: String, viewModelReducer: ViewModel) {
     self.baseUrl = baseUrl
