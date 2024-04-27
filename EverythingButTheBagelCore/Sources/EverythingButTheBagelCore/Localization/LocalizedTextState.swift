@@ -21,14 +21,12 @@ public struct LocalizedTextState: Codable, Equatable {
   public init(text: String, stringCatalogLocation: URL) {
     self.text = text
     self.stringCatalogLocation = stringCatalogLocation
-
-    print(stringCatalogLocation)
   }
 
   /// Returns the string localized to the current locale, or the original string if a
   /// localization doesn't exist
   public var localized: String {
-    stringCatalog.strings[text]?.localizations[locale.identifier]?.stringUnit.value
+    stringCatalog.strings[text]?.localizations?[locale.identifier]?.stringUnit.value
       ?? text
   }
 

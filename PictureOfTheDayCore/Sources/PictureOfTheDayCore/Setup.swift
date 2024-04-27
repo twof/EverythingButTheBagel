@@ -26,8 +26,10 @@ public struct APIKeys {
 
 extension APIKeys: DependencyKey {
   public static var liveValue = APIKeys {
+    @Dependency(\.pictureOfTheDaySetup) var setup
+    try! setup()
     // TODO: Error handling
-    Dotenv["NASA_API_KEY"]!.stringValue
+    return Dotenv["NASA_API_KEY"]!.stringValue
   }
 
   public static var testValue = APIKeys()

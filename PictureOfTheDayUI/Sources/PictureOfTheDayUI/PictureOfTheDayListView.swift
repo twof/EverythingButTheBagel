@@ -2,22 +2,22 @@ import SwiftUI
 import ComposableArchitecture
 import EverythingButTheBagelCore
 import Sprinkles
-import CatFactsCore
+import PictureOfTheDayCore
 
 // swiftlint:disable:next identifier_name
-@ViewBuilder public func CatFactsListView(store: StoreOf<CatFactsListViewModelReducer>) -> some View {
+@ViewBuilder public func PictureOfTheDayListView(store: StoreOf<PictureOfTheDayViewModelReducer>) -> some View {
   GenericListView(store: store) { fact in
-    CatFactListItem(vm: fact)
+    PictureOfTheDayListItem(vm: fact)
   }
 }
 
 // Configurable preview
 #Preview {
-  CatFactsListView(
+  PictureOfTheDayListView(
     store: Store(
-      initialState: CatFactsListViewModelReducer.State(),
+      initialState: PictureOfTheDayViewModelReducer.State(),
       reducer: {
-        CatFactsListViewModelReducer.catFacts
+        PictureOfTheDayViewModelReducer.potd
       }
     )
   )
@@ -28,10 +28,10 @@ import CatFactsCore
 // Preview with live dependencies
 #Preview {
   let store = Store(
-    initialState: CatFactsListBase.State(),
-    reducer: { CatFactsListBase.catFacts }
+    initialState: PictureOfTheDayBase.State(),
+    reducer: { PictureOfTheDayBase.potd }
   )
-  return CatFactsListView(
+  return PictureOfTheDayListView(
     store: store.scope(state: \.viewModel, action: \.viewModel)
   )
 }

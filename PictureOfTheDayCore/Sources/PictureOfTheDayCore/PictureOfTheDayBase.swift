@@ -7,9 +7,9 @@ public typealias PictureOfTheDayBase = ListFeatureBase<PictureOfTheDayViewModelR
 public extension PictureOfTheDayBase {
   private static let errorSourceId = "PictureOfTheDayDataSource"
 
-  private static var urlString: String {
+  static var urlString: String {
     @Dependency(\.apiKeys) var apiKeys
-    return "https://api.nasa.gov/planetary/apod&count=20&api_key=\(apiKeys.potd())"
+    return "https://api.nasa.gov/planetary/apod?count=20&api_key=\(apiKeys.potd())"
   }
 
   private static func urlGenerator() -> URL? {
@@ -42,7 +42,7 @@ public extension PictureOfTheDayBase {
     self.init(
       baseUrl: Self.urlString,
       errorSourceId: Self.errorSourceId,
-      viewModelReducer: PictureOfTheDayViewModelReducer()
+      viewModelReducer: PictureOfTheDayViewModelReducer.potd
     )
   }
 }

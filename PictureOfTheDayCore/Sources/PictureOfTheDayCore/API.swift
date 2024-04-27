@@ -4,8 +4,8 @@ import EverythingButTheBagelCore
 import Foundation
 
 public struct POTDResponseModel: Codable, Equatable {
-  let copyright: String
-  let date: Date
+  let copyright: String?
+  let date: String
   let explanation: String
   let hdurl: URL
   let mediaType: String
