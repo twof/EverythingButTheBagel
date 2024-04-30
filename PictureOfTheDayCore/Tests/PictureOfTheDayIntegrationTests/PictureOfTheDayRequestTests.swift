@@ -3,7 +3,7 @@ import XCTest
 @testable import EverythingButTheBagelCore
 import Dependencies
 
-class CatFactsRequestTests: XCTestCase {
+class PictureOfTheDayRequestTests: XCTestCase {
   @MainActor
   func testFetch() async throws {
     let client = DependencyValues.live[DataRequestClient<[POTDResponseModel]>.self]

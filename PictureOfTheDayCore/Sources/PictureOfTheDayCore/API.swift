@@ -1,5 +1,4 @@
 import SwiftDotenv
-import Dependencies
 import EverythingButTheBagelCore
 import Foundation
 
@@ -7,11 +6,12 @@ public struct POTDResponseModel: Codable, Equatable {
   let copyright: String?
   let date: String
   let explanation: String
-  let hdurl: URL
+  let hdurl: URL?
   let mediaType: String
   let serviceVersion: String
   let title: String
   let url: URL
+  let thumbnailUrl: URL?
 
   enum CodingKeys: String, CodingKey {
     case copyright
@@ -22,5 +22,6 @@ public struct POTDResponseModel: Codable, Equatable {
     case serviceVersion = "service_version"
     case title
     case url
+    case thumbnailUrl = "thumbnail_url"
   }
 }

@@ -1,84 +1,51 @@
 import ComposableArchitecture
 import Foundation
 
-public enum ListViewModelStatus<ViewModel: Identifiable & Codable & Equatable>: Codable, Equatable {
-  case loading(data: IdentifiedArrayOf<ViewModel>, placeholders: IdentifiedArrayOf<ViewModel>)
-  case loaded(data: IdentifiedArrayOf<ViewModel>)
+public protocol ListResponse {
+  associatedtype Model
+  var modelList: [Model] { get }
 }
 
-extension ListViewModelStatus {
-  public var data: IdentifiedArrayOf<ViewModel> {
-    switch self {
-    case let .loaded(data): data
-    case let .loading(data, _): data
-    }
-  }
-
-  public var placeholders: IdentifiedArrayOf<ViewModel> {
-    switch self {
-    case .loaded: []
-    case let .loading(_, placeholders): placeholders
-        .prefix(max(1, 7 - data.count))
-        .toIdentifiedArray
-    }
-  }
-
-  /// When this element comes on screen, start loading the next page
-  /// Returns nil when there are no elements in `data` and the first element when there are fewer than 3
-  public var loadingElement: ViewModel? {
-    self.data[back: 2]
+extension Array: ListResponse {
+  public var modelList: [Element] {
+    return self
   }
 }
 
-/// Tells the underlying view model to append new items to its list or reset the list
-public enum NewResponseStrategy: Equatable {
-  case reset
-  case append
-}
-
-/// The point of delegate actions is to alert parent reducers to some action.
-public enum ListViewModelDelegate: Equatable {
-  /// In this case, the parent is being alerted that the view did load.
-  case task
-  case nextPage
-  case refresh
-}
-
-public protocol ListViewModelAction<ResponseModel> {
-  associatedtype ResponseModel
-
-  static func newResponse(_: ResponseModel, strategy: NewResponseStrategy) -> Self
-  static func delegate(_: ListViewModelDelegate) -> Self
-  static func scroll(position: Double) -> Self
-  static func isLoading(_: Bool) -> Self
-}
-
-public protocol ListViewModelState {
-  associatedtype ViewModel: Codable & Equatable & Identifiable
-  var status: ListViewModelStatus<ViewModel> { get set }
-  var scrollPosition: Double { get set }
+public protocol ViewModelConvertable {
+  associatedtype Model
+  init(model: Model)
 }
 
 @Reducer
 public struct ListFeatureBase<
-  ViewModel: Reducer,
-  ResponseType: Codable & Equatable
+  ViewModel: Codable & Equatable & Identifiable & ViewModelPlaceholders & ViewModelConvertable,
+  ResponseType: Codable & Equatable & ListResponse,
+  PathReducer: CaseReducer
 > where
-  ViewModel.State: Codable & Equatable,
-  ViewModel.Action: Equatable & ListViewModelAction,
-  ViewModel.Action.ResponseModel == ResponseType,
-  ViewModel.State: ListViewModelState {
+//  ViewModel.State: Codable & Equatable,
+//  ViewModel.Action: Equatable & ListViewModelAction,
+//  ViewModel.Action.ResponseModel == ResponseType,
+//  ViewModel.State: ListViewModelState,
+PathReducer.Action: Equatable,
+PathReducer.State: Equatable & Codable & CaseReducerState & ObservableState,
+PathReducer.State.StateReducer.Action == PathReducer.Action,
+ViewModel.Model == ResponseType.Model,
+ResponseType.Model: Codable & Equatable {
   public typealias DataSource = HTTPDataSourceReducer<ResponseType>
+  public typealias ViewModelReducer = ListFeatureViewModelReducer<ViewModel, PathReducer>
 
   @ObservableState
   public struct State: Codable, Equatable {
-    public var viewModel: ViewModel.State
+    public var viewModel: ViewModelReducer.State
     public var dataSource: DataSource.State
 
     public var nextPageUrl: URL?
 
+    fileprivate var lastResponse: [ResponseType.Model]?
+
     public init(
-      viewModel: ViewModel.State,
+      viewModel: ViewModelReducer.State,
       dataSource: HTTPDataSourceReducer<ResponseType>.State = .init(),
       nextPageUrl: URL? = nil
     ) {
@@ -89,17 +56,17 @@ public struct ListFeatureBase<
   }
 
   public enum Action: Equatable {
-    case viewModel(ViewModel.Action)
+    case viewModel(ViewModelReducer.Action)
     case dataSource(DataSource.Action)
     case refreshDataSource(DataSource.Action)
   }
 
   let baseUrl: String
   let errorSourceId: String
-  private(set) var viewModelReducer: ViewModel
+  private(set) var viewModelReducer: ViewModelReducer
   private(set) var nextPageGenerator: ((ResponseType) -> URL?)?
 
-  public init(baseUrl: String, errorSourceId: String, viewModelReducer: ViewModel) {
+  public init(baseUrl: String, errorSourceId: String, viewModelReducer: ViewModelReducer) {
     self.baseUrl = baseUrl
     self.errorSourceId = errorSourceId
     self.viewModelReducer = viewModelReducer
@@ -109,6 +76,15 @@ public struct ListFeatureBase<
     var copy = self
     copy.nextPageGenerator = generator
     return copy
+  }
+
+  private func handleNewResponse(state: inout State, response: ResponseType) -> [ViewModel] {
+    state.nextPageUrl = nextPageGenerator?(response)
+    state.lastResponse = response.modelList
+
+    return response.modelList.map { model in
+      ViewModel(model: model)
+    }
   }
 
   public var body: some Reducer<State, Action> {
@@ -128,19 +104,21 @@ public struct ListFeatureBase<
       // the view model, and user interactions from the view model to the data source
       Reduce { state, action in
         switch action {
+//        case let .viewModel(.delegate(.rowTapped(rowId))):
+
         case let .dataSource(.delegate(.response(response))):
-          state.nextPageUrl = nextPageGenerator?(response)
+          let vms = handleNewResponse(state: &state, response: response)
 
           return .merge(
-            .send(.viewModel(.newResponse(response, strategy: .append))),
+            .send(.viewModel(.newResponse(vms, strategy: .append))),
             .send(.viewModel(.isLoading(false)))
           )
 
         case let .refreshDataSource(.delegate(.response(response))):
-          state.nextPageUrl = nextPageGenerator?(response)
+          let vms = handleNewResponse(state: &state, response: response)
 
           return .merge(
-            .send(.viewModel(.newResponse(response, strategy: .reset))),
+            .send(.viewModel(.newResponse(vms, strategy: .reset))),
             .send(.viewModel(.isLoading(false)))
           )
 

@@ -1,26 +1,21 @@
 import ComposableArchitecture
 
-public protocol ViewModelPlaceholders {
-  static var placeholders: [Self] { get }
-}
-
-extension IdentifiedArrayOf where Element: ViewModelPlaceholders & Identifiable {
-  static var placeholders: IdentifiedArrayOf<Element> {
-    Element.placeholders.toIdentifiedArray
-  }
-}
-
 @Reducer
 public struct ListFeatureViewModelReducer<
   ViewModel: Codable & Equatable & Identifiable & ViewModelPlaceholders,
-  ResponseType: Codable & Equatable
-> {
+  PathReducer: CaseReducer
+> where
+PathReducer.Action: Equatable,
+PathReducer.State: Equatable & Codable & CaseReducerState & ObservableState,
+PathReducer.State.StateReducer.Action == PathReducer.Action {
   @ObservableState
   public struct State: Equatable, Codable, ListViewModelState {
     public let emptyListMessage: LocalizedTextState
 
     public var status: ListViewModelStatus<ViewModel>
     public var scrollPosition: Double
+
+    public var path: StackState<PathReducer.State>
 
     public var isLoading: Bool {
       switch status {
@@ -32,11 +27,13 @@ public struct ListFeatureViewModelReducer<
     public init(
       status: ListViewModelStatus<ViewModel> = .loaded(data: []),
       scrollPosition: Double = 0.0,
-      emptyListMessage: LocalizedTextState
+      emptyListMessage: LocalizedTextState,
+      path: StackState<PathReducer.State> = .init()
     ) {
       self.scrollPosition = scrollPosition
       self.status = status
       self.emptyListMessage = emptyListMessage
+      self.path = path
     }
 
     enum CodingKeys: CodingKey {
@@ -45,27 +42,26 @@ public struct ListFeatureViewModelReducer<
       // swiftlint:disable:next identifier_name
       case _scrollPosition
       case emptyListMessage
+      // swiftlint:disable:next identifier_name
+      case _path
     }
   }
 
   public enum Action: Equatable, ListViewModelAction {
-    case delegate(ListViewModelDelegate)
-    case newResponse(ResponseType, strategy: NewResponseStrategy = .append)
+    case delegate(ListViewModelDelegate<ViewModel.ID>)
+    case newResponse([ViewModel], strategy: NewResponseStrategy = .append)
     case scroll(position: Double)
     case isLoading(Bool)
+    case path(StackActionOf<PathReducer>)
   }
 
-  let viewModelGenerator: (ResponseType) -> [ViewModel]
-
-  public init(viewModelGenerator: @escaping (ResponseType) -> [ViewModel]) {
-    self.viewModelGenerator = viewModelGenerator
-  }
+  public init() {}
 
   public var body: some Reducer<State, Action> {
     Reduce { state, action in
       switch action {
       case let .newResponse(response, strategy):
-        let newVms = viewModelGenerator(response).toIdentifiedArray
+        let newVms = response.toIdentifiedArray
         switch strategy {
         case .append:
           state.status = .loaded(data: state.status.data + newVms)
@@ -87,9 +83,11 @@ public struct ListFeatureViewModelReducer<
         : .loaded(data: data)
         return .none
 
-      case .delegate:
+      case .delegate, .path:
         return .none
       }
+    }.forEach(\.path, action: \.path) {
+      PathReducer.State.StateReducer.body
     }
   }
 }

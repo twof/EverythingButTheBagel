@@ -12,6 +12,8 @@
 		2405CA6C2BB6029D00AC80AD /* BaseAppScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2405CA602BB5922900AC80AD /* BaseAppScreen.swift */; };
 		2421FC962BBA0C00000EFFD4 /* Sprinkles in Frameworks */ = {isa = PBXBuildFile; productRef = 2421FC952BBA0C00000EFFD4 /* Sprinkles */; };
 		247286062BC4A2FD00E35F17 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 247286052BC4A2FD00E35F17 /* LaunchScreen.storyboard */; };
+		247FB5962BDF5D01009A837D /* PictureOfTheDayUI in Frameworks */ = {isa = PBXBuildFile; productRef = 247FB5952BDF5D01009A837D /* PictureOfTheDayUI */; };
+		247FB5982BDF5D06009A837D /* PictureOfTheDayCore in Frameworks */ = {isa = PBXBuildFile; productRef = 247FB5972BDF5D06009A837D /* PictureOfTheDayCore */; };
 		248EB2DB2BC7752500D81670 /* EverythingButTheBagelUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 248EB2DA2BC7752500D81670 /* EverythingButTheBagelUITests.swift */; };
 		24A1FF0D2BCCDE1D00583C55 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24A1FF0C2BCCDE1D00583C55 /* Assets.xcassets */; };
 		24D775EC2BDB5AC200F5BA9B /* AppCore in Frameworks */ = {isa = PBXBuildFile; productRef = 24D775EB2BDB5AC200F5BA9B /* AppCore */; };
@@ -66,9 +68,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				247FB5962BDF5D01009A837D /* PictureOfTheDayUI in Frameworks */,
 				24D775EC2BDB5AC200F5BA9B /* AppCore in Frameworks */,
 				2421FC962BBA0C00000EFFD4 /* Sprinkles in Frameworks */,
 				24D775F12BDB602F00F5BA9B /* CatFactsUI in Frameworks */,
+				247FB5982BDF5D06009A837D /* PictureOfTheDayCore in Frameworks */,
 				2405CA6A2BB5925000AC80AD /* EverythingButTheBagelCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -210,6 +214,8 @@
 				2421FC952BBA0C00000EFFD4 /* Sprinkles */,
 				24D775EB2BDB5AC200F5BA9B /* AppCore */,
 				24D775F02BDB602F00F5BA9B /* CatFactsUI */,
+				247FB5952BDF5D01009A837D /* PictureOfTheDayUI */,
+				247FB5972BDF5D06009A837D /* PictureOfTheDayCore */,
 			);
 			productName = EverythingButTheBagel;
 			productReference = 24BA5B162BB006810062084E /* EverythingButTheBagel.app */;
@@ -615,6 +621,14 @@
 		2421FC952BBA0C00000EFFD4 /* Sprinkles */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Sprinkles;
+		};
+		247FB5952BDF5D01009A837D /* PictureOfTheDayUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PictureOfTheDayUI;
+		};
+		247FB5972BDF5D06009A837D /* PictureOfTheDayCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PictureOfTheDayCore;
 		};
 		24D775EB2BDB5AC200F5BA9B /* AppCore */ = {
 			isa = XCSwiftPackageProductDependency;

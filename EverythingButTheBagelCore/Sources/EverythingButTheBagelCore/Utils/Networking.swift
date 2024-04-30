@@ -19,6 +19,12 @@ struct Repository<ResponseType: Decodable>: DependencyKey, StaticLoggingContext 
     { request in
       let data = try await self.makeRequest(request)
 
+      // Sometimes we just want the data back, for example when downloading an image
+      // JSONDecoder can't parse raw data as JSON, so it falls over
+      if ResponseType.self == Data.self, let data = data as? ResponseType {
+        return data
+      }
+
       let decoder = JSONDecoder()
       return try logErrors {
         try decoder.decode(ResponseType.self, from: data)

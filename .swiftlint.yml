@@ -8,6 +8,7 @@ disabled_rules: # rule identifiers turned on by default to exclude from running
   - colon
   - comma
   - control_statement
+  - nesting
 opt_in_rules: # some rules are turned off by default, so you need to opt-in
   - empty_count # find all the available rules by running: `swiftlint rules`
 
@@ -47,4 +48,7 @@ type_name:
   allowed_symbols: ["_"] # these are allowed in type names
 identifier_name:
   min_length: 4
+  excluded:
+    - url
+    - vm
 reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, codeclimate, junit, html, emoji, sonarqube, markdown, github-actions-logging, summary)

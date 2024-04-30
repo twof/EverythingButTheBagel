@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import Foundation
+import EverythingButTheBagelCore
 
 public struct CatFactsResponseModel: Codable, Equatable {
   public let currentPage: Int
@@ -17,6 +18,12 @@ public struct CatFactsResponseModel: Codable, Equatable {
     case currentPage = "current_page"
     case data
     case nextPageUrl = "next_page_url"
+  }
+}
+
+extension CatFactsResponseModel: ListResponse {
+  public var modelList: [CatFactModel] {
+      self.data
   }
 }
 
