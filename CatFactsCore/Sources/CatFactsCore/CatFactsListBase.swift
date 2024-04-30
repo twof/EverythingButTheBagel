@@ -2,11 +2,6 @@ import ComposableArchitecture
 import Foundation
 import EverythingButTheBagelCore
 
-@Reducer(state: .codable, .equatable, action: .equatable)
-public enum EmptyPathReducer {
-  case none
-}
-
 public typealias CatFactsListBase = ListFeatureBase<CatFactViewModel, CatFactsResponseModel, EmptyPathReducer>
 
 public extension CatFactsListBase {

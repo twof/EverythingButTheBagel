@@ -23,10 +23,6 @@ public struct ListFeatureBase<
   ResponseType: Codable & Equatable & ListResponse,
   PathReducer: CaseReducer
 > where
-//  ViewModel.State: Codable & Equatable,
-//  ViewModel.Action: Equatable & ListViewModelAction,
-//  ViewModel.Action.ResponseModel == ResponseType,
-//  ViewModel.State: ListViewModelState,
 PathReducer.Action: Equatable,
 PathReducer.State: Equatable & Codable & CaseReducerState & ObservableState,
 PathReducer.State.StateReducer.Action == PathReducer.Action,
@@ -42,7 +38,7 @@ ResponseType.Model: Codable & Equatable {
 
     public var nextPageUrl: URL?
 
-    fileprivate var lastResponse: [ResponseType.Model]?
+    var lastResponse: [ResponseType.Model]?
 
     public init(
       viewModel: ViewModelReducer.State,

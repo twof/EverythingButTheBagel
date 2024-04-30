@@ -27,7 +27,7 @@ class ListFeatureViewModelReducerTests: XCTestCase {
       Model(fact: "Some cats are small")
     ]
 
-    await store.send(.newResponse(TestResponseModel(data: facts))) { state in
+    await store.send(.newResponse(facts.vms)) { state in
       state.status = .loaded(data: facts.map(ViewModel.init(model:)).toIdentifiedArray)
     }
   }
@@ -52,7 +52,7 @@ class ListFeatureViewModelReducerTests: XCTestCase {
       Model(fact: "Some cats are really small")
     ]
 
-    await store.send(.newResponse(TestResponseModel(data: newFacts), strategy: .reset)) { state in
+    await store.send(.newResponse(newFacts.vms, strategy: .reset)) { state in
       state.status = .loaded(data: newFacts.map(ViewModel.init(model:)).toIdentifiedArray)
     }
   }
@@ -64,7 +64,7 @@ class ListFeatureViewModelReducerTests: XCTestCase {
     }
 
     // No change expected
-    await store.send(.newResponse(TestResponseModel(data: [])))
+    await store.send(.newResponse([]))
   }
 
   @MainActor
@@ -78,7 +78,7 @@ class ListFeatureViewModelReducerTests: XCTestCase {
       Model(fact: "Some cats are small")
     ]
 
-    await store.send(.newResponse(TestResponseModel(data: facts))) { state in
+    await store.send(.newResponse(facts.vms)) { state in
       state.status = .loaded(data: facts.map(ViewModel.init(model:)).toIdentifiedArray)
     }
 
@@ -87,7 +87,7 @@ class ListFeatureViewModelReducerTests: XCTestCase {
       Model(fact: "Some cats are very small")
     ]
 
-    await store.send(.newResponse(TestResponseModel(data: newFacts))) { state in
+    await store.send(.newResponse(newFacts.vms)) { state in
       state.status = .loaded(data: state.status.data + newFacts.map(ViewModel.init(model:)).toIdentifiedArray)
     }
   }
@@ -164,14 +164,14 @@ class ListFeatureViewModelReducerTests: XCTestCase {
   }
 }
 
-typealias TestViewModelReducer = ListFeatureViewModelReducer<ViewModel, TestResponseModel>
+typealias TestViewModelReducer = ListFeatureViewModelReducer<ViewModel, EmptyPathReducer>
 
 struct ViewModel: Codable, Identifiable, Equatable {
   var id: String { fact }
   let fact: String
 }
 
-extension ViewModel {
+extension ViewModel: ViewModelConvertable {
   init(model: Model) {
     self.fact = model.fact
   }
@@ -191,6 +191,12 @@ struct Model: Codable, Equatable {
   let fact: String
 }
 
+extension Array<Model> {
+  var vms: [ViewModel] {
+    self.map(ViewModel.init(model:))
+  }
+}
+
 struct TestResponseModel: Codable, Equatable {
   let data: [Model]
   let nextPageUrl: URL?
@@ -198,6 +204,12 @@ struct TestResponseModel: Codable, Equatable {
   init(data: [Model] = [], nextPageUrl: URL? = nil) {
     self.data = data
     self.nextPageUrl = nextPageUrl
+  }
+}
+
+extension TestResponseModel: ListResponse {
+  var modelList: [Model] {
+    data
   }
 }
 
@@ -219,8 +231,6 @@ extension TestViewModelReducer.State {
 
 extension TestViewModelReducer {
   static var test: TestViewModelReducer {
-    ListFeatureViewModelReducer { response in
-      response.data.map(ViewModel.init(model:))
-    }
+    ListFeatureViewModelReducer()
   }
 }

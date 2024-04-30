@@ -13,9 +13,10 @@ class ListFeatureBaseTests: XCTestCase {
 
     await store.send(.dataSource(.delegate(.response(response)))) { state in
       state.nextPageUrl = response.nextPageUrl?.appending(queryItems: [.init(name: "limit", value: "40")])
+      state.lastResponse = response.modelList
     }
 
-    await store.receive(.viewModel(.newResponse(response))) { state in
+    await store.receive(.viewModel(.newResponse(response.data.vms))) { state in
       state.viewModel.status = .loaded(
         data: response.data.map(ViewModel.init(model:)).toIdentifiedArray
       )
@@ -120,11 +121,11 @@ class ListFeatureBaseTests: XCTestCase {
     await store.send(.viewModel(.delegate(.refresh)))
     await store.receive(\.refreshDataSource.fetch)
     await store.receive(.refreshDataSource(.delegate(.response(TestResponseModel.mock))))
-    await store.receive(.viewModel(.newResponse(TestResponseModel.mock, strategy: .reset)))
+    await store.receive(.viewModel(.newResponse(TestResponseModel.mock.data.vms, strategy: .reset)))
   }
 }
 
-typealias Feature = ListFeatureBase<TestViewModelReducer, TestResponseModel>
+typealias Feature = ListFeatureBase<ViewModel, TestResponseModel, EmptyPathReducer>
 
 extension Feature {
   static var test: Feature {

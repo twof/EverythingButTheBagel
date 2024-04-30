@@ -1,11 +1,11 @@
 import ComposableArchitecture
 
-//@Reducer
-//public struct ChildListFeatureVMReducer<
+// @Reducer
+// public struct ChildListFeatureVMReducer<
 //  ViewModel: Codable & Equatable & Identifiable & ViewModelPlaceholders,
 //  ResponseType: Codable & Equatable,
 //  PathReducer: CaseReducer
-//> where
+// > where
 //  PathReducer.Action: Equatable,
 //  PathReducer.State: Equatable & Codable & CaseReducerState & ObservableState,
 //  PathReducer.State.StateReducer.Action == PathReducer.Action {
@@ -91,4 +91,4 @@ import ComposableArchitecture
 //      PathReducer.State.StateReducer.body
 //    }
 //  }
-//}
+// }

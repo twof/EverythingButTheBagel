@@ -8,11 +8,12 @@ import PictureOfTheDayCore
 @ViewBuilder public func PictureOfTheDayListView(
   store: StoreOf<PictureOfTheDayViewModelReducer>
 ) -> some View {
-  ChildListView(
+  GenericListView(
     store: store
   ) { picture in
     PictureOfTheDayListItem(viewModel: picture)
-  } destination: { store in
+  }
+  .destination { store in
     switch store.case {
     case let .detail(detail):
       POTDDetailView(

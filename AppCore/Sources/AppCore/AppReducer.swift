@@ -4,7 +4,7 @@ import CatFactsCore
 
 @Reducer
 public struct AppReducer {
-  public typealias CatBase = ListFeatureBase<CatFactsListViewModelReducer, CatFactsResponseModel>
+  public typealias CatBase = ListFeatureBase<CatFactViewModel, CatFactsResponseModel, EmptyPathReducer>
 
   @ObservableState
   public struct State: Equatable, Codable {
