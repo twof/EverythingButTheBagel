@@ -2,7 +2,9 @@ import SwiftDotenv
 import EverythingButTheBagelCore
 import Foundation
 
-public struct POTDResponseModel: Codable, Equatable {
+public struct POTDResponseModel: Codable, Equatable, Identifiable {
+  public var id: String { title }
+
   let copyright: String?
   let date: String
   let explanation: String

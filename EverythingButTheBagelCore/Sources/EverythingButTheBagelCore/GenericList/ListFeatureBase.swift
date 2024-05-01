@@ -27,7 +27,8 @@ PathReducer.Action: Equatable,
 PathReducer.State: Equatable & Codable & CaseReducerState & ObservableState,
 PathReducer.State.StateReducer.Action == PathReducer.Action,
 ViewModel.Model == ResponseType.Model,
-ResponseType.Model: Codable & Equatable {
+ResponseType.Model: Codable & Equatable & Identifiable,
+ResponseType.Model.ID == ViewModel.ID {
   public typealias DataSource = HTTPDataSourceReducer<ResponseType>
   public typealias ViewModelReducer = ListFeatureViewModelReducer<ViewModel, PathReducer>
 
@@ -38,7 +39,7 @@ ResponseType.Model: Codable & Equatable {
 
     public var nextPageUrl: URL?
 
-    var lastResponse: [ResponseType.Model]?
+    var lastResponse: IdentifiedArrayOf<ResponseType.Model>?
 
     public init(
       viewModel: ViewModelReducer.State,
@@ -61,6 +62,7 @@ ResponseType.Model: Codable & Equatable {
   let errorSourceId: String
   private(set) var viewModelReducer: ViewModelReducer
   private(set) var nextPageGenerator: ((ResponseType) -> URL?)?
+  private(set) var navigateTo: ((ResponseType.Model) -> PathReducer.State?)?
 
   public init(baseUrl: String, errorSourceId: String, viewModelReducer: ViewModelReducer) {
     self.baseUrl = baseUrl
@@ -74,9 +76,15 @@ ResponseType.Model: Codable & Equatable {
     return copy
   }
 
+  public func onTap(_ navigateTo: @escaping (ResponseType.Model) -> PathReducer.State?) -> Self {
+    var copy = self
+    copy.navigateTo = navigateTo
+    return copy
+  }
+
   private func handleNewResponse(state: inout State, response: ResponseType) -> [ViewModel] {
     state.nextPageUrl = nextPageGenerator?(response)
-    state.lastResponse = response.modelList
+    state.lastResponse = response.modelList.toIdentifiedArray
 
     return response.modelList.map { model in
       ViewModel(model: model)
@@ -100,7 +108,16 @@ ResponseType.Model: Codable & Equatable {
       // the view model, and user interactions from the view model to the data source
       Reduce { state, action in
         switch action {
-//        case let .viewModel(.delegate(.rowTapped(rowId))):
+        case let .viewModel(.delegate(.rowTapped(rowId))):
+          guard
+            let item = state.lastResponse?[id: rowId],
+            let destination = navigateTo?(item)
+          else {
+            return .none
+          }
+
+
+          return .send(.viewModel(.navigateToPath(destination)))
 
         case let .dataSource(.delegate(.response(response))):
           let vms = handleNewResponse(state: &state, response: response)

@@ -37,7 +37,16 @@ public extension PictureOfTheDayBase {
   /// Default instance of the reducer
   /// On scolling to the next page, requests another set of random pictures
   static var potd: PictureOfTheDayBase {
-    PictureOfTheDayBase().nextPage { _ in urlGenerator() }
+    PictureOfTheDayBase()
+      .nextPage { _ in urlGenerator() }
+      .onTap { responseModel in
+          .detail(PictureOfTheDayDetailBase.State(
+            asyncImage: .init(
+              imageUrl: responseModel.thumbnailUrl ?? responseModel.hdurl ?? responseModel.url
+            ),
+            viewModel: .init(title: responseModel.title, description: responseModel.explanation)
+          ))
+      }
   }
 }
 

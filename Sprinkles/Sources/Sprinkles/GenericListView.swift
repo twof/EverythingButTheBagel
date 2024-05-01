@@ -35,19 +35,11 @@ PathReducer.State.StateReducer.Action == PathReducer.Action {
       ControllableScrollView(scrollModel: $scrollController) {
         LazyVStack(spacing: 0) {
           ForEach(store.status.data) { viewModel in
-            content(viewModel)
-              .if(viewModel == store.status.loadingElement) { view in
-                view.onAppear {
-                  store.send(.delegate(.nextPage))
-                }
-              }
+            row(viewModel: viewModel)
           }
 
           ForEach(store.status.placeholders) { viewModel in
             content(viewModel)
-          }
-          .if(store.isLoading) { view in
-            view
               .redacted(reason: .placeholder)
               .shimmering()
           }
@@ -75,5 +67,17 @@ PathReducer.State.StateReducer.Action == PathReducer.Action {
         store.send(.delegate(.refresh))
       }
     } destination: { destination?($0) }
+  }
+
+  @ViewBuilder func row(viewModel: ViewModel) -> some View {
+    content(viewModel)
+      .onTapGesture {
+        store.send(.delegate(.rowTapped(viewModel.id)))
+      }
+      .if(viewModel == store.status.loadingElement) { view in
+        view.onAppear {
+          store.send(.delegate(.nextPage))
+        }
+      }
   }
 }

@@ -53,6 +53,7 @@ PathReducer.State.StateReducer.Action == PathReducer.Action {
     case scroll(position: Double)
     case isLoading(Bool)
     case path(StackActionOf<PathReducer>)
+    case navigateToPath(PathReducer.State)
   }
 
   public init() {}
@@ -81,6 +82,10 @@ PathReducer.State.StateReducer.Action == PathReducer.Action {
         state.status = isLoading
         ? .loading(data: data, placeholders: .placeholders)
         : .loaded(data: data)
+        return .none
+
+      case let .navigateToPath(path):
+        state.path.append(path)
         return .none
 
       case .delegate, .path:
