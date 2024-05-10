@@ -1,6 +1,7 @@
 import SwiftUI
 import ComposableArchitecture
 import EverythingButTheBagelCore
+import UIKit
 
 public struct AsyncImageLoader: View {
   let store: StoreOf<AsyncImageViewModel>

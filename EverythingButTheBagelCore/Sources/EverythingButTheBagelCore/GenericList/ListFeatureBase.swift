@@ -116,7 +116,6 @@ ResponseType.Model.ID == ViewModel.ID {
             return .none
           }
 
-
           return .send(.viewModel(.navigateToPath(destination)))
 
         case let .dataSource(.delegate(.response(response))):

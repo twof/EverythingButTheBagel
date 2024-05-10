@@ -23,7 +23,7 @@ public struct CatFactsResponseModel: Codable, Equatable {
 
 extension CatFactsResponseModel: ListResponse {
   public var modelList: [CatFactModel] {
-      self.data
+    self.data
   }
 }
 
@@ -37,4 +37,8 @@ extension CatFactsResponseModel {
 
 public struct CatFactModel: Codable, Equatable {
   let fact: String
+}
+
+extension CatFactModel: Identifiable {
+  public var id: String { fact }
 }
