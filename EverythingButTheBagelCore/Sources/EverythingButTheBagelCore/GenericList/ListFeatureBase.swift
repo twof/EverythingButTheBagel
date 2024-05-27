@@ -17,18 +17,20 @@ public protocol ViewModelConvertable {
   init(model: Model)
 }
 
+// swiftlint:disable opening_brace
 @Reducer
 public struct ListFeatureBase<
   ViewModel: Codable & Equatable & Identifiable & ViewModelPlaceholders & ViewModelConvertable,
   ResponseType: Codable & Equatable & ListResponse,
   PathReducer: CaseReducer
 > where
-PathReducer.Action: Equatable,
-PathReducer.State: Equatable & Codable & CaseReducerState & ObservableState,
-PathReducer.State.StateReducer.Action == PathReducer.Action,
-ViewModel.Model == ResponseType.Model,
-ResponseType.Model: Codable & Equatable & Identifiable,
-ResponseType.Model.ID == ViewModel.ID {
+  PathReducer.Action: Equatable,
+  PathReducer.State: Equatable & Codable & CaseReducerState & ObservableState,
+  PathReducer.State.StateReducer.Action == PathReducer.Action,
+  ViewModel.Model == ResponseType.Model,
+  ResponseType.Model: Codable & Equatable & Identifiable,
+  ResponseType.Model.ID == ViewModel.ID
+{
   public typealias DataSource = HTTPDataSourceReducer<ResponseType>
   public typealias ViewModelReducer = ListFeatureViewModelReducer<ViewModel, PathReducer>
 
@@ -173,4 +175,8 @@ ResponseType.Model.ID == ViewModel.ID {
       }
     }
   }
+}
+
+extension ListFeatureBase where ViewModel: Reducer {
+
 }

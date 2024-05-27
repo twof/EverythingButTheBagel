@@ -1,12 +1,10 @@
 import XCTest
 @testable import PictureOfTheDayCore
+import ComposableArchitecture
 
 final class PictureOfTheDayCoreTests: XCTestCase {
-    func testExample() throws {
-        // XCTest Documentation
-        // https://developer.apple.com/documentation/xctest
 
-        // Defining Test Cases and Test Methods
-        // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
-    }
+  @MainActor
+  func testExample() async throws {
+  }
 }

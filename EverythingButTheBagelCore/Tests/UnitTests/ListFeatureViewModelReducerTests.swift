@@ -187,7 +187,8 @@ extension ViewModel: ViewModelPlaceholders {
   }
 }
 
-struct Model: Codable, Equatable {
+struct Model: Codable, Equatable, Identifiable {
+  var id: String { fact }
   let fact: String
 }
 

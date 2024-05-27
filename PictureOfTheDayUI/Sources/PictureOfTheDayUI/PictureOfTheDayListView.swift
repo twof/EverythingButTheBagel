@@ -4,49 +4,80 @@ import EverythingButTheBagelCore
 import Sprinkles
 import PictureOfTheDayCore
 
-// swiftlint:disable:next identifier_name
-@ViewBuilder public func PictureOfTheDayListView(
-  store: StoreOf<PictureOfTheDayViewModelReducer>
-) -> some View {
-  GenericListView(
-    store: store
-  ) { picture in
-    PictureOfTheDayListItem(viewModel: picture)
+public struct POTDItemStores: Identifiable {
+  public var id: String {
+    cellContent.state.id
   }
-  .destination { store in
-    switch store.case {
-    case let .detail(detail):
-      POTDDetailView(
-        store: detail.scope(state: \.viewModel, action: \.viewModel),
-        imageStore: detail
-          .scope(state: \.asyncImage, action: \.asyncImage)
-          .scope(state: \.viewModel, action: \.viewModel)
-      )
+  public let cellContent: StoreOf<PictureOfTheDayItemViewModel>
+  public let asyncImage: StoreOf<AsyncImageViewModel>
+}
+
+public struct PictureOfTheDayListView: View {
+  let elements: IdentifiedArrayOf<POTDItemStores>
+
+  public var body: some View {
+    List(elements) { store in
+      PictureOfTheDayListItem(text: PictureOfTheDayText(store: store.cellContent), image: AsyncImageLoader(store: store.asyncImage))
     }
   }
 }
 
-// Configurable preview
-#Preview {
-  PictureOfTheDayListView(
-    store: Store(
-      initialState: PictureOfTheDayViewModelReducer.State(),
-      reducer: {
-        PictureOfTheDayViewModelReducer.potd
-      }
-    )
+typealias ListElements = IdentifiedArrayOf<POTDItemStores>
+
+func produceStores() -> ListElements {
+  let store = Store(
+    initialState: POTDListAttemptBase.State(elements: [
+      .init(title: "hello world", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
+           ),
+      .init(title: "hello", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
+           )
+    ]),
+    reducer: { POTDListAttemptBase() }
   )
-  .preferredColorScheme(.dark)
-  .environment(\.locale, .init(identifier: "es"))
+
+  return store.scope(state: \.elements, action: \.element)
+    .reduce(
+      into: ListElements(uniqueElements: [])
+    ) { (result: inout ListElements, childStore) in
+      let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
+      let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
+      result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
+    }
 }
 
-// Preview with live dependencies
+// Live preview
 #Preview {
-  let store = Store(
-    initialState: PictureOfTheDayBase.State(),
-    reducer: { PictureOfTheDayBase.potd }
-  )
   return PictureOfTheDayListView(
-    store: store.scope(state: \.viewModel, action: \.viewModel)
+    elements: produceStores()
+  )
+//  .preferredColorScheme(.dark)
+//  .environment(\.locale, .init(identifier: "es"))
+}
+
+// Configurable preview
+#Preview {
+  return PictureOfTheDayListView(
+    elements: [
+      .init(
+        cellContent: .init(
+          initialState: PictureOfTheDayItemViewModel.State(title: "Hello World"),
+          reducer: { PictureOfTheDayItemViewModel() }
+        ),
+        asyncImage: .init(
+          initialState: AsyncImageViewModel.State(isLoading: true),
+          reducer: { AsyncImageViewModel() }
+        )
+      ),
+      .init(
+        cellContent: .init(
+          initialState: PictureOfTheDayItemViewModel.State(title: "Hello"),
+          reducer: { PictureOfTheDayItemViewModel() }
+        ),
+        asyncImage: .init(
+          initialState: AsyncImageViewModel.State(isLoading: true),
+          reducer: { AsyncImageViewModel() }
+        )
+      )
+    ]
   )
 }

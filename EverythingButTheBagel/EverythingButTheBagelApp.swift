@@ -8,7 +8,7 @@ import PictureOfTheDayCore
 
 @main
 struct EverythingButTheBagelApp: App {
-  let store: StoreOf<PictureOfTheDayDetailBase>
+  let store: StoreOf<PictureOfTheDayItemBase>
 
   init() {
     self.store = Self.createStore()
@@ -31,12 +31,16 @@ struct EverythingButTheBagelApp: App {
 //      Text("Hello")
 //        .withError(vm: .init(id: "0", message: "Oh no! Something went wrong"))
 
-      POTDDetailView(
-        store: store.scope(state: \.viewModel, action: \.viewModel),
-        imageStore: store
-          .scope(state: \.asyncImage, action: \.asyncImage)
-          .scope(state: \.viewModel, action: \.viewModel)
-      )
+//      PictureOfTheDayListItem(
+//        store: store.scope(state: \.viewModel, action: \.viewModel)
+//      )
+
+//      POTDDetailView(
+//        store: store.scope(state: \.viewModel, action: \.viewModel),
+//        imageStore: store
+//          .scope(state: \.asyncImage, action: \.asyncImage)
+//          .scope(state: \.viewModel, action: \.viewModel)
+//      )
 
 //      BaseAppScreen(store: store.scope(state: \.errors, action: \.errors), view: {
 //        CatFactsListView(store: store.scope(state: \.catFacts.viewModel, action: \.catFacts.viewModel))
@@ -44,25 +48,36 @@ struct EverythingButTheBagelApp: App {
     }
   }
 
-  static func createStore() -> StoreOf<PictureOfTheDayDetailBase> {
-    let documentCache = DocumentsCache(key: "app-state")
-
-    let base = Store(
-      initialState: PictureOfTheDayDetailBase.State(
-        asyncImage: AsyncImageBase.State(
-          imageUrl: URL(
-            string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg"
-          )!
-        ),
-        viewModel: PictureOfTheDayDetailVM.State(
-          title: "Hello world",
-          description: "A long description"
-        )
-      )) {
-        PictureOfTheDayDetailBase()
+  static func createStore() -> StoreOf<PictureOfTheDayItemBase> {
+    let store = Store(
+      initialState: PictureOfTheDayItemBase.State(
+        title: "Hey this is an image",
+        asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
+      ),
+      reducer: {
+        PictureOfTheDayItemBase()
       }
+    )
 
-    return base
+    return store
+//    let documentCache = DocumentsCache(key: "app-state")
+//
+//    let base = Store(
+//      initialState: PictureOfTheDayDetailBase.State(
+//        asyncImage: AsyncImageBase.State(
+//          imageUrl: URL(
+//            string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg"
+//          )!
+//        ),
+//        viewModel: PictureOfTheDayDetailVM.State(
+//          title: "Hello world",
+//          description: "A long description"
+//        )
+//      )) {
+//        PictureOfTheDayDetailBase()
+//      }
+//
+//    return base
 
     // Load from cache and write to it on every action
 //    return Store(

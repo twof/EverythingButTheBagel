@@ -4,14 +4,16 @@ import EverythingButTheBagelCore
 import ComposableArchitecture
 import ControllableScrollView
 
+// swiftlint:disable opening_brace
 public struct GenericListView<
   ViewModel: Codable & Equatable & Identifiable & ViewModelPlaceholders,
   PathReducer: CaseReducer,
   Content: View
 >: View where
-PathReducer.Action: Equatable,
-PathReducer.State: Equatable & Codable & CaseReducerState & ObservableState,
-PathReducer.State.StateReducer.Action == PathReducer.Action {
+  PathReducer.Action: Equatable,
+  PathReducer.State: Equatable & Codable & CaseReducerState & ObservableState,
+  PathReducer.State.StateReducer.Action == PathReducer.Action
+{
   public typealias ViewModelReducer = ListFeatureViewModelReducer<ViewModel, PathReducer>
   @Bindable var store: StoreOf<ViewModelReducer>
   @State var scrollController = ScrollTrackerModel()

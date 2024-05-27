@@ -2,7 +2,7 @@ import ComposableArchitecture
 import Foundation
 import EverythingButTheBagelCore
 
-public typealias PictureOfTheDayViewModelReducer = ListFeatureViewModelReducer<PictureOfTheDayViewModel, POTDPath>
+public typealias PictureOfTheDayViewModelReducer = ListFeatureViewModelReducer<PictureOfTheDayItemViewModel.State, POTDPath>
 
 public extension PictureOfTheDayViewModelReducer {
   static var potd: PictureOfTheDayViewModelReducer {

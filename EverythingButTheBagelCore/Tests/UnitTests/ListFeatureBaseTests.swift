@@ -13,7 +13,7 @@ class ListFeatureBaseTests: XCTestCase {
 
     await store.send(.dataSource(.delegate(.response(response)))) { state in
       state.nextPageUrl = response.nextPageUrl?.appending(queryItems: [.init(name: "limit", value: "40")])
-      state.lastResponse = response.modelList
+      state.lastResponse = response.modelList.toIdentifiedArray
     }
 
     await store.receive(.viewModel(.newResponse(response.data.vms))) { state in

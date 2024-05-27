@@ -27,7 +27,11 @@ public struct AsyncImageBase {
     case viewModel(AsyncImageViewModel.Action)
   }
 
-  public init() {}
+  public var viewModel: AsyncImageViewModel
+
+  public init() {
+    self.viewModel = AsyncImageViewModel()
+  }
 
   public var body: some ReducerOf<AsyncImageBase> {
     CombineReducers {
@@ -36,17 +40,20 @@ public struct AsyncImageBase {
       }
 
       Scope(state: \.viewModel, action: \.viewModel) {
-        AsyncImageViewModel()
+        self.viewModel
       }
 
       Reduce { state, action in
+        print(action)
         switch action {
         case .viewModel(.delegate(.task)):
+          print("fetch")
           return .send(.dataSource(.fetch(
             url: state.imageUrl.absoluteString,
-            cachePolicy: .reloadIgnoringLocalCacheData
+            cachePolicy: .returnCacheDataElseLoad
           )))
         case let .dataSource(.delegate(.response(data))):
+          print("response")
           return .merge(
             .send(.viewModel(.newResponse(data))),
             .send(.viewModel(.isLoading(false)))
@@ -56,6 +63,7 @@ public struct AsyncImageBase {
           return .send(.viewModel(.isLoading(false)))
 
         case .dataSource(.fetch):
+          print("fetch")
           return .send(.viewModel(.isLoading(true)))
 
         case .dataSource, .viewModel:
@@ -63,5 +71,18 @@ public struct AsyncImageBase {
         }
       }
     }
+  }
+}
+
+extension Shared: Codable where Value: Codable {
+  public func encode(to encoder: any Encoder) throws {
+    var container = encoder.singleValueContainer()
+    try container.encode(self.wrappedValue)
+  }
+
+  public init(from decoder: any Decoder) throws {
+    let container = try decoder.singleValueContainer()
+    let val = try container.decode(Value.self)
+    self.init(val)
   }
 }

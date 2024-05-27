@@ -16,6 +16,8 @@
   - `GarlicTestUtils` (within `EverythingButTheBagelCore`) contains utilities for unit and integration testing.
 - Business logic packages have high test coverage.
 - This structure helps with build time as the project scales because developers can work within a single package, and the compiler can more effectively cache for incremental builds.
+  - At least in theory that would be true. At the time of writing, [SPM isn't well suited for this task](https://medium.com/bumble-tech/scaling-ios-at-bumble-76754fa874f7).
+  - I'm considering switching to Bazel instead.
 
 ## UI
 - During loading, a spinner is displayed and shimmering placeholders are shown to the user.

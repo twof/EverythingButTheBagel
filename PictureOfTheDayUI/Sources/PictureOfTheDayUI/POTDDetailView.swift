@@ -18,9 +18,12 @@ public struct POTDDetailView: View {
 
   public var body: some View {
     VStack(alignment: .leading) {
-      Text(store.title)
-
       AsyncImageLoader(store: imageStore)
+        .aspectRatio(contentMode: .fit)
+        .frame(width: 300, height: 300)
+
+      Text(store.title)
+        .font(.title)
 
       Text(store.description)
     }

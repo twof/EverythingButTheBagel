@@ -1,13 +1,15 @@
 import ComposableArchitecture
 
+// swiftlint:disable opening_brace
 @Reducer
 public struct ListFeatureViewModelReducer<
   ViewModel: Codable & Equatable & Identifiable & ViewModelPlaceholders,
   PathReducer: CaseReducer
 > where
-PathReducer.Action: Equatable,
-PathReducer.State: Equatable & Codable & CaseReducerState & ObservableState,
-PathReducer.State.StateReducer.Action == PathReducer.Action {
+  PathReducer.Action: Equatable,
+  PathReducer.State: Equatable & Codable & CaseReducerState & ObservableState,
+  PathReducer.State.StateReducer.Action == PathReducer.Action
+{
   @ObservableState
   public struct State: Equatable, Codable, ListViewModelState {
     public let emptyListMessage: LocalizedTextState

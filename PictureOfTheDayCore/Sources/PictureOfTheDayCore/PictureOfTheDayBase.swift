@@ -2,7 +2,11 @@ import ComposableArchitecture
 import Foundation
 import EverythingButTheBagelCore
 
-public typealias PictureOfTheDayBase = ListFeatureBase<PictureOfTheDayViewModel, [POTDResponseModel], POTDPath>
+public typealias PictureOfTheDayBase = ListFeatureBase<
+  PictureOfTheDayItemViewModel.State,
+  [POTDResponseModel],
+  POTDPath
+>
 
 public extension PictureOfTheDayBase {
   private static let errorSourceId = "PictureOfTheDayDataSource"
