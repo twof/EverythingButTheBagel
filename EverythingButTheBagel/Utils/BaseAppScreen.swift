@@ -34,6 +34,6 @@ struct BaseAppScreen<InnerView: View>: View {
   return BaseAppScreen(
     store: store.scope(state: \.errors, action: \.errors)
   ) {
-    CatFactsListView(store: store.scope(state: \.catFacts.viewModel, action: \.catFacts.viewModel))
+//    CatFactsListView(store: store.scope(state: \.catFacts.viewModel, action: \.catFacts.viewModel))
   }
 }

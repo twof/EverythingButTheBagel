@@ -5,16 +5,6 @@ import PictureOfTheDayCore
 import EverythingButTheBagelCore
 import Sprinkles
 
-public struct PictureOfTheDayTextBase: View {
-  let store: StoreOf<PictureOfTheDayItemBase>
-
-  public var body: some View {
-    PictureOfTheDayText(
-      store: store.scope(state: \.viewModel, action: \.viewModel)
-    )
-  }
-}
-
 public struct PictureOfTheDayText: View {
   let store: StoreOf<PictureOfTheDayItemViewModel>
 
@@ -39,6 +29,11 @@ public struct PictureOfTheDayListItem: View {
     self.image = image
   }
 
+  public init(stores: POTDItemStores) {
+    self.text = PictureOfTheDayText(store: stores.cellContent)
+    self.image = AsyncImageLoader(store: stores.asyncImage)
+  }
+
   public var body: some View {
     HStack(alignment: .top) {
       image
@@ -50,33 +45,6 @@ public struct PictureOfTheDayListItem: View {
     .padding()
   }
 }
-
-// struct POTDListViewBase: View {
-//  let store: StoreOf<POTDListAttemptBase>
-//
-//  var body: some View {
-//    /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Hello, world!@*/Text("Hello, world!")/*@END_MENU_TOKEN@*/
-//  }
-// }
-//
-// struct POTDListView: View {
-//  let store: StoreOf<POTDListAttemptBase>
-//
-//  var body: some View {
-//    List {
-//      ForEachStore(store.scope(state: \.elements, action: \.element)) { store in
-//        PictureOfTheDayListItem(
-//          store: store.scope(state: \.viewModel, action: \.viewModel)
-////          ,
-////          asyncImage: store.scope(
-////            state: \.asyncImage.viewModel,
-////            action: \.asyncImage.viewModel
-////          )
-//        )
-//      }
-//    }
-//  }
-// }
 
 public extension PictureOfTheDayText {
   static let loadingPlaceholder: some View = longMock
@@ -100,7 +68,7 @@ public extension PictureOfTheDayText {
 public extension PictureOfTheDayListItem {
   static let mock = PictureOfTheDayListItem(text: .longMock, image: .mock)
 
-  static let loadingPlaceholder: some View = PictureOfTheDayListItem(text: .longMock, image: .mock)
+  static let loadingPlaceholder: some View = mock
     .redacted(reason: .placeholder)
     .shimmering()
     .accessibilityLabel("Loading")

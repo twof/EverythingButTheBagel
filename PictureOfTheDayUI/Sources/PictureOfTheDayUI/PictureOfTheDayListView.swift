@@ -4,6 +4,8 @@ import EverythingButTheBagelCore
 import Sprinkles
 import PictureOfTheDayCore
 
+public typealias POTDListElements = IdentifiedArrayOf<POTDItemStores>
+
 public struct POTDItemStores: Identifiable {
   public var id: String {
     cellContent.state.id
@@ -13,18 +15,25 @@ public struct POTDItemStores: Identifiable {
 }
 
 public struct PictureOfTheDayListView: View {
-  let elements: IdentifiedArrayOf<POTDItemStores>
+  let elements: POTDListElements
+  let vm: StoreOf<POTDListAttemptVM>
+
+  public init(elements: POTDListElements, vm: StoreOf<POTDListAttemptVM>) {
+    self.elements = elements
+    self.vm = vm
+  }
 
   public var body: some View {
     List(elements) { store in
-      PictureOfTheDayListItem(text: PictureOfTheDayText(store: store.cellContent), image: AsyncImageLoader(store: store.asyncImage))
+      PictureOfTheDayListItem(stores: store)
+    }.task {
+      await vm.send(.delegate(.task)).finish()
     }
   }
 }
 
-typealias ListElements = IdentifiedArrayOf<POTDItemStores>
-
-func produceStores() -> ListElements {
+// Live preview
+#Preview {
   let store = Store(
     initialState: POTDListAttemptBase.State(elements: [
       .init(title: "hello world", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
@@ -35,49 +44,55 @@ func produceStores() -> ListElements {
     reducer: { POTDListAttemptBase() }
   )
 
-  return store.scope(state: \.elements, action: \.element)
-    .reduce(
-      into: ListElements(uniqueElements: [])
-    ) { (result: inout ListElements, childStore) in
-      let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
-      let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
-      result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
-    }
-}
-
-// Live preview
-#Preview {
   return PictureOfTheDayListView(
-    elements: produceStores()
+    elements: store.scope(state: \.elements, action: \.element)
+      .reduce(
+        into: POTDListElements(uniqueElements: [])
+      ) { (result: inout POTDListElements, childStore) in
+        let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
+        let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
+        result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
+      },
+    vm: store.scope(state: \.viewModel, action: \.viewModel)
   )
-//  .preferredColorScheme(.dark)
-//  .environment(\.locale, .init(identifier: "es"))
 }
 
 // Configurable preview
 #Preview {
   return PictureOfTheDayListView(
     elements: [
-      .init(
-        cellContent: .init(
-          initialState: PictureOfTheDayItemViewModel.State(title: "Hello World"),
-          reducer: { PictureOfTheDayItemViewModel() }
-        ),
-        asyncImage: .init(
-          initialState: AsyncImageViewModel.State(isLoading: true),
-          reducer: { AsyncImageViewModel() }
-        )
-      ),
-      .init(
-        cellContent: .init(
-          initialState: PictureOfTheDayItemViewModel.State(title: "Hello"),
-          reducer: { PictureOfTheDayItemViewModel() }
-        ),
-        asyncImage: .init(
-          initialState: AsyncImageViewModel.State(isLoading: true),
-          reducer: { AsyncImageViewModel() }
-        )
-      )
-    ]
+      .init(title: "Hello world"),
+      .init(title: "Hello")
+    ],
+    vm: Store(initialState: POTDListAttemptVM.State(), reducer: { POTDListAttemptVM() })
   )
+  .preferredColorScheme(.dark)
+  .environment(\.locale, .init(identifier: "es"))
+}
+
+public extension POTDItemStores {
+  init(title: String) {
+    self.init(
+      cellContent: .init(
+        initialState: PictureOfTheDayItemViewModel.State(title: title),
+        reducer: { PictureOfTheDayItemViewModel() }
+      ),
+      asyncImage: .init(
+        initialState: AsyncImageViewModel.State(isLoading: true),
+        reducer: { AsyncImageViewModel() }
+      )
+    )
+  }
+}
+
+public extension Store where State == POTDListAttemptBase.State, Action == POTDListAttemptBase.Action {
+  func listElements() -> POTDListElements {
+    self.scope(state: \.elements, action: \.element).reduce(
+      into: POTDListElements(uniqueElements: [])
+    ) { (result: inout POTDListElements, childStore) in
+      let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
+      let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
+      result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
+    }
+  }
 }

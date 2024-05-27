@@ -9,36 +9,19 @@ public struct PictureOfTheDayItemViewModel {
   public struct State: Codable, Equatable, Identifiable {
     public var id: String { title }
     public let title: String
-//    @Shared public var asyncImage: AsyncImageViewModel.State
 
     public init(
       title: String
-//      ,
-//      asyncImage: Shared<AsyncImageViewModel.State>
     ) {
       self.title = title
-//      self._asyncImage = asyncImage
     }
   }
 
-  public enum Action: Equatable {
-//    case asyncImage(AsyncImageViewModel.Action)
-  }
+  public enum Action: Equatable {}
 
-//  @Shared var asyncImageScope: Scope<State, Action, AsyncImageBase>
-
-  public init(
-//    asyncImageScope: Shared<Scope<State, Action, AsyncImageBase>>
-  ) {
-//    self._asyncImageScope = asyncImageScope
-  }
+  public init() {}
 
   public var body: some ReducerOf<Self> {
-//    asyncImageScope
-    Reduce { state, action in
-      let state = state
-      let action = action
-      return .none
-    }
+    EmptyReducer()
   }
 }

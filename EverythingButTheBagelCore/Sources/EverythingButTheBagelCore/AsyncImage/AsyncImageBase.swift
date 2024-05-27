@@ -27,11 +27,7 @@ public struct AsyncImageBase {
     case viewModel(AsyncImageViewModel.Action)
   }
 
-  public var viewModel: AsyncImageViewModel
-
-  public init() {
-    self.viewModel = AsyncImageViewModel()
-  }
+  public init() { }
 
   public var body: some ReducerOf<AsyncImageBase> {
     CombineReducers {
@@ -40,7 +36,7 @@ public struct AsyncImageBase {
       }
 
       Scope(state: \.viewModel, action: \.viewModel) {
-        self.viewModel
+        AsyncImageViewModel()
       }
 
       Reduce { state, action in

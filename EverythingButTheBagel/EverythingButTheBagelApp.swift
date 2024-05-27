@@ -8,7 +8,8 @@ import PictureOfTheDayCore
 
 @main
 struct EverythingButTheBagelApp: App {
-  let store: StoreOf<PictureOfTheDayItemBase>
+//  let store: StoreOf<PictureOfTheDayItemBase>
+  let store: StoreOf<AppReducer>
 
   init() {
     self.store = Self.createStore()
@@ -42,25 +43,29 @@ struct EverythingButTheBagelApp: App {
 //          .scope(state: \.viewModel, action: \.viewModel)
 //      )
 
-//      BaseAppScreen(store: store.scope(state: \.errors, action: \.errors), view: {
+      BaseAppScreen(store: store.scope(state: \.errors, action: \.errors), view: {
+        PictureOfTheDayListView(
+          elements: store.scope(state: \.potd, action: \.potd).listElements(),
+          vm: store.scope(state: \.potd.viewModel, action: \.potd.viewModel)
+        )
 //        CatFactsListView(store: store.scope(state: \.catFacts.viewModel, action: \.catFacts.viewModel))
-//      })
+      })
     }
   }
 
-  static func createStore() -> StoreOf<PictureOfTheDayItemBase> {
-    let store = Store(
-      initialState: PictureOfTheDayItemBase.State(
-        title: "Hey this is an image",
-        asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
-      ),
-      reducer: {
-        PictureOfTheDayItemBase()
-      }
-    )
-
-    return store
-//    let documentCache = DocumentsCache(key: "app-state")
+  static func createStore() -> StoreOf<AppReducer> {
+//    let store = Store(
+//      initialState: PictureOfTheDayItemBase.State(
+//        title: "Hey this is an image",
+//        asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
+//      ),
+//      reducer: {
+//        PictureOfTheDayItemBase()
+//      }
+//    )
+//
+//    return store
+    let documentCache = DocumentsCache(key: "app-state")
 //
 //    let base = Store(
 //      initialState: PictureOfTheDayDetailBase.State(
@@ -80,13 +85,13 @@ struct EverythingButTheBagelApp: App {
 //    return base
 
     // Load from cache and write to it on every action
-//    return Store(
-//      initialState:
+    return Store(
+      initialState:
 //        documentCache.load() ??
-//        AppReducer.State(),
-//      reducer: {
-//        AppReducer().caching(cache: documentCache)
-//      }
-//    )
+        AppReducer.State(),
+      reducer: {
+        AppReducer().caching(cache: documentCache)
+      }
+    )
   }
 }
