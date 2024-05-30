@@ -6,11 +6,9 @@ public struct AsyncImageViewModel {
   @ObservableState
   public struct State: Equatable, Codable {
     public var imageData: Data?
-    public var isLoading: Bool = false
 
-    public init(imageData: Data? = nil, isLoading: Bool) {
+    public init(imageData: Data? = nil) {
       self.imageData = imageData
-      self.isLoading = isLoading
     }
   }
 
@@ -21,7 +19,6 @@ public struct AsyncImageViewModel {
 
     case delegate(Delegate)
     case newResponse(Data)
-    case isLoading(Bool)
   }
 
   public init() {}
@@ -29,9 +26,6 @@ public struct AsyncImageViewModel {
   public var body: some ReducerOf<AsyncImageViewModel> {
     Reduce { state, action in
       switch action {
-      case let .isLoading(isLoading):
-        state.isLoading = isLoading
-        return .none
       case let .newResponse(data):
         state.imageData = data
         return .none

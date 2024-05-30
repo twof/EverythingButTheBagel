@@ -23,7 +23,7 @@ final class PictureOfTheDayItemBaseTests: XCTestCase {
     // After task gets hit, async image logic is triggered which is tested elsewhere
     store.exhaustivity = .off
 
-    await store.send(.viewModel(.asyncImage(.delegate(.task))))
+    await store.send(.asyncImage(.viewModel(.delegate(.task))))
     await store.receive(\.asyncImage.dataSource.fetch)
   }
 }

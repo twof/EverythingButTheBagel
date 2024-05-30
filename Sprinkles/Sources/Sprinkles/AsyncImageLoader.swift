@@ -41,7 +41,7 @@ public extension AsyncImageLoader {
     .shimmering()
     .accessibilityLabel("Loading")
 
-  static let mock = AsyncImageLoader(store: .init(initialState: AsyncImageViewModel.State(isLoading: false), reducer: { AsyncImageViewModel() }))
+  static let mock = AsyncImageLoader(store: .init(initialState: AsyncImageViewModel.State(), reducer: { AsyncImageViewModel() }))
 }
 
 #Preview {

@@ -17,7 +17,15 @@ public struct PictureOfTheDayItemViewModel {
     }
   }
 
-  public enum Action: Equatable {}
+  public enum Action: Equatable {
+    @CasePathable
+    public enum Delegate: Equatable {
+      case didTap
+      case didAppear
+    }
+
+    case delegate(Delegate)
+  }
 
   public init() {}
 

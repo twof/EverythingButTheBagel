@@ -42,9 +42,8 @@ public struct POTDDetailView: View {
       }
     ),
     imageStore: Store(
-      initialState: AsyncImageViewModel.State(
-        isLoading: false
-      ), reducer: {
+      initialState: AsyncImageViewModel.State(),
+      reducer: {
         AsyncImageViewModel()
       }
     )

@@ -3,10 +3,11 @@ import ComposableArchitecture
 import EverythingButTheBagelCore
 import Sprinkles
 import PictureOfTheDayCore
+import ControllableScrollView
 
-public typealias POTDListElements = IdentifiedArrayOf<POTDItemStores>
+public typealias POTDListElements = ListViewModelStatus<POTDItemStores>
 
-public struct POTDItemStores: Identifiable {
+public struct POTDItemStores: Identifiable, Equatable {
   public var id: String {
     cellContent.state.id
   }
@@ -16,7 +17,9 @@ public struct POTDItemStores: Identifiable {
 
 public struct PictureOfTheDayListView: View {
   let elements: POTDListElements
-  let vm: StoreOf<POTDListAttemptVM>
+  @Bindable var vm: StoreOf<POTDListAttemptVM>
+  @State var scrollController = ScrollTrackerModel()
+  private var destination: ((StoreOf<POTDPath>) -> AnyView?)?
 
   public init(elements: POTDListElements, vm: StoreOf<POTDListAttemptVM>) {
     self.elements = elements
@@ -24,34 +27,74 @@ public struct PictureOfTheDayListView: View {
   }
 
   public var body: some View {
-    List(elements) { store in
-      PictureOfTheDayListItem(stores: store)
-    }.task {
-      await vm.send(.delegate(.task)).finish()
-    }
+    NavigationStack(path: $vm.scope(state: \.path, action: \.path)) {
+      ControllableScrollView(scrollModel: $scrollController) {
+        LazyVStack(spacing: 0) {
+          ForEach(elements.data) { stores in
+            row(store: stores).id(stores.id)
+          }
+
+          ForEach(elements.placeholders) { _ in
+            PictureOfTheDayListItem.loadingPlaceholder
+          }
+
+          if elements == .loaded(data: []) {
+            emptyListView(localizedText: vm.state.emptyListMessage)
+          }
+        }
+      }
+      .task {
+        // Scroll to set position on load
+        self.scrollController.scroll(position: vm.scrollPosition)
+        await vm.send(.delegate(.task)).finish()
+      }
+      .onChange(of: scrollController.position) { _, newValue in
+        vm.send(.scroll(position: newValue))
+      }
+      .refreshable {
+        vm.send(.delegate(.refresh))
+      }
+    } destination: { destination?($0) }
+  }
+
+  @ViewBuilder func row(store: POTDItemStores) -> some View {
+    PictureOfTheDayListItem(stores: store)
+      .onTapGesture {
+        store.cellContent.send(.delegate(.didTap))
+      }
+      .onAppear {
+        store.cellContent.send(.delegate(.didAppear))
+      }
   }
 }
 
 // Live preview
 #Preview {
   let store = Store(
-    initialState: POTDListAttemptBase.State(elements: [
-      .init(title: "hello world", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
-           ),
-      .init(title: "hello", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
-           )
-    ]),
+    initialState: POTDListAttemptBase.State(
+      elements: .loaded(
+        data: [
+          .init(title: "hello world", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
+               ),
+          .init(title: "hello", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
+               )
+        ]
+      )
+    ),
     reducer: { POTDListAttemptBase() }
   )
 
   return PictureOfTheDayListView(
-    elements: store.scope(state: \.elements, action: \.element)
+    elements: store.scope(state: \.elements.data, action: \.element)
       .reduce(
-        into: POTDListElements(uniqueElements: [])
-      ) { (result: inout POTDListElements, childStore) in
+        .loaded(data: [])
+      ) { (result: POTDListElements, childStore) in
         let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
         let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
-        result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
+
+        let data = result.data
+
+        return .loaded(data: data + [POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)])
       },
     vm: store.scope(state: \.viewModel, action: \.viewModel)
   )
@@ -60,10 +103,10 @@ public struct PictureOfTheDayListView: View {
 // Configurable preview
 #Preview {
   return PictureOfTheDayListView(
-    elements: [
+    elements: .loaded(data: [
       .init(title: "Hello world"),
       .init(title: "Hello")
-    ],
+    ]),
     vm: Store(initialState: POTDListAttemptVM.State(), reducer: { POTDListAttemptVM() })
   )
   .preferredColorScheme(.dark)
@@ -78,7 +121,7 @@ public extension POTDItemStores {
         reducer: { PictureOfTheDayItemViewModel() }
       ),
       asyncImage: .init(
-        initialState: AsyncImageViewModel.State(isLoading: true),
+        initialState: AsyncImageViewModel.State(),
         reducer: { AsyncImageViewModel() }
       )
     )
@@ -87,12 +130,14 @@ public extension POTDItemStores {
 
 public extension Store where State == POTDListAttemptBase.State, Action == POTDListAttemptBase.Action {
   func listElements() -> POTDListElements {
-    self.scope(state: \.elements, action: \.element).reduce(
-      into: POTDListElements(uniqueElements: [])
-    ) { (result: inout POTDListElements, childStore) in
+    let stores = self.scope(state: \.elements.data, action: \.element).reduce(
+      into: IdentifiedArrayOf(uniqueElements: [])
+    ) { (result: inout IdentifiedArrayOf<POTDItemStores>, childStore) in
       let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
       let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
       result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
     }
+
+    return .loaded(data: stores)
   }
 }

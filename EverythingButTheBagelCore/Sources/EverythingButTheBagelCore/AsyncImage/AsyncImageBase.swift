@@ -14,7 +14,7 @@ public struct AsyncImageBase {
     public init(
       imageUrl: URL,
       dataSource: DataSource.State = .init(),
-      viewModel: AsyncImageViewModel.State = .init(isLoading: false)
+      viewModel: AsyncImageViewModel.State = .init()
     ) {
       self.imageUrl = imageUrl
       self.dataSource = dataSource
@@ -40,27 +40,14 @@ public struct AsyncImageBase {
       }
 
       Reduce { state, action in
-        print(action)
         switch action {
         case .viewModel(.delegate(.task)):
-          print("fetch")
           return .send(.dataSource(.fetch(
             url: state.imageUrl.absoluteString,
             cachePolicy: .returnCacheDataElseLoad
           )))
         case let .dataSource(.delegate(.response(data))):
-          print("response")
-          return .merge(
-            .send(.viewModel(.newResponse(data))),
-            .send(.viewModel(.isLoading(false)))
-          )
-
-        case .dataSource(.delegate(.error)):
-          return .send(.viewModel(.isLoading(false)))
-
-        case .dataSource(.fetch):
-          print("fetch")
-          return .send(.viewModel(.isLoading(true)))
+          return .send(.viewModel(.newResponse(data)))
 
         case .dataSource, .viewModel:
           return .none

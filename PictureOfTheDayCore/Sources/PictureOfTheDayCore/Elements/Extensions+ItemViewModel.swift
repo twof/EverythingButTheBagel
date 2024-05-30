@@ -7,8 +7,6 @@ extension PictureOfTheDayItemViewModel.State: ViewModelPlaceholders {
       title: "Example of a long fact Example of a long fact Example of a long fact"
       + "Example of a long fact Example of a long fact Example of a long fact Example of a long"
       + "fact Example of a long fact \($0)"
-//      ,
-//      asyncImage: .init(.init(isLoading: false))
     )
   }
 }
@@ -19,7 +17,6 @@ extension PictureOfTheDayItemViewModel.State: ViewModelConvertable {
   public init(model: POTDResponseModel) {
     self.init(
       title: model.title
-//      , asyncImage: .init(.init(isLoading: false))
     )
   }
 }

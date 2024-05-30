@@ -1,15 +1,27 @@
 import IdentifiedCollections
 
-public enum ListViewModelStatus<ViewModel: Identifiable & Codable & Equatable>: Codable, Equatable {
+public enum ListViewModelStatus<ViewModel: Identifiable> {
   case loading(data: IdentifiedArrayOf<ViewModel>, placeholders: IdentifiedArrayOf<ViewModel>)
   case loaded(data: IdentifiedArrayOf<ViewModel>)
 }
 
 extension ListViewModelStatus {
   public var data: IdentifiedArrayOf<ViewModel> {
-    switch self {
-    case let .loaded(data): data
-    case let .loading(data, _): data
+    get {
+      switch self {
+      case let .loaded(data): data
+      case let .loading(data, _): data
+      }
+    }
+
+    set {
+
+      switch self {
+      case .loaded:
+        self = .loaded(data: newValue)
+      case let .loading(_, placeholders):
+        self = .loading(data: newValue, placeholders: placeholders)
+      }
     }
   }
 
@@ -28,3 +40,27 @@ extension ListViewModelStatus {
     self.data[back: 2]
   }
 }
+
+extension ListViewModelStatus {
+  public func appending(_ newData: ViewModel) -> Self {
+    switch self {
+    case let .loaded(data):
+      return .loaded(data: data + [newData])
+    case let .loading(data, _):
+      return .loading(data: data + [newData], placeholders: placeholders)
+    }
+  }
+
+  public func appending(contentsOf newData: [ViewModel]) -> Self {
+    switch self {
+    case let .loaded(data):
+      return .loaded(data: data + newData)
+    case let .loading(data, _):
+      return .loading(data: data + newData, placeholders: placeholders)
+    }
+  }
+}
+
+extension ListViewModelStatus: Codable where ViewModel: Codable { }
+
+extension ListViewModelStatus: Equatable where ViewModel: Equatable { }
