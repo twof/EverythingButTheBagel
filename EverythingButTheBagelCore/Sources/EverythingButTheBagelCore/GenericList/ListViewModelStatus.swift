@@ -15,7 +15,6 @@ extension ListViewModelStatus {
     }
 
     set {
-
       switch self {
       case .loaded:
         self = .loaded(data: newValue)

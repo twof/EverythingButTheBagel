@@ -14,13 +14,21 @@ public struct POTDListAttemptBase {
     var dataModels: IdentifiedArrayOf<POTDResponseModel> = []
 
     public init(
-      elements: ListViewModelStatus<PictureOfTheDayItemBase.State>,
+      elements: ListViewModelStatus<PictureOfTheDayItemBase.State> = .loaded(data: []),
       viewModel: POTDListAttemptVM.State = .init(),
       dataSource: DataSource.State = .init()
     ) {
       self.elements = elements
       self.viewModel = viewModel
       self.dataSource = dataSource
+    }
+
+    mutating func setLoading(_ isLoading: Bool) {
+      let data = elements.data
+
+      elements = isLoading
+        ? .loading(data: data, placeholders: .placeholders)
+        : .loaded(data: data)
     }
   }
 
@@ -51,6 +59,7 @@ public struct POTDListAttemptBase {
       case .viewModel(.delegate(.task)):
         // Only do the initial fetch if we're not loading from the cache
         if state.elements.data.isEmpty {
+          state.setLoading(true)
           return .send(.dataSource(.fetch(url: Self.urlString, cachePolicy: .useProtocolCachePolicy)))
         }
         return .none
@@ -58,14 +67,17 @@ public struct POTDListAttemptBase {
       case let .dataSource(.delegate(.response(response))):
         state.elements = state.elements.appending(contentsOf: response.map(\.listItemBase))
         state.dataModels.append(contentsOf: response)
+        state.setLoading(false)
         return .none
 
       case .viewModel(.delegate(.refresh)):
+        state.setLoading(true)
         return .send(.refreshDataSource(.fetch(url: Self.urlString, cachePolicy: .useProtocolCachePolicy)))
 
       case let .refreshDataSource(.delegate(.response(response))):
         state.elements = .loaded(data: response.map(\.listItemBase).toIdentifiedArray)
         state.dataModels = response.toIdentifiedArray
+        state.setLoading(false)
         return .none
 
       case let .element(.element(id, .viewModel(.delegate(.didAppear)))):

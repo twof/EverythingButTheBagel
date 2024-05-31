@@ -21,6 +21,6 @@ extension PictureOfTheDayItemViewModel.State: ViewModelConvertable {
   }
 }
 
-extension IdentifiedArrayOf<PictureOfTheDayItemViewModel.State> {
-  public static let placeholders = PictureOfTheDayItemViewModel.State.placeholders.toIdentifiedArray
-}
+// extension IdentifiedArrayOf<PictureOfTheDayItemViewModel.State> {
+//  public static let placeholders = PictureOfTheDayItemViewModel.State.placeholders.toIdentifiedArray
+// }

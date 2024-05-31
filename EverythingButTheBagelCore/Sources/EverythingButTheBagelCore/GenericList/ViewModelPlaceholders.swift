@@ -4,7 +4,7 @@ public protocol ViewModelPlaceholders {
   static var placeholders: [Self] { get }
 }
 
-extension IdentifiedArrayOf where Element: ViewModelPlaceholders & Identifiable {
+public extension IdentifiedArrayOf where Element: ViewModelPlaceholders & Identifiable {
   static var placeholders: IdentifiedArrayOf<Element> {
     Element.placeholders.toIdentifiedArray
   }

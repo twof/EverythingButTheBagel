@@ -33,6 +33,10 @@ public struct PictureOfTheDayListView: View {
             row(store: stores).id(stores.id)
           }
 
+          // Put one loading placeholder at the bottom of the list to indicate loading
+          // for infinite scrolling
+          PictureOfTheDayListItem.loadingPlaceholder
+
           ForEach(elements.placeholders) { _ in
             PictureOfTheDayListItem.loadingPlaceholder
           }
@@ -145,6 +149,17 @@ public extension Store where State == POTDListAttemptBase.State, Action == POTDL
       result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
     }
 
-    return .loaded(data: stores)
+    let placeholderStores = self.scope(state: \.elements.placeholders, action: \.element).reduce(
+      into: IdentifiedArrayOf(uniqueElements: [])
+    ) { (result: inout IdentifiedArrayOf<POTDItemStores>, childStore) in
+      let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
+      let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
+      result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
+    }
+
+    return switch self.elements {
+    case .loading: .loading(data: stores, placeholders: placeholderStores)
+    case .loaded: .loaded(data: stores)
+    }
   }
 }
