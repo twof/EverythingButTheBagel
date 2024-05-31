@@ -14,7 +14,8 @@ public struct POTDListAttemptBase {
     public init(
       elements: ListViewModelStatus<PictureOfTheDayItemBase.State>,
       viewModel: POTDListAttemptVM.State = .init(),
-      dataSource: DataSource.State = .init()) {
+      dataSource: DataSource.State = .init()
+    ) {
       self.elements = elements
       self.viewModel = viewModel
       self.dataSource = dataSource
@@ -25,6 +26,7 @@ public struct POTDListAttemptBase {
     case element(IdentifiedActionOf<PictureOfTheDayItemBase>)
     case viewModel(POTDListAttemptVM.Action)
     case dataSource(DataSource.Action)
+    case refreshDataSource(DataSource.Action)
   }
 
   public init() {}
@@ -38,14 +40,44 @@ public struct POTDListAttemptBase {
       DataSource(errorSourceId: "POTDDataSource")
     }
 
+    Scope(state: \.dataSource, action: \.refreshDataSource) {
+      DataSource(errorSourceId: "POTDDataSource")
+    }
+
     Reduce { state, action in
       switch action {
       case .viewModel(.delegate(.task)):
-        return .send(.dataSource(.fetch(url: Self.urlString, cachePolicy: NSURLRequest.CachePolicy.useProtocolCachePolicy)))
+        // Only do the initial fetch if we're not loading from the cache
+        if state.elements.data.isEmpty {
+          return .send(.dataSource(.fetch(url: Self.urlString, cachePolicy: .useProtocolCachePolicy)))
+        }
+        return .none
+
       case let .dataSource(.delegate(.response(response))):
         state.elements = state.elements.appending(contentsOf: response.map { PictureOfTheDayItemBase.State(title: $0.title, asyncImage: AsyncImageBase.State(imageUrl: $0.url)) })
         return .none
-      case .element, .dataSource, .viewModel:
+
+      case .viewModel(.delegate(.refresh)):
+        return .send(.refreshDataSource(.fetch(url: Self.urlString, cachePolicy: .useProtocolCachePolicy)))
+
+      case let .refreshDataSource(.delegate(.response(response))):
+        state.elements = .loaded(data: response.map { PictureOfTheDayItemBase.State(title: $0.title, asyncImage: AsyncImageBase.State(imageUrl: $0.url)) }.toIdentifiedArray)
+        return .none
+
+      case let .element(.element(id, .viewModel(.delegate(.didAppear)))):
+        // Figure out how close we are to the bottom and prefetch if it's time
+        guard let index = state.elements.data.index(id: id) else {
+          return .none
+        }
+
+        // Start loading three from the bottom
+        if index == state.elements.data.endIndex - 3 {
+          return .send(.dataSource(.fetch(url: Self.urlString, cachePolicy: .useProtocolCachePolicy)))
+        }
+
+        return .none
+
+      case .element, .dataSource, .viewModel, .refreshDataSource:
         return .none
       }
     }.forEach(\.elements.data, action: \.element) {
