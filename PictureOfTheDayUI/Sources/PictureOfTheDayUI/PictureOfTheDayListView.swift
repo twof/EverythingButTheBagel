@@ -19,7 +19,6 @@ public struct PictureOfTheDayListView: View {
   let elements: POTDListElements
   @Bindable var vm: StoreOf<POTDListAttemptVM>
   @State var scrollController = ScrollTrackerModel()
-  private var destination: ((StoreOf<POTDPath>) -> AnyView?)?
 
   public init(elements: POTDListElements, vm: StoreOf<POTDListAttemptVM>) {
     self.elements = elements
@@ -54,7 +53,15 @@ public struct PictureOfTheDayListView: View {
       .refreshable {
         vm.send(.delegate(.refresh))
       }
-    } destination: { destination?($0) }
+    } destination: { path in
+      switch path.case {
+      case let .detail(store):
+        POTDDetailView(
+          store: store.scope(state: \.viewModel, action: \.viewModel),
+          imageStore: store.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
+        )
+      }
+    }
   }
 
   @ViewBuilder func row(store: POTDItemStores) -> some View {

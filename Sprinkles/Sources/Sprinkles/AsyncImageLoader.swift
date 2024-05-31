@@ -22,6 +22,7 @@ public struct AsyncImageLoader: View {
     if let data = store.imageData, let image = UIImage(data: data) {
       Image(uiImage: image)
         .resizable()
+        .aspectRatio(contentMode: .fit)
     } else {
       Rectangle()
         .foregroundStyle(Color.gray.opacity(0.7))

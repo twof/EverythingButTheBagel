@@ -11,6 +11,8 @@ public struct POTDListAttemptBase {
     public var viewModel: POTDListAttemptVM.State
     public var dataSource: DataSource.State
 
+    var dataModels: IdentifiedArrayOf<POTDResponseModel> = []
+
     public init(
       elements: ListViewModelStatus<PictureOfTheDayItemBase.State>,
       viewModel: POTDListAttemptVM.State = .init(),
@@ -54,14 +56,16 @@ public struct POTDListAttemptBase {
         return .none
 
       case let .dataSource(.delegate(.response(response))):
-        state.elements = state.elements.appending(contentsOf: response.map { PictureOfTheDayItemBase.State(title: $0.title, asyncImage: AsyncImageBase.State(imageUrl: $0.url)) })
+        state.elements = state.elements.appending(contentsOf: response.map(\.listItemBase))
+        state.dataModels.append(contentsOf: response)
         return .none
 
       case .viewModel(.delegate(.refresh)):
         return .send(.refreshDataSource(.fetch(url: Self.urlString, cachePolicy: .useProtocolCachePolicy)))
 
       case let .refreshDataSource(.delegate(.response(response))):
-        state.elements = .loaded(data: response.map { PictureOfTheDayItemBase.State(title: $0.title, asyncImage: AsyncImageBase.State(imageUrl: $0.url)) }.toIdentifiedArray)
+        state.elements = .loaded(data: response.map(\.listItemBase).toIdentifiedArray)
+        state.dataModels = response.toIdentifiedArray
         return .none
 
       case let .element(.element(id, .viewModel(.delegate(.didAppear)))):
@@ -77,6 +81,21 @@ public struct POTDListAttemptBase {
 
         return .none
 
+      case let .element(.element(id, .viewModel(.delegate(.didTap)))):
+        guard let element = state.dataModels[id: id] else {
+          return .none
+        }
+        return .send(
+          .viewModel(
+            .navigateToPath(
+              .detail(PictureOfTheDayDetailBase.State(
+                asyncImage: .init(imageUrl: element.hdurl ?? element.url),
+                viewModel: .init(title: element.title, description: element.explanation)
+              ))
+            )
+          )
+        )
+
       case .element, .dataSource, .viewModel, .refreshDataSource:
         return .none
       }
@@ -91,8 +110,10 @@ public struct POTDListAttemptBase {
   }
 }
 
-extension ListViewModelStatus where ViewModel == PictureOfTheDayItemBase.State {
-
+extension POTDResponseModel {
+  var listItemBase: PictureOfTheDayItemBase.State {
+    PictureOfTheDayItemBase.State(title: title, asyncImage: AsyncImageBase.State(imageUrl: thumbnailUrl ?? url))
+  }
 }
 
 @Reducer
