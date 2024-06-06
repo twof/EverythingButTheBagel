@@ -16,14 +16,16 @@ let package = Package(
   ],
   dependencies: [
     .package(path: "../EverythingButTheBagelCore"),
-    .package(path: "../CatFactsCore")
+    .package(path: "../CatFactsCore"),
+    .package(path: "../PictureOfTheDayCore")
   ],
   targets: [
     .target(
       name: "AppCore",
       dependencies: [
         .product(name: "EverythingButTheBagelCore", package: "EverythingButTheBagelCore"),
-        .product(name: "CatFactsCore", package: "CatFactsCore")
+        .product(name: "CatFactsCore", package: "CatFactsCore"),
+        .product(name: "PictureOfTheDayCore", package: "PictureOfTheDayCore")
       ]
     ),
     .testTarget(

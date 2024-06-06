@@ -20,7 +20,8 @@ let package = Package(
     ),
     .package(url: "https://github.com/twof/FunctionSpy", branch: "main"),
     .package(url: "https://github.com/thebarndog/swift-dotenv.git", from: "2.0.0"),
-    .package(path: "../EverythingButTheBagelCore")
+    .package(path: "../EverythingButTheBagelCore"),
+    .package(url: "https://github.com/realm/SwiftLint.git", from: "0.55.1")
   ],
   targets: [
     .target(
@@ -32,9 +33,27 @@ let package = Package(
         ),
         .product(name: "SwiftDotenv", package: "swift-dotenv"),
         .product(name: "EverythingButTheBagelCore", package: "EverythingButTheBagelCore")
-      ],
+      ]
+      ,
       resources: [
-        .process("prod.env")
+        .copy("yo.env"),
+        .copy("test.txt"),
+        .copy("Localizable.xcstrings")
+      ],
+      plugins: [
+        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint"),
+        .plugin(name: "LocalizationProcessing")
+      ]
+    ),
+    .executableTarget(
+      name: "ProcessStringCatalogs",
+      dependencies: ["EverythingButTheBagelCore"]
+    ),
+    .plugin(
+      name: "LocalizationProcessing",
+      capability: .buildTool(),
+      dependencies: [
+        "ProcessStringCatalogs"
       ]
     ),
     .testTarget(
