@@ -3,15 +3,9 @@ import Dependencies
 
 public struct LocalizedTextState: Codable, Equatable {
   @Dependency(\.locale) var locale: Locale
+  @Dependency(\.stringCatalog) var stringCatalogClient
   var text: String
-  let stringCatalogLocation: URL
-
-  /// Manually parses out the string catalog to give us tighter control over String localization
-  /// in previews and tests
-  var stringCatalog: StringCatalogModel {
-    let data = try! Data(contentsOf: self.stringCatalogLocation)
-    return try! JSONDecoder().decode(StringCatalogModel.self, from: data)
-  }
+  var stringCatalogLocation: URL
 
   enum CodingKeys: CodingKey {
     case text
@@ -26,11 +20,42 @@ public struct LocalizedTextState: Codable, Equatable {
   /// Returns the string localized to the current locale, or the original string if a
   /// localization doesn't exist
   public var localized: String {
-    stringCatalog.strings[text]?.localizations?[locale.identifier]?.stringUnit.value
-      ?? text
+    let stringCatalog = stringCatalogClient(stringCatalogLocation)
+    let localizedString = stringCatalog.strings[text]?.localizations?[locale.identifier]?.stringUnit.value
+
+    return localizedString ?? text
   }
 
   public static func == (lhs: LocalizedTextState, rhs: LocalizedTextState) -> Bool {
     lhs.text == rhs.text
+  }
+}
+
+/// Load and cache string catalogs from disk
+/// Manually parses out the string catalog to give us tighter control over String localization in previews and tests.
+///
+/// If we don't do this, it's not possible to control copy from our view models while also controlling locale in previews and tests.
+struct StringCatalogClient: DependencyKey {
+  static var catalogCache: [URL: StringCatalogModel] = [:]
+
+  static var liveValue: (URL) -> StringCatalogModel = { location in
+    if let cachedCatalog = catalogCache[location] {
+      return cachedCatalog
+    }
+
+    let data = try! Data(contentsOf: location)
+    let catalog = try! JSONDecoder().decode(StringCatalogModel.self, from: data)
+    catalogCache[location] = catalog
+
+    return catalog
+  }
+
+  static var previewValue: (URL) -> StringCatalogModel = unimplemented("string catalog")
+}
+
+extension DependencyValues {
+  var stringCatalog: (URL) -> StringCatalogModel {
+    get { self[StringCatalogClient.self] }
+    set { self[StringCatalogClient.self] = newValue }
   }
 }

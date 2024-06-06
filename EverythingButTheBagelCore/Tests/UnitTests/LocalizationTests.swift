@@ -17,6 +17,7 @@ class LocalizationTests: XCTestCase {
     // Check that english localization matches original
     withDependencies { dependencies in
       dependencies.locale = .init(identifier: "en")
+      dependencies.stringCatalog = { _ in .mock }
     } operation: {
       XCTAssertEqual(state.localized, state.text)
     }
@@ -24,6 +25,7 @@ class LocalizationTests: XCTestCase {
     // Check that spanish localization does not match
     withDependencies { dependencies in
       dependencies.locale = .init(identifier: "es")
+      dependencies.stringCatalog = { _ in .mock }
     } operation: {
       XCTAssertNotEqual(state.localized, state.text)
     }
@@ -38,6 +40,7 @@ class LocalizationTests: XCTestCase {
     // Check that english localization matches original
     withDependencies { dependencies in
       dependencies.locale = .init(identifier: "en")
+      dependencies.stringCatalog = { _ in .mock }
     } operation: {
       XCTAssertEqual(state.localized, state.text)
     }
@@ -45,6 +48,7 @@ class LocalizationTests: XCTestCase {
     // Check that spanish localization does not match
     withDependencies { dependencies in
       dependencies.locale = .init(identifier: "es")
+      dependencies.stringCatalog = { _ in .mock }
     } operation: {
       XCTAssertEqual(state.localized, state.text)
     }
@@ -63,6 +67,7 @@ class LocalizationTests: XCTestCase {
     // Check that english localization matches original
     withDependencies { dependencies in
       dependencies.locale = .init(identifier: "en")
+      dependencies.stringCatalog = { _ in .mock }
     } operation: {
       XCTAssertEqual(state.localized, state.text)
     }
@@ -70,6 +75,7 @@ class LocalizationTests: XCTestCase {
     // Check that spanish localization does not match
     withDependencies { dependencies in
       dependencies.locale = .init(identifier: "fake locale")
+      dependencies.stringCatalog = { _ in .mock }
     } operation: {
       XCTAssertEqual(state.localized, state.text)
     }
