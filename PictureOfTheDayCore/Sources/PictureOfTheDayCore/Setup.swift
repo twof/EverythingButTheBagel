@@ -5,8 +5,10 @@ import ComposableArchitecture
 
 public struct Setup: DependencyKey {
   public static var liveValue: () throws -> Void = {
-    let path = URL(string: #file)!.deletingLastPathComponent().appending(path: "prod.env")
-    try Dotenv.configure(atPath: path.absoluteString)
+    guard let path = Bundle.module.path(forResource: "prod", ofType: "env") else {
+      throw Dotenv.LoadingFailure.environmentFileIsMissing
+    }
+    try Dotenv.configure(atPath: path)
   }
 
   public static var testValue: () throws -> Void = unimplemented("setup")

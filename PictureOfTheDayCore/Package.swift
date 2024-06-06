@@ -36,9 +36,7 @@ let package = Package(
       ]
       ,
       resources: [
-        .copy("yo.env"),
-        .copy("test.txt"),
-        .copy("Localizable.xcstrings")
+        .copy("prod.env")
       ],
       plugins: [
         .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint"),
@@ -46,8 +44,7 @@ let package = Package(
       ]
     ),
     .executableTarget(
-      name: "ProcessStringCatalogs",
-      dependencies: ["EverythingButTheBagelCore"]
+      name: "ProcessStringCatalogs"
     ),
     .plugin(
       name: "LocalizationProcessing",
