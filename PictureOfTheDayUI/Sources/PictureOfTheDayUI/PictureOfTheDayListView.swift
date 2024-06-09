@@ -85,9 +85,9 @@ public struct PictureOfTheDayListView: View {
     initialState: POTDListAttemptBase.State(
       elements: .loaded(
         data: [
-          .init(title: "hello world", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
+          .init(title: "hello world", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!, imageName: "Ryugu01_Rover1aHayabusa2_960.jpg")
                ),
-          .init(title: "hello", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
+          .init(title: "hello", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!, imageName: "Ryugu01_Rover1aHayabusa2_960.jpg")
                )
         ]
       )
@@ -132,7 +132,7 @@ public extension POTDItemStores {
         reducer: { PictureOfTheDayItemViewModel() }
       ),
       asyncImage: .init(
-        initialState: AsyncImageViewModel.State(),
+        initialState: AsyncImageViewModel.State(imageName: "", isLoading: false),
         reducer: { AsyncImageViewModel() }
       )
     )

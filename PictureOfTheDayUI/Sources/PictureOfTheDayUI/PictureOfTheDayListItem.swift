@@ -37,6 +37,7 @@ public struct PictureOfTheDayListItem: View {
   public var body: some View {
     HStack(alignment: .top) {
       image
+        .aspectRatio(contentMode: .fit)
         .frame(width: 100, height: 100)
       text
 
@@ -69,9 +70,9 @@ public extension PictureOfTheDayListItem {
   static let mock = PictureOfTheDayListItem(text: .longMock, image: .mock)
 
   static let loadingPlaceholder: some View = mock
-    .redacted(reason: .placeholder)
-    .shimmering()
-    .accessibilityLabel("Loading")
+//    .redacted(reason: .placeholder)
+//    .shimmering()
+//    .accessibilityLabel("Loading")
 }
 
 #Preview {
@@ -87,7 +88,7 @@ public extension PictureOfTheDayListItem {
   let store = Store(
     initialState: PictureOfTheDayItemBase.State(
       title: "Hey this is an image",
-      asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
+      asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!, imageName: "Ryugu01_Rover1aHayabusa2_960.jpg")
     ),
     reducer: {
       PictureOfTheDayItemBase()
@@ -103,7 +104,7 @@ public extension PictureOfTheDayListItem {
   let store = Store(
     initialState: PictureOfTheDayItemBase.State(
       title: "Hey this is an image",
-      asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
+      asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!, imageName: "Ryugu01_Rover1aHayabusa2_960.jpg")
     ),
     reducer: {
       PictureOfTheDayItemBase()

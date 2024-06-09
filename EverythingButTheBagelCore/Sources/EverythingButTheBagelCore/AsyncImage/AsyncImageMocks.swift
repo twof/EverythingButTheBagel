@@ -1,9 +1,9 @@
 import Foundation
 
-extension AsyncImageBase.State {
-  public static let mock: AsyncImageBase.State = .init(imageUrl: URL(string: "example.com/image.jpeg")!)
+extension AsyncImageCoordinator.State {
+  public static let mock: AsyncImageCoordinator.State = .init(imageUrl: URL(string: "example.com/image.jpeg")!, imageName: "image.jpeg")
 }
 
 extension AsyncImageViewModel.State {
-  public static let mock: AsyncImageViewModel.State = AsyncImageBase.State.mock.viewModel
+  public static let mock: AsyncImageViewModel.State = AsyncImageCoordinator.State.mock.viewModel
 }

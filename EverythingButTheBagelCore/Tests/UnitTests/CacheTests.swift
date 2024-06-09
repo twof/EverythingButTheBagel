@@ -69,7 +69,7 @@ class CacheTests: XCTestCase {
     let (readSpy, readFn) = spy({ (_: URL) in self.modelData })
     let (writeSpy, writeFn) = spy({ (_: URL, _: Data) in })
     try await withDependencies { dependencies in
-      dependencies.fileClient = FileClient(read: readFn, write: writeFn)
+      dependencies.fileClient = FileClient(read: readFn, write: writeFn, exists: { _ in true })
     } operation: {
       let cache = DocumentsCache(key: cacheKey)
       try await closure(cache, readSpy, writeSpy)

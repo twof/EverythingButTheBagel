@@ -2,14 +2,19 @@ import XCTest
 @testable import PictureOfTheDayCore
 import ComposableArchitecture
 @testable import EverythingButTheBagelCore
+import FunctionSpy
 
 final class PictureOfTheDayItemBaseTests: XCTestCase {
   @MainActor
   func testAsyncImageTask() async throws {
+    let (readSpy, readFn) = spy({ (_: URL) in Data() })
+    let (writeSpy, writeFn) = spy({ (_: URL, _: Data) in })
+    let (existsSpy, existsFn) = spy({ (_: URL) in false })
+
     let store = TestStore(
       initialState: PictureOfTheDayItemBase.State(
         title: "Hey this is an image",
-        asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)
+        asyncImage: .mock
       ),
       reducer: {
         PictureOfTheDayItemBase()
@@ -17,6 +22,7 @@ final class PictureOfTheDayItemBaseTests: XCTestCase {
       withDependencies: { dependencies in
         dependencies[DataRequestClient<Data>.self] = DataRequestClient(request: { _, _ in Data() })
         dependencies.uuid = .incrementing
+        dependencies.fileClient = FileClient(read: readFn, write: writeFn, exists: existsFn)
       }
     )
 

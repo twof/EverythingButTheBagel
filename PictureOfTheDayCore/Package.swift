@@ -39,7 +39,7 @@ let package = Package(
         .copy("prod.env")
       ],
       plugins: [
-        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint"),
+//        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint"),
         .plugin(name: "LocalizationProcessing")
       ]
     ),

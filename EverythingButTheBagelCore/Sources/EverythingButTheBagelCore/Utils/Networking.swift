@@ -90,6 +90,29 @@ extension NetworkRequestError {
   }
 }
 
+private let ephemeralConfig = {
+  var config = URLSessionConfiguration.ephemeral
+  config.httpShouldSetCookies = false
+  config.urlCache = nil
+  config.requestCachePolicy = .reloadIgnoringLocalCacheData
+  return config
+}()
+
+private let ephemeralSession = URLSession(configuration: ephemeralConfig)
+
+struct EphemeralNetworkRequestKey: DependencyKey {
+  static var liveValue: (URLRequest) async throws -> (Data, URLResponse) = ephemeralSession.data
+  static var testValue: (URLRequest) async throws -> (Data, URLResponse) = unimplemented("network request")
+}
+
+extension DependencyValues {
+  /// Wrapper around `URLSession.data(for:)` that doesn't cache
+  var ephemeralNetworkRequest: (URLRequest) async throws -> (Data, URLResponse) {
+    get { self[EphemeralNetworkRequestKey.self] }
+    set { self[EphemeralNetworkRequestKey.self] = newValue }
+  }
+}
+
 struct NetworkRequestKey: DependencyKey {
   static var liveValue: (URLRequest) async throws -> (Data, URLResponse) = URLSession.shared.data
   static var testValue: (URLRequest) async throws -> (Data, URLResponse) = unimplemented("network request")
@@ -129,4 +152,9 @@ extension DependencyValues {
     get { self[CacheConfigurationKey.self] }
     set { self[CacheConfigurationKey.self] = newValue }
   }
+}
+
+public enum SessionConfig {
+  case ephemeral
+  case cached
 }

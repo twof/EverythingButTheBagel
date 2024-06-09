@@ -18,6 +18,7 @@ let package = Package(
   dependencies: [
     .package(url: "https://github.com/markiv/SwiftUI-Shimmer", branch: "main"),
     .package(url: "https://github.com/nalexn/ViewInspector", from: "0.9.10"),
+    .package(url: "https://github.com/Giphy/giphy-ios-sdk", from: "2.2.9"),
     .package(path: "../EverythingButTheBagelCore")
   ],
   targets: [
@@ -27,6 +28,7 @@ let package = Package(
       name: "Sprinkles",
       dependencies: [
         .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
+        .product(name: "GiphyUISDK", package: "giphy-ios-sdk"),
         "EverythingButTheBagelCore"
       ]
     ),

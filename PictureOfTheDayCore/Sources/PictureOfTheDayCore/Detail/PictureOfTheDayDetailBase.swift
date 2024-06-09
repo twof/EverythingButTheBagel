@@ -5,17 +5,17 @@ import EverythingButTheBagelCore
 public struct PictureOfTheDayDetailBase {
   @ObservableState
   public struct State: Codable, Equatable {
-    public var asyncImage: AsyncImageBase.State
+    public var asyncImage: AsyncImageCoordinator.State
     public var viewModel: PictureOfTheDayDetailVM.State
 
-    public init(asyncImage: AsyncImageBase.State, viewModel: PictureOfTheDayDetailVM.State) {
+    public init(asyncImage: AsyncImageCoordinator.State, viewModel: PictureOfTheDayDetailVM.State) {
       self.asyncImage = asyncImage
       self.viewModel = viewModel
     }
   }
 
   public enum Action: Equatable {
-    case asyncImage(AsyncImageBase.Action)
+    case asyncImage(AsyncImageCoordinator.Action)
     case viewModel(PictureOfTheDayDetailVM.Action)
   }
 
@@ -24,7 +24,7 @@ public struct PictureOfTheDayDetailBase {
   public var body: some ReducerOf<PictureOfTheDayDetailBase> {
     CombineReducers {
       Scope(state: \.asyncImage, action: \.asyncImage) {
-        AsyncImageBase()
+        AsyncImageCoordinator()
       }
 
       Scope(state: \.viewModel, action: \.viewModel) {

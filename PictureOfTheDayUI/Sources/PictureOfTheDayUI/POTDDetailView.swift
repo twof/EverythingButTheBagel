@@ -42,7 +42,7 @@ public struct POTDDetailView: View {
       }
     ),
     imageStore: Store(
-      initialState: AsyncImageViewModel.State(),
+      initialState: AsyncImageViewModel.State(imageName: "", isLoading: false),
       reducer: {
         AsyncImageViewModel()
       }
@@ -54,10 +54,11 @@ public struct POTDDetailView: View {
 #Preview {
   let base = Store(
     initialState: PictureOfTheDayDetailBase.State(
-      asyncImage: AsyncImageBase.State(
+      asyncImage: AsyncImageCoordinator.State(
         imageUrl: URL(
           string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg"
-        )!
+        )!,
+        imageName: "Ryugu01_Rover1aHayabusa2_960.jpg"
       ),
       viewModel: PictureOfTheDayDetailVM.State(
         title: "Hello world",

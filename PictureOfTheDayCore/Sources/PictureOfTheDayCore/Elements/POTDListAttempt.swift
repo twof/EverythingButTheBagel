@@ -97,11 +97,13 @@ public struct POTDListAttemptBase {
         guard let element = state.dataModels[id: id] else {
           return .none
         }
+        let imageURL = element.hdurl ?? element.url
+        let imageName = imageURL.lastPathComponent
         return .send(
           .viewModel(
             .navigateToPath(
               .detail(PictureOfTheDayDetailBase.State(
-                asyncImage: .init(imageUrl: element.hdurl ?? element.url),
+                asyncImage: .init(imageUrl: imageURL, imageName: imageName),
                 viewModel: .init(title: element.title, description: element.explanation)
               ))
             )
@@ -124,7 +126,9 @@ public struct POTDListAttemptBase {
 
 extension POTDResponseModel {
   var listItemBase: PictureOfTheDayItemBase.State {
-    PictureOfTheDayItemBase.State(title: title, asyncImage: AsyncImageBase.State(imageUrl: thumbnailUrl ?? url))
+    let url = thumbnailUrl ?? url
+    let name = url.lastPathComponent
+    return PictureOfTheDayItemBase.State(title: title, asyncImage: AsyncImageCoordinator.State(imageUrl: url, imageName: name))
   }
 }
 

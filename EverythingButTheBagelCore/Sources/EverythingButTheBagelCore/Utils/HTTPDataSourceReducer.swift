@@ -25,10 +25,12 @@ public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorPro
 
   var errorSourceId: String
   let maxRetries: Int
+  let sessionConfig: SessionConfig
 
-  public init(errorSourceId: String, maxRetries: Int = 5) {
+  public init(errorSourceId: String, maxRetries: Int = 5, sessionConfig: SessionConfig = .cached) {
     self.errorSourceId = errorSourceId
     self.maxRetries = maxRetries
+    self.sessionConfig = sessionConfig
   }
 
   @Dependency(DataRequestClient<ResponseType>.self) var fetchDataClient
@@ -40,10 +42,22 @@ public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorPro
       switch action {
       case let .fetch(urlString, cachePolicy, retry, requestId):
         return .run { send in
-          let response = try await fetchDataClient.request(
-            urlString: urlString,
-            cachePolicy: cachePolicy
-          )
+          // Use an ephemeral URLSession instead of the shared instance if that's what the
+          // caller selected. The ephemeral instance removes the built in URLCache. Useful if
+          // another caching mechanism is being used or low memory usage is a priority.
+          let response = try await withDependencies { dependencies in
+            dependencies.networkRequest = switch sessionConfig {
+            case .ephemeral:
+              Dependency(\.ephemeralNetworkRequest).wrappedValue
+            case .cached:
+              Dependency(\.networkRequest).wrappedValue
+            }
+          } operation: {
+            try await fetchDataClient.request(
+              urlString: urlString,
+              cachePolicy: cachePolicy
+            )
+          }
 
           // Got a successful response, clear any existing errors for this request
           if let requestId = requestId {

@@ -9,7 +9,7 @@ public protocol Caching {
 }
 
 public final class DocumentsCache: Caching, LoggingContext {
-  let loggingCategory: String = "Cache"
+  public let loggingCategory: String = "Cache"
 
   public init(
     key: String,
@@ -62,32 +62,5 @@ public extension Reducer where State: Codable {
         effect
       )
     }
-  }
-}
-
-@DependencyClient
-struct FileClient {
-  let read: (_ url: URL) throws -> Data
-  let write: (_ url: URL, _ data: Data) throws -> Void
-}
-
-extension FileClient: DependencyKey {
-  /// Performs an encrypted write to the provided `URL`
-  static var liveValue = FileClient { url in
-    try Data(contentsOf: url)
-  } write: { url, data in
-    try data.write(to: url, options: [.completeFileProtection])
-  }
-
-  static var testValue = FileClient(
-    read: unimplemented("FileClient read"),
-    write: unimplemented("FileClient write")
-  )
-}
-
-extension DependencyValues {
-  var fileClient: FileClient {
-    get { self[FileClient.self] }
-    set { self[FileClient.self] = newValue }
   }
 }

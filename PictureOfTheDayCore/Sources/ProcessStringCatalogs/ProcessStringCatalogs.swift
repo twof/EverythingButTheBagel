@@ -1,5 +1,4 @@
 import Foundation
-import EverythingButTheBagelCore
 
 @main
 @available(macOS 13.0.0, *)

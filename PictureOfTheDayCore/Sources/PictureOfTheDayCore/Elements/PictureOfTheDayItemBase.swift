@@ -7,9 +7,9 @@ public struct PictureOfTheDayItemBase {
   public struct State: Equatable, Codable, Identifiable {
     public var id: String { viewModel.id }
     public var viewModel: PictureOfTheDayItemViewModel.State
-    public var asyncImage: AsyncImageBase.State
+    public var asyncImage: AsyncImageCoordinator.State
 
-    public init(title: String, asyncImage: AsyncImageBase.State) {
+    public init(title: String, asyncImage: AsyncImageCoordinator.State) {
       self.asyncImage = asyncImage
       self.viewModel = PictureOfTheDayItemViewModel.State(
         title: title
@@ -20,14 +20,14 @@ public struct PictureOfTheDayItemBase {
   @CasePathable
   public enum Action: Equatable {
     case viewModel(PictureOfTheDayItemViewModel.Action)
-    case asyncImage(AsyncImageBase.Action)
+    case asyncImage(AsyncImageCoordinator.Action)
   }
 
   public init() { }
 
   public var body: some ReducerOf<Self> {
-    Scope<State, Action, AsyncImageBase>(state: \.asyncImage, action: \.asyncImage) {
-      AsyncImageBase()
+    Scope(state: \.asyncImage, action: \.asyncImage) {
+      AsyncImageCoordinator()
     }
 
     Scope(state: \.viewModel, action: \.viewModel) {

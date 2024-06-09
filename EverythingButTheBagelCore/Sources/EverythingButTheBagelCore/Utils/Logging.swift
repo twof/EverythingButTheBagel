@@ -83,12 +83,12 @@ extension DependencyValues {
 }
 
 /// Area of interest for logging purposes
-protocol LoggingContext {
+public protocol LoggingContext {
   /// A tag to be used by logs created by this type
   var loggingCategory: String { get }
 }
 
-extension LoggingContext {
+public extension LoggingContext {
   /// Logs at the provided level using the category defined by the protocol conformance
   func log(_ level: LogLevel) {
     @Dependency(\.loggingClient) var loggingClient
