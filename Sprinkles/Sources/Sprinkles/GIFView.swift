@@ -19,6 +19,13 @@ public struct GiphyAnimatedImageView: UIViewRepresentable, LoggingContext {
         try fileClient.read(url)
       }
       let view = GiphyYYAnimatedImageView(image: GiphyYYImage(data: data))
+      view.contentMode = .scaleAspectFit
+      view.clipsToBounds = true
+
+      view.setContentHuggingPriority(.defaultLow, for: .vertical)
+      view.setContentHuggingPriority(.defaultLow, for: .horizontal)
+      view.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+      view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
       view.maxBufferSize = 10
       return view
     } catch {
@@ -26,5 +33,7 @@ public struct GiphyAnimatedImageView: UIViewRepresentable, LoggingContext {
     }
   }
 
-  public func updateUIView(_ uiView: GiphyYYAnimatedImageView, context: Context) {}
+  public func updateUIView(_ uiView: GiphyYYAnimatedImageView, context: Context) {
+    print("update")
+  }
 }

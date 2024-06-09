@@ -20,26 +20,28 @@ public struct PictureOfTheDayText: View {
   }
 }
 
-public struct PictureOfTheDayListItem: View {
-  let text: PictureOfTheDayText
-  let image: AsyncImageLoader
+public struct PictureOfTheDayListItem: View, Equatable {
+//  let text: PictureOfTheDayText
+//  let image: AsyncImageLoader
+  let stores: POTDItemStores
 
-  public init(text: PictureOfTheDayText, image: AsyncImageLoader) {
-    self.text = text
-    self.image = image
-  }
+//  public init(text: PictureOfTheDayText, image: AsyncImageLoader) {
+//    self.text = text
+//    self.image = image
+//  }
 
-  public init(stores: POTDItemStores) {
-    self.text = PictureOfTheDayText(store: stores.cellContent)
-    self.image = AsyncImageLoader(store: stores.asyncImage)
-  }
+//  public init(stores: POTDItemStores) {
+//    self.text = PictureOfTheDayText(store: stores.cellContent)
+//    self.image = AsyncImageLoader(store: stores.asyncImage)
+//  }
 
   public var body: some View {
     HStack(alignment: .top) {
-      image
+      AsyncImageLoader(store: stores.asyncImage)
         .aspectRatio(contentMode: .fit)
         .frame(width: 100, height: 100)
-      text
+
+      PictureOfTheDayText(store: stores.cellContent)
 
       Spacer()
     }
@@ -67,12 +69,12 @@ public extension PictureOfTheDayText {
 }
 
 public extension PictureOfTheDayListItem {
-  static let mock = PictureOfTheDayListItem(text: .longMock, image: .mock)
+  static let mock = PictureOfTheDayListItem(stores: .loadingMock(id: "10"))
 
   static let loadingPlaceholder: some View = mock
-//    .redacted(reason: .placeholder)
-//    .shimmering()
-//    .accessibilityLabel("Loading")
+    .redacted(reason: .placeholder)
+    .shimmering()
+    .accessibilityLabel("Loading")
 }
 
 #Preview {
@@ -110,23 +112,13 @@ public extension PictureOfTheDayListItem {
       PictureOfTheDayItemBase()
     }
   )
-  let textView = PictureOfTheDayText(
-    store: store.scope(state: \.viewModel, action: \.viewModel)
-  )
+//  let textView = PictureOfTheDayText(
+//    store: store.scope(state: \.viewModel, action: \.viewModel)
+//  )
+//
+//  let imageView = AsyncImageLoader(store: store.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel))
 
-  let imageView = AsyncImageLoader(store: store.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel))
+  let listStores = POTDItemStores(cellContent: store.scope(state: \.viewModel, action: \.viewModel), asyncImage: store.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel))
 
-  return PictureOfTheDayListItem(text: textView, image: imageView)
+  return PictureOfTheDayListItem(stores: listStores)
 }
-
-//
-// #Preview {
-//  let store = Store(initialState: POTDListAttemptBase.State(elements: [
-//    .init(title: "hello", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!)),
-//    .init(title: "world", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!))
-//  ])) {
-//    POTDListAttemptBase()
-//  }
-//
-//  return POTDListView(store: store)
-// }

@@ -15,10 +15,25 @@ public struct POTDItemStores: Identifiable, Equatable {
   public let asyncImage: StoreOf<AsyncImageViewModel>
 }
 
+extension POTDItemStores {
+  public static func loadingMock(id: String) -> POTDItemStores {
+    POTDItemStores(
+      cellContent: .init(
+        initialState: PictureOfTheDayItemViewModel.State(title: "title \(id)"),
+        reducer: { PictureOfTheDayItemViewModel() }
+      ),
+      asyncImage: .init(
+        initialState: AsyncImageViewModel.State(imageName: "", isLoading: true),
+        reducer: { AsyncImageViewModel() }
+      )
+    )
+  }
+}
+
 public struct PictureOfTheDayListView: View {
   let elements: POTDListElements
   @Bindable var vm: StoreOf<POTDListAttemptVM>
-  @State var scrollController = ScrollTrackerModel()
+//  @State var scrollController = ScrollTrackerModel()
 
   public init(elements: POTDListElements, vm: StoreOf<POTDListAttemptVM>) {
     self.elements = elements
@@ -27,33 +42,23 @@ public struct PictureOfTheDayListView: View {
 
   public var body: some View {
     NavigationStack(path: $vm.scope(state: \.path, action: \.path)) {
-      ControllableScrollView(scrollModel: $scrollController) {
-        LazyVStack(spacing: 0) {
-          ForEach(elements.data) { stores in
-            row(store: stores).id(stores.id)
-          }
+      ScrollView {
+//      ControllableScrollView(scrollModel: $scrollController) {
+        POTDForEach(elements: elements)
 
-          // Put one loading placeholder at the bottom of the list to indicate loading
-          // for infinite scrolling
-          PictureOfTheDayListItem.loadingPlaceholder
-
-          ForEach(elements.placeholders) { _ in
-            PictureOfTheDayListItem.loadingPlaceholder
-          }
-
-          if elements == .loaded(data: []) {
-            emptyListView(localizedText: vm.state.emptyListMessage)
-          }
+        if elements == .loaded(data: []) {
+          emptyListView(localizedText: vm.state.emptyListMessage)
         }
+        //      }
       }
       .task {
         // Scroll to set position on load
-        self.scrollController.scroll(position: vm.scrollPosition)
+//        self.scrollController.scroll(position: vm.scrollPosition)
         await vm.send(.delegate(.task)).finish()
       }
-      .onChange(of: scrollController.position) { _, newValue in
-        vm.send(.scroll(position: newValue))
-      }
+//      .onChange(of: scrollController.position) { _, newValue in
+//        vm.send(.scroll(position: newValue))
+//      }
       .refreshable {
         vm.send(.delegate(.refresh))
       }
@@ -67,8 +72,32 @@ public struct PictureOfTheDayListView: View {
       }
     }
   }
+}
 
-  @ViewBuilder func row(store: POTDItemStores) -> some View {
+struct POTDForEach: View, Equatable {
+  let elements: POTDListElements
+
+  var body: some View {
+    LazyVStack(spacing: 0) {
+      ForEach(elements.data) { stores in
+        POTDForEachRow(store: stores)
+      }
+
+      // Put one loading placeholder at the bottom of the list to indicate loading
+      // for infinite scrolling
+      PictureOfTheDayListItem.loadingPlaceholder
+
+      ForEach(elements.placeholders) { _ in
+        PictureOfTheDayListItem.loadingPlaceholder
+      }
+    }
+  }
+}
+
+struct POTDForEachRow: View, Equatable {
+  let store: POTDItemStores
+
+  var body: some View {
     PictureOfTheDayListItem(stores: store)
       .onTapGesture {
         store.cellContent.send(.delegate(.didTap))
@@ -116,7 +145,7 @@ public struct PictureOfTheDayListView: View {
   return PictureOfTheDayListView(
     elements: .loaded(data: [
       .init(title: "Hello world"),
-      .init(title: "Hello")
+      .init(title: "Hello world")
     ]),
     vm: Store(initialState: POTDListAttemptVM.State(), reducer: { POTDListAttemptVM() })
   )
@@ -139,7 +168,7 @@ public extension POTDItemStores {
   }
 }
 
-public extension Store where State == POTDListAttemptBase.State, Action == POTDListAttemptBase.Action {
+public extension StoreOf<POTDListAttemptBase> {
   func listElements() -> POTDListElements {
     let stores = self.scope(state: \.elements.data, action: \.element).reduce(
       into: IdentifiedArrayOf(uniqueElements: [])
@@ -149,17 +178,18 @@ public extension Store where State == POTDListAttemptBase.State, Action == POTDL
       result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
     }
 
-    let placeholderStores = self.scope(state: \.elements.placeholders, action: \.element).reduce(
-      into: IdentifiedArrayOf(uniqueElements: [])
-    ) { (result: inout IdentifiedArrayOf<POTDItemStores>, childStore) in
-      let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
-      let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
-      result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
-    }
-
-    return switch self.elements {
-    case .loading: .loading(data: stores, placeholders: placeholderStores)
-    case .loaded: .loaded(data: stores)
+    switch self.elements {
+    case .loading:
+      let placeholderStores = self.scope(state: \.elements.placeholders, action: \.element).reduce(
+        into: IdentifiedArrayOf(uniqueElements: [])
+      ) { (result: inout IdentifiedArrayOf<POTDItemStores>, childStore) in
+        let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
+        let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
+        result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
+      }
+      return .loading(data: stores, placeholders: placeholderStores)
+    case .loaded:
+      return .loaded(data: stores)
     }
   }
 }

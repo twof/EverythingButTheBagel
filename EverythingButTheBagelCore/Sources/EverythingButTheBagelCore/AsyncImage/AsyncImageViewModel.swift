@@ -40,9 +40,17 @@ import Foundation
 import ComposableArchitecture
 
 public enum ImageType: Codable, Equatable {
-  case staticImage(Data)
+  case staticImage(URL)
   // Local URL usually, remote URLs partially supported
   case animatedGif(URL)
+
+  public init(url: URL) {
+    if url.lastPathComponent.contains(".gif") {
+      self = .animatedGif(url)
+    } else {
+      self = .staticImage(url)
+    }
+  }
 }
 
 @Reducer

@@ -6,6 +6,7 @@ import GiphyUISDK
 
 public struct AsyncImageLoader: View {
   var store: StoreOf<AsyncImageViewModel>
+  @State var imageView: AnyView?
 
   public init(store: StoreOf<AsyncImageViewModel>) {
     self.store = store
@@ -13,10 +14,7 @@ public struct AsyncImageLoader: View {
 
   public var body: some View {
     Group {
-      if
-        let imageType = store.imageType,
-        let imageView = imageType.imageView
-      {
+      if let imageView {
         imageView
       } else {
         Rectangle()
@@ -29,6 +27,15 @@ public struct AsyncImageLoader: View {
     .task {
       await store.send(.delegate(.task)).finish()
     }
+    .task(id: store.imageType) {
+      Task(priority: .background) {
+        // Do image processing and loading off the main thread
+        let imageView = store.imageType?.imageView
+        await MainActor.run {
+          self.imageView = imageView
+        }
+      }
+    }
   }
 }
 
@@ -37,18 +44,26 @@ public extension AsyncImageLoader {
 }
 
 extension ImageType {
-  @ViewBuilder var imageView: (some View)? {
+  var imageView: AnyView? {
     switch self {
     case let .animatedGif(url):
-      GiphyAnimatedImageView(url: url)
-    case let .staticImage(data):
-      UIImage(data: data).map {
-        Image(uiImage: $0)
+      return AnyView(GiphyAnimatedImageView(url: url))
+    case let .staticImage(url):
+      print("loading image from disk \(url.lastPathComponent)")
+      return url.localImage.map {
+        AnyView(
+          Image(uiImage: $0)
           .resizable()
           .aspectRatio(contentMode: .fit)
-          .frame(width: 100, height: 100)
+        )
       }
     }
+  }
+}
+
+extension URL {
+  var localImage: UIImage? {
+    (try? Data(contentsOf: self)).flatMap { UIImage(data: $0) }
   }
 }
 
@@ -59,14 +74,16 @@ extension ImageType {
     AsyncImageCoordinator()
   }
 
-  return AsyncImageLoader(store: store.scope(state: \.viewModel, action: \.viewModel))
-    .frame(width: 200, height: 200)
-}
+  let gifURL = URL(string: "https://apod.nasa.gov/apod/image/stareggs_hst_big.gif")!
 
-// Loading
-#Preview {
-  AsyncImageLoader(store: Store(initialState: AsyncImageViewModel.State(imageName: "test.gif", isLoading: true), reducer: {
-    AsyncImageViewModel()
-  }))
-  .frame(width: 200, height: 200)
+  let gifStore = Store(initialState: AsyncImageCoordinator.State(imageUrl: gifURL, imageName: "stareggs_hst_big.gif")) {
+    AsyncImageCoordinator()
+  }
+
+  return Group {
+    AsyncImageLoader(store: store.scope(state: \.viewModel, action: \.viewModel))
+      .frame(width: 200, height: 200)
+    AsyncImageLoader(store: gifStore.scope(state: \.viewModel, action: \.viewModel))
+      .frame(width: 200, height: 200)
+  }
 }
