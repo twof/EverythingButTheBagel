@@ -4,9 +4,8 @@ import EverythingButTheBagelCore
 import UIKit
 import GiphyUISDK
 
-public struct AsyncImageLoader: View {
+public struct AsyncImageLoader: View, Equatable {
   var store: StoreOf<AsyncImageViewModel>
-  @State var imageView: AnyView?
 
   public init(store: StoreOf<AsyncImageViewModel>) {
     self.store = store
@@ -14,7 +13,10 @@ public struct AsyncImageLoader: View {
 
   public var body: some View {
     Group {
-      if let imageView {
+      if
+        let imageType = store.imageType,
+        let imageView = imageType.imageView
+      {
         imageView
       } else {
         Rectangle()
@@ -26,15 +28,6 @@ public struct AsyncImageLoader: View {
     }
     .task {
       await store.send(.delegate(.task)).finish()
-    }
-    .task(id: store.imageType) {
-      Task(priority: .background) {
-        // Do image processing and loading off the main thread
-        let imageView = store.imageType?.imageView
-        await MainActor.run {
-          self.imageView = imageView
-        }
-      }
     }
   }
 }
