@@ -55,14 +55,20 @@ public struct AsyncImageCoordinator: LoggingContext {
         switch action {
         case .viewModel(.delegate(.task)):
           // Image is already loaded, don't try to reload
-          guard state.viewModel.imageType == nil else {
+          guard state.viewModel.imageData == nil else {
             return .none
           }
 
           let url = Self.localImageURL(filename: state.imageName)
 
           if fileClient.exists(url) {
-            return .send(.imageCached(url))
+            return .concatenate(
+              .send(.imageCached(url)),
+              .run(priority: .background) { send in
+                let data = try fileClient.read(url: url)
+                await send(.viewModel(.dataLoaded(data)))
+              }
+            )
           }
 
           // File not found on disk, fetch from server
@@ -82,7 +88,8 @@ public struct AsyncImageCoordinator: LoggingContext {
 
             return .merge(
               .send(.imageCached(url)),
-              .send(.viewModel(.isLoading(false)))
+              .send(.viewModel(.isLoading(false))),
+              .send(.viewModel(.dataLoaded(data)))
             )
           } catch {
             // TODO: The GIFView isn't going to handle

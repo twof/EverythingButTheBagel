@@ -25,16 +25,22 @@ public struct AsyncImageLoader: View {
       }
     }
     .task {
+      print("task")
       await store.send(.delegate(.task)).finish()
     }
-    .task(id: store.imageType) {
-      Task(priority: .background) {
-        // Do image processing and loading off the main thread
-        let imageView = store.imageType?.imageView
-        await MainActor.run {
-          self.imageView = imageView
-        }
+    .task(id: store.imageData, priority: .background) {
+      // Only set up the image once
+      guard imageView == nil else { return }
+      // We create the imageView on a background thread because UIImage does an expensive
+      // decoding path.
+      // See: WWDC 2019 Image and Graphics Best Practices
+      let imageView = store.imageView
+      await MainActor.run {
+        self.imageView = imageView
       }
+    }
+    .onDisappear {
+      store.send(.delegate(.disappear))
     }
   }
 }
@@ -43,20 +49,22 @@ public extension AsyncImageLoader {
   static var mock = AsyncImageLoader(store: Store(initialState: AsyncImageViewModel.State(imageName: "", isLoading: false), reducer: { AsyncImageViewModel() }))
 }
 
-extension ImageType {
+extension AsyncImageViewModel.State {
   var imageView: AnyView? {
-    switch self {
+    guard let imageType, let imageData else { return nil }
+
+    switch imageType {
     case let .animatedGif(url):
       return AnyView(GiphyAnimatedImageView(url: url))
     case let .staticImage(url):
       print("loading image from disk \(url.lastPathComponent)")
-      return url.localImage.map {
-        AnyView(
-          Image(uiImage: $0)
+      guard let uiImage = UIImage(data: imageData) else { return nil }
+
+      return AnyView(
+        Image(uiImage: uiImage)
           .resizable()
           .aspectRatio(contentMode: .fit)
-        )
-      }
+      )
     }
   }
 }

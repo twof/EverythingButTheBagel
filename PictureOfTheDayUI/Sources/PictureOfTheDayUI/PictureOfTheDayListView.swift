@@ -170,6 +170,8 @@ public extension POTDItemStores {
 
 public extension StoreOf<POTDListAttemptBase> {
   func listElements() -> POTDListElements {
+    // This uses a computed property for scoping and may cause performance issues later
+    // https://github.com/pointfreeco/swift-composable-architecture/blob/main/Sources/ComposableArchitecture/Documentation.docc/Articles/Performance.md#store-scoping
     let stores = self.scope(state: \.elements.data, action: \.element).reduce(
       into: IdentifiedArrayOf(uniqueElements: [])
     ) { (result: inout IdentifiedArrayOf<POTDItemStores>, childStore) in
@@ -180,14 +182,14 @@ public extension StoreOf<POTDListAttemptBase> {
 
     switch self.elements {
     case .loading:
-      let placeholderStores = self.scope(state: \.elements.placeholders, action: \.element).reduce(
-        into: IdentifiedArrayOf(uniqueElements: [])
-      ) { (result: inout IdentifiedArrayOf<POTDItemStores>, childStore) in
-        let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
-        let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
-        result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
-      }
-      return .loading(data: stores, placeholders: placeholderStores)
+//      let placeholderStores = self.scope(state: \.elements.placeholders, action: \.element).reduce(
+//        into: IdentifiedArrayOf(uniqueElements: [])
+//      ) { (result: inout IdentifiedArrayOf<POTDItemStores>, childStore) in
+//        let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
+//        let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
+//        result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
+//      }
+      return .loading(data: stores, placeholders: [])
     case .loaded:
       return .loaded(data: stores)
     }

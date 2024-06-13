@@ -60,11 +60,13 @@ public struct AsyncImageViewModel {
     public var imageType: ImageType?
     public var isLoading: Bool = false
     public let imageName: String
+    public var imageData: Data?
 
-    public init(imageName: String, imageType: ImageType? = nil, isLoading: Bool) {
+    public init(imageName: String, imageType: ImageType? = nil, isLoading: Bool, imageData: Data? = nil) {
       self.imageName = imageName
       self.imageType = imageType
       self.isLoading = isLoading
+      self.imageData = imageData
     }
   }
 
@@ -72,10 +74,12 @@ public struct AsyncImageViewModel {
     public enum Delegate: Equatable {
       /// Called when cell appears
       case task
+      case disappear
     }
 
     case delegate(Delegate)
     case newResponse(ImageType)
+    case dataLoaded(Data)
     case isLoading(Bool)
   }
 
@@ -90,6 +94,15 @@ public struct AsyncImageViewModel {
 
       case let .newResponse(imageType):
         state.imageType = imageType
+
+        return .none
+
+      case let .dataLoaded(data):
+        state.imageData = data
+        return .none
+
+      case .delegate(.disappear):
+        state.imageData = nil
         return .none
 
       case .delegate:
