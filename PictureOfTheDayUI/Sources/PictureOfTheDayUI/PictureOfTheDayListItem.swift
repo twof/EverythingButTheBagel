@@ -112,11 +112,6 @@ public extension PictureOfTheDayListItem {
       PictureOfTheDayItemBase()
     }
   )
-//  let textView = PictureOfTheDayText(
-//    store: store.scope(state: \.viewModel, action: \.viewModel)
-//  )
-//
-//  let imageView = AsyncImageLoader(store: store.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel))
 
   let listStores = POTDItemStores(cellContent: store.scope(state: \.viewModel, action: \.viewModel), asyncImage: store.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel))
 
