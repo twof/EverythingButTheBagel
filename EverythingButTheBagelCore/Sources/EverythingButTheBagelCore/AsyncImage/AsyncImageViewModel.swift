@@ -1,49 +1,14 @@
-// import Foundation
-// import ComposableArchitecture
-//
-// @Reducer
-// public struct AsyncImageViewModel {
-//  @ObservableState
-//  public struct State: Equatable, Codable {
-//    public var imageData: Data?
-//
-//    public init(imageData: Data? = nil) {
-//      self.imageData = imageData
-//    }
-//  }
-//
-//  public enum Action: Equatable {
-//    public enum Delegate: Equatable {
-//      case task
-//    }
-//
-//    case delegate(Delegate)
-//    case newResponse(Data)
-//  }
-//
-//  public init() {}
-//
-//  public var body: some ReducerOf<AsyncImageViewModel> {
-//    Reduce { state, action in
-//      switch action {
-//      case let .newResponse(data):
-//        state.imageData = data
-//        return .none
-//      case .delegate:
-//        return .none
-//      }
-//    }
-//  }
-// }
-
 import Foundation
 import ComposableArchitecture
+import UIKit
 
-public enum ImageType: Codable, Equatable {
+public enum ImageType: Codable, Equatable, Sendable {
+  /// Local URL
   case staticImage(URL)
-  // Local URL usually, remote URLs partially supported
+  /// Local URL usually, remote URLs partially supported
   case animatedGif(URL)
 
+  /// Expected to be a local URL
   public init(url: URL) {
     if url.lastPathComponent.contains(".gif") {
       self = .animatedGif(url)
@@ -56,17 +21,25 @@ public enum ImageType: Codable, Equatable {
 @Reducer
 public struct AsyncImageViewModel {
   @ObservableState
-  public struct State: Equatable, Codable {
+  public struct State: Equatable, Codable, Sendable {
     public var imageType: ImageType?
     public var isLoading: Bool = false
     public let imageName: String
-    public var imageData: Data?
+    public var imageData: UIImage?
 
-    public init(imageName: String, imageType: ImageType? = nil, isLoading: Bool, imageData: Data? = nil) {
+    public init(imageName: String, imageType: ImageType? = nil, isLoading: Bool, imageData: UIImage? = nil) {
       self.imageName = imageName
       self.imageType = imageType
       self.isLoading = isLoading
       self.imageData = imageData
+    }
+
+    enum CodingKeys: CodingKey {
+      // swiftlint:disable:next identifier_name
+      case _imageType
+      // swiftlint:disable:next identifier_name
+      case _isLoading
+      case imageName
     }
   }
 
@@ -80,6 +53,7 @@ public struct AsyncImageViewModel {
     case delegate(Delegate)
     case newResponse(ImageType)
     case dataLoaded(Data)
+    case imageRendered(UIImage)
     case isLoading(Bool)
   }
 
@@ -98,7 +72,14 @@ public struct AsyncImageViewModel {
         return .none
 
       case let .dataLoaded(data):
-        state.imageData = data
+        return .run(priority: .background) { send in
+          // TODO: Should throw if rendering fails
+          guard let uiImage = UIImage(data: data) else { return }
+          await send(.imageRendered(uiImage))
+        }
+
+      case let .imageRendered(image):
+        state.imageData = image
         return .none
 
       case .delegate(.disappear):

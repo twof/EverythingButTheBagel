@@ -17,7 +17,8 @@ struct CatFactListItem: View {
 
 extension CatFactListItem {
   static let loadingPlaceholder: some View = CatFactListItem(vm: .init(
-    fact: "ffff Example of a long cat fact, Example of a long cat fact, Example of a long cat fact, Example of a long cat fact")
+    fact: "ffff Example of a long cat fact, Example of a long cat fact, Example of a long cat fact,"
+    + "Example of a long cat fact")
   )
   .redacted(reason: .placeholder)
   .shimmering()
@@ -26,7 +27,10 @@ extension CatFactListItem {
 
 #Preview {
   Group {
-    CatFactListItem(vm: .init(fact: "Example of a long cat fact, Example of a long cat fact, Example of a long cat fact, Example of a long cat fact"))
+    CatFactListItem(vm: .init(
+      fact: "Example of a long cat fact, Example of a long cat fact, Example of a long cat fact,"
+      + "Example of a long cat fact")
+    )
 
     CatFactListItem.loadingPlaceholder
   }

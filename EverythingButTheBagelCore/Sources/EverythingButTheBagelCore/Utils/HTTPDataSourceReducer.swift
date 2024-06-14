@@ -5,7 +5,7 @@ import Foundation
 /// Handles logging and error handling under the hood.
 @Reducer
 public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorProducer {
-  public struct State: Codable, Equatable { public init() { } }
+  public struct State: Codable, Equatable, Sendable { public init() { } }
 
   public enum Action: Equatable, ErrorReportingDelegate {
     public enum Delegate: Equatable, ErrorReportingAction {
@@ -70,10 +70,23 @@ public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorPro
 
           // Begin doing exponential backoff
           if retry < maxRetries {
-            await send(.delegate(.error(error.toEquatableError(), sourceId: self.errorSourceId, errorId: requestId)))
+            await send(
+              .delegate(.error(
+                error.toEquatableError(),
+                sourceId: self.errorSourceId,
+                errorId: requestId
+              ))
+            )
             do {
               try await clock.sleep(for: .milliseconds(Self.backoffDuration(retry: retry)))
-              await send(.fetch(url: urlString, cachePolicy: cachePolicy, retry: retry + 1, requestId: requestId))
+              await send(
+                .fetch(
+                  url: urlString,
+                  cachePolicy: cachePolicy,
+                  retry: retry + 1,
+                  requestId: requestId
+                )
+              )
             } catch {
               // This is only expected to throw on cancelation which is an error we don't
               // have to deal with
@@ -82,7 +95,11 @@ public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorPro
               return
             }
           } else {
-            await send(.delegate(.error(RequestError.maxRetries.toEquatableError(), sourceId: self.errorSourceId, errorId: requestId)))
+            await send(.delegate(.error(
+              RequestError.maxRetries.toEquatableError(),
+              sourceId: self.errorSourceId,
+              errorId: requestId
+            )))
           }
         }
       case .delegate:

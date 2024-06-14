@@ -56,7 +56,8 @@ struct RemoteLoggingClient {
 extension RemoteLoggingClient: DependencyKey {
   static var liveValue = RemoteLoggingClient {
     SentrySDK.start { options in
-      options.dsn = "https://262de3d8952cf58221fe4c6618834b64@o4506965171896320.ingest.us.sentry.io/4506965173207040"
+      options.dsn
+        = "https://262de3d8952cf58221fe4c6618834b64@o4506965171896320.ingest.us.sentry.io/4506965173207040"
       options.enableTracing = true
 //      options.debug = true
     }

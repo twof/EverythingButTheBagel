@@ -20,7 +20,7 @@ public struct AppReducer {
       internetStatus: InternetStatusIndicator.State = .init(),
       errors: ErrorIndicatorViewModel.State = .init(),
 //      catFacts: CatBase.State = .init(),
-      potd: POTDListAttemptBase.State = .init(elements: .loaded(data: [])),
+      potd: POTDListAttemptBase.State = .init(elements: .init(data: [])),
       path: StackState<Path.State> = StackState<Path.State>()
     ) {
       self.internetStatus = internetStatus

@@ -14,6 +14,7 @@ public struct GenericListView<
   PathReducer.State: Equatable & Codable & CaseReducerState & ObservableState,
   PathReducer.State.StateReducer.Action == PathReducer.Action
 {
+  // swiftlint:enable opening_brace
   public typealias ViewModelReducer = ListFeatureViewModelReducer<ViewModel, PathReducer>
   @Bindable var store: StoreOf<ViewModelReducer>
   @State var scrollController = ScrollTrackerModel()
@@ -26,7 +27,9 @@ public struct GenericListView<
     self.content = content
   }
 
-  public func destination<Destination: View>(_ closure: @escaping (StoreOf<PathReducer>) -> Destination?) -> Self {
+  public func destination<Destination: View>(
+    _ closure: @escaping (StoreOf<PathReducer>) -> Destination?
+  ) -> Self {
     var copy = self
     copy.destination = { AnyView(closure($0)) }
     return copy
@@ -46,12 +49,12 @@ public struct GenericListView<
               .shimmering()
           }
 
-          if store.status == .loaded(data: []) {
+          if store.status.isEmpty {
             emptyListView(localizedText: store.state.emptyListMessage)
           }
         }
       }
-      .scrollDisabled(store.isLoading)
+      .scrollDisabled(store.status.isLoading)
       .task {
         // Scroll to set position on load
         self.scrollController.scroll(position: store.scrollPosition)
@@ -61,7 +64,7 @@ public struct GenericListView<
         store.send(.scroll(position: newValue))
       }
       .overlay {
-        if store.isLoading {
+        if store.status.isLoading {
           ProgressView()
         }
       }
@@ -76,10 +79,10 @@ public struct GenericListView<
       .onTapGesture {
         store.send(.delegate(.rowTapped(viewModel.id)))
       }
-      .if(viewModel == store.status.loadingElement) { view in
-        view.onAppear {
-          store.send(.delegate(.nextPage))
-        }
-      }
+//      .if(viewModel == store.status.loadingElement) { view in
+//        view.onAppear {
+//          store.send(.delegate(.nextPage))
+//        }
+//      }
   }
 }

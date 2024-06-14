@@ -96,7 +96,8 @@ struct NetworkStatusMonitor: DependencyKey {
     return (monitor, stream)
   }
 
-  static var testValue: () -> (monitor: NWPathMonitor, stream: AsyncStream<NWPath.Status>) = unimplemented("network status")
+  static var testValue: () -> (monitor: NWPathMonitor, stream: AsyncStream<NWPath.Status>)
+    = unimplemented("network status")
 }
 
 extension DependencyValues {

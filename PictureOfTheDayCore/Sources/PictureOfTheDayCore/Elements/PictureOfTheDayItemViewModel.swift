@@ -6,7 +6,7 @@ import ComposableArchitecture
 @Reducer
 public struct PictureOfTheDayItemViewModel {
   @ObservableState
-  public struct State: Codable, Equatable, Identifiable {
+  public struct State: Codable, Equatable, Identifiable, Sendable {
     public var id: String { title }
     public let title: String
 

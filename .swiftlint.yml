@@ -3,6 +3,8 @@ excluded:
   - EverythingButTheBagelCore/.swiftpm
   - EverythingButTheBagelCore/build
   - build
+  - "**/.build"
+  - "**/Tests"
 # By default, SwiftLint uses a set of sensible default rules you can adjust:
 disabled_rules: # rule identifiers turned on by default to exclude from running
   - colon
@@ -44,11 +46,17 @@ type_name:
   max_length: # warning and error
     warning: 40
     error: 50
-  excluded: iPhone # excluded via string
+  excluded:
+    - iPhone # excluded via string
   allowed_symbols: ["_"] # these are allowed in type names
 identifier_name:
   min_length: 4
   excluded:
     - url
     - vm
+    - id
+    - vms
+    - app
+    - log
+    - key
 reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, codeclimate, junit, html, emoji, sonarqube, markdown, github-actions-logging, summary)

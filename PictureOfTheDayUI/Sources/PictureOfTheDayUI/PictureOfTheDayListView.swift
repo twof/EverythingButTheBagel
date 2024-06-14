@@ -46,7 +46,7 @@ public struct PictureOfTheDayListView: View {
 //      ControllableScrollView(scrollModel: $scrollController) {
         POTDForEach(elements: elements)
 
-        if elements == .loaded(data: []) {
+        if elements.isEmpty {
           emptyListView(localizedText: vm.state.emptyListMessage)
         }
         //      }
@@ -74,7 +74,7 @@ public struct PictureOfTheDayListView: View {
   }
 }
 
-struct POTDForEach: View, Equatable {
+struct POTDForEach: View {
   let elements: POTDListElements
 
   var body: some View {
@@ -94,7 +94,7 @@ struct POTDForEach: View, Equatable {
   }
 }
 
-struct POTDForEachRow: View, Equatable {
+struct POTDForEachRow: View {
   let store: POTDItemStores
 
   var body: some View {
@@ -112,29 +112,41 @@ struct POTDForEachRow: View, Equatable {
 #Preview {
   let store = Store(
     initialState: POTDListAttemptBase.State(
-      elements: .loaded(
-        data: [
-          .init(title: "hello world", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!, imageName: "Ryugu01_Rover1aHayabusa2_960.jpg")
-               ),
-          .init(title: "hello", asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!, imageName: "Ryugu01_Rover1aHayabusa2_960.jpg")
-               )
-        ]
-      )
+      elements: ListViewModelStatus(data: [
+        .init(
+          title: "hello world",
+          asyncImage: .init(
+            imageUrl: URL(
+              string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg"
+            )!,
+            imageName: "Ryugu01_Rover1aHayabusa2_960.jpg"
+          )
+        ),
+        .init(
+          title: "hello",
+          asyncImage: .init(
+            imageUrl: URL(
+              string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg"
+            )!,
+            imageName: "Ryugu01_Rover1aHayabusa2_960.jpg"
+          )
+        )
+      ])
     ),
     reducer: { POTDListAttemptBase() }
   )
 
-  return PictureOfTheDayListView(
+  PictureOfTheDayListView(
     elements: store.scope(state: \.elements.data, action: \.element)
       .reduce(
-        .loaded(data: [])
+        POTDListElements()
       ) { (result: POTDListElements, childStore) in
         let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
         let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
 
         let data = result.data
 
-        return .loaded(data: data + [POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)])
+        return .init(data: data + [POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)])
       },
     vm: store.scope(state: \.viewModel, action: \.viewModel)
   )
@@ -143,7 +155,7 @@ struct POTDForEachRow: View, Equatable {
 // Configurable preview
 #Preview {
   return PictureOfTheDayListView(
-    elements: .loaded(data: [
+    elements: POTDListElements(data: [
       .init(title: "Hello world"),
       .init(title: "Hello world")
     ]),
@@ -171,27 +183,31 @@ public extension POTDItemStores {
 public extension StoreOf<POTDListAttemptBase> {
   func listElements() -> POTDListElements {
     // This uses a computed property for scoping and may cause performance issues later
+    // swiftlint:disable:next line_length
     // https://github.com/pointfreeco/swift-composable-architecture/blob/main/Sources/ComposableArchitecture/Documentation.docc/Articles/Performance.md#store-scoping
     let stores = self.scope(state: \.elements.data, action: \.element).reduce(
       into: IdentifiedArrayOf(uniqueElements: [])
     ) { (result: inout IdentifiedArrayOf<POTDItemStores>, childStore) in
       let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
       let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
-      result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
+      result[id: textViewModel.state.id] = POTDItemStores(
+        cellContent: textViewModel,
+        asyncImage: imageViewModel
+      )
     }
 
-    switch self.elements {
-    case .loading:
-//      let placeholderStores = self.scope(state: \.elements.placeholders, action: \.element).reduce(
-//        into: IdentifiedArrayOf(uniqueElements: [])
-//      ) { (result: inout IdentifiedArrayOf<POTDItemStores>, childStore) in
-//        let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
-//        let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
-//        result[id: textViewModel.state.id] = POTDItemStores(cellContent: textViewModel, asyncImage: imageViewModel)
-//      }
-      return .loading(data: stores, placeholders: [])
-    case .loaded:
-      return .loaded(data: stores)
+    let placeholderStores = self.scope(state: \.elements.placeholders, action: \.element).reduce(
+      into: IdentifiedArrayOf(uniqueElements: [])
+    ) { (result: inout IdentifiedArrayOf<POTDItemStores>, childStore) in
+      let textViewModel = childStore.scope(state: \.viewModel, action: \.viewModel)
+      let imageViewModel = childStore.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
+      result[id: textViewModel.state.id] = POTDItemStores(
+        cellContent: textViewModel,
+        asyncImage: imageViewModel
+      )
     }
+
+    return .init(data: stores, placeholders: placeholderStores, isLoading: self.elements.isLoading)
+
   }
 }

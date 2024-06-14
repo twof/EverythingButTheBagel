@@ -1,7 +1,7 @@
 import Foundation
 import Dependencies
 
-public struct LocalizedTextState: Codable, Equatable {
+public struct LocalizedTextState: Codable, Equatable, Sendable {
   @Dependency(\.locale) var locale: Locale
   @Dependency(\.stringCatalog) var stringCatalogClient
   var text: String
@@ -26,15 +26,17 @@ public struct LocalizedTextState: Codable, Equatable {
     return localizedString ?? text
   }
 
-  public static func == (lhs: LocalizedTextState, rhs: LocalizedTextState) -> Bool {
-    lhs.text == rhs.text
+  public static func == (left: LocalizedTextState, right: LocalizedTextState) -> Bool {
+    left.text == right.text && left.stringCatalogLocation == right.stringCatalogLocation
   }
 }
 
 /// Load and cache string catalogs from disk
-/// Manually parses out the string catalog to give us tighter control over String localization in previews and tests.
+/// Manually parses out the string catalog to give us tighter control over String localization in previews
+/// and tests.
 ///
-/// If we don't do this, it's not possible to control copy from our view models while also controlling locale in previews and tests.
+/// If we don't do this, it's not possible to control copy from our view models while also controlling
+/// locale in previews and tests.
 struct StringCatalogClient: DependencyKey {
   static var catalogCache: [URL: StringCatalogModel] = [:]
 

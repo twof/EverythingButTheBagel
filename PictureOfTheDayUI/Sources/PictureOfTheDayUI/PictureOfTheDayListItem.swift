@@ -20,7 +20,7 @@ public struct PictureOfTheDayText: View {
   }
 }
 
-public struct PictureOfTheDayListItem: View, Equatable {
+public struct PictureOfTheDayListItem: View {
 //  let text: PictureOfTheDayText
 //  let image: AsyncImageLoader
   let stores: POTDItemStores
@@ -90,7 +90,10 @@ public extension PictureOfTheDayListItem {
   let store = Store(
     initialState: PictureOfTheDayItemBase.State(
       title: "Hey this is an image",
-      asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!, imageName: "Ryugu01_Rover1aHayabusa2_960.jpg")
+      asyncImage: .init(
+        imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!,
+        imageName: "Ryugu01_Rover1aHayabusa2_960.jpg"
+      )
     ),
     reducer: {
       PictureOfTheDayItemBase()
@@ -106,14 +109,20 @@ public extension PictureOfTheDayListItem {
   let store = Store(
     initialState: PictureOfTheDayItemBase.State(
       title: "Hey this is an image",
-      asyncImage: .init(imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!, imageName: "Ryugu01_Rover1aHayabusa2_960.jpg")
+      asyncImage: .init(
+        imageUrl: URL(string: "https://apod.nasa.gov/apod/image/1809/Ryugu01_Rover1aHayabusa2_960.jpg")!,
+        imageName: "Ryugu01_Rover1aHayabusa2_960.jpg"
+      )
     ),
     reducer: {
       PictureOfTheDayItemBase()
     }
   )
 
-  let listStores = POTDItemStores(cellContent: store.scope(state: \.viewModel, action: \.viewModel), asyncImage: store.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel))
+  let listStores = POTDItemStores(
+    cellContent: store.scope(state: \.viewModel, action: \.viewModel),
+    asyncImage: store.scope(state: \.asyncImage.viewModel, action: \.asyncImage.viewModel)
+  )
 
   return PictureOfTheDayListItem(stores: listStores)
 }

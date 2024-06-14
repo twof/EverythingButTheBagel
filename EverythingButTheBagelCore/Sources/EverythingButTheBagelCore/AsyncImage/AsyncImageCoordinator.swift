@@ -7,7 +7,7 @@ public struct AsyncImageCoordinator: LoggingContext {
 
   public typealias HTTPDataSource = HTTPDataSourceReducer<Data>
   @ObservableState
-  public struct State: Codable, Equatable {
+  public struct State: Codable, Equatable, Sendable {
     public let imageUrl: URL
     public let imageName: String
 
@@ -134,7 +134,7 @@ extension Shared: Codable where Value: Codable {
 
   public init(from decoder: any Decoder) throws {
     let container = try decoder.singleValueContainer()
-    let val = try container.decode(Value.self)
-    self.init(val)
+    let value = try container.decode(Value.self)
+    self.init(value)
   }
 }

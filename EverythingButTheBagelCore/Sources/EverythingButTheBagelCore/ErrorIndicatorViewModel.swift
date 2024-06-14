@@ -14,7 +14,8 @@ public struct ErrorIndicatorViewModel {
       self.errors = errors
     }
 
-    /// `keys` indicate error sources to look for. If `keys` is empty, it will look for errors from any sources.
+    /// `keys` indicate error sources to look for. If `keys` is empty, it will look for errors from any
+    /// sources.
     public func error(forKeys keys: [String] = []) -> ErrorViewModel? {
       if keys.isEmpty {
         return errors.values.lazy.flatMap { $0 }.first

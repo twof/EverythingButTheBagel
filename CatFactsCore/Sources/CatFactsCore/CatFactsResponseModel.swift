@@ -2,7 +2,7 @@ import ComposableArchitecture
 import Foundation
 import EverythingButTheBagelCore
 
-public struct CatFactsResponseModel: Codable, Equatable {
+public struct CatFactsResponseModel: Codable, Equatable, Sendable {
   public let currentPage: Int
   public let data: [CatFactModel]
   public let nextPageUrl: URL?
@@ -35,7 +35,7 @@ extension CatFactsResponseModel {
   )
 }
 
-public struct CatFactModel: Codable, Equatable {
+public struct CatFactModel: Codable, Equatable, Sendable {
   let fact: String
 }
 

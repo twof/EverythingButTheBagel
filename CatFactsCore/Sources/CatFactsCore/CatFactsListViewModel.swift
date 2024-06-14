@@ -2,7 +2,10 @@ import ComposableArchitecture
 import Foundation
 import EverythingButTheBagelCore
 
-public typealias CatFactsListViewModelReducer = ListFeatureViewModelReducer<CatFactViewModel, EmptyPathReducer>
+public typealias CatFactsListViewModelReducer = ListFeatureViewModelReducer<
+  CatFactViewModel,
+  EmptyPathReducer
+>
 
 public extension CatFactsListViewModelReducer {
   static var catFacts: CatFactsListViewModelReducer {
@@ -25,7 +28,7 @@ public extension CatFactsListViewModelReducer.State {
   }
 }
 
-public struct CatFactViewModel: Codable, Equatable, Identifiable {
+public struct CatFactViewModel: Codable, Equatable, Identifiable, Sendable {
   public var id: String { fact }
   public let fact: String
 

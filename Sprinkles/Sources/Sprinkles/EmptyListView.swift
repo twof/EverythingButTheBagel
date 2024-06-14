@@ -1,7 +1,7 @@
 import SwiftUI
 import EverythingButTheBagelCore
 
-@ViewBuilder public func emptyListView(localizedText: LocalizedTextState) -> some View {
+@ViewBuilder @MainActor public func emptyListView(localizedText: LocalizedTextState) -> some View {
   VStack(spacing: 15) {
     Image(systemName: "questionmark.circle.fill")
       .resizable()
@@ -16,7 +16,7 @@ import EverythingButTheBagelCore
   .padding()
 }
 
-private func mock() -> some View {
+@MainActor private func mock() -> some View {
   let file = URL(fileURLWithPath: #file)
       .deletingLastPathComponent()
       .deletingLastPathComponent()

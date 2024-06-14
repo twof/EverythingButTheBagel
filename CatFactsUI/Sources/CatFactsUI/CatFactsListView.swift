@@ -4,8 +4,10 @@ import EverythingButTheBagelCore
 import Sprinkles
 import CatFactsCore
 
+@ViewBuilder
+@MainActor
 // swiftlint:disable:next identifier_name
-@ViewBuilder public func CatFactsListView(store: StoreOf<CatFactsListViewModelReducer>) -> some View {
+public func CatFactsListView(store: StoreOf<CatFactsListViewModelReducer>) -> some View {
   GenericListView(store: store) { fact in
     CatFactListItem(vm: fact)
   }

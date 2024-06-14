@@ -31,6 +31,7 @@ public struct ListFeatureBase<
   ResponseType.Model: Codable & Equatable & Identifiable,
   ResponseType.Model.ID == ViewModel.ID
 {
+  // swiftlint:enable opening_brace
   public typealias DataSource = HTTPDataSourceReducer<ResponseType>
   public typealias ViewModelReducer = ListFeatureViewModelReducer<ViewModel, PathReducer>
 
@@ -175,8 +176,4 @@ public struct ListFeatureBase<
       }
     }
   }
-}
-
-extension ListFeatureBase where ViewModel: Reducer {
-
 }

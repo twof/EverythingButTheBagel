@@ -4,7 +4,8 @@ import Foundation
 @available(macOS 13.0.0, *)
 struct ProcessStringCatalogs {
   static func main() async throws {
-    // Use swift-argument-parser or just CommandLine, here we just imply that 2 paths are passed in: input and output
+    // Use swift-argument-parser or just CommandLine, here we just imply that 2 paths are passed
+    // in: input and output
     guard CommandLine.arguments.count == 3 else {
       throw CodeGeneratorError.invalidArguments
     }

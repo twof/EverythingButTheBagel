@@ -6,7 +6,7 @@ struct EquatableNoop<Value> {
 }
 
 extension EquatableNoop: Equatable {
-  static func == (lhs: EquatableNoop<Value>, rhs: EquatableNoop<Value>) -> Bool {
+  static func == (left: EquatableNoop<Value>, right: EquatableNoop<Value>) -> Bool {
     true
   }
 }

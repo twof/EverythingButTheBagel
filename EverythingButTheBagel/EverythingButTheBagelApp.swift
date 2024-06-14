@@ -34,7 +34,7 @@ struct EverythingButTheBagelApp: App {
         AppReducer.State(),
       reducer: {
         AppReducer()
-//          ._printChanges()
+          ._printChanges()
 //          .caching(cache: documentCache)
       }
     )

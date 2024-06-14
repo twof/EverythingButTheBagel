@@ -127,7 +127,11 @@ extension DependencyValues {
 }
 
 struct CacheConfigurationKey: DependencyKey {
-  static var liveValue: (_ memoryCapacity: Int?, _ diskCapacity: Int?) -> Void = { memoryCapacity, diskCapacity in
+  static var liveValue: (
+    _ memoryCapacity: Int?,
+    _ diskCapacity: Int?
+  ) -> Void = { memoryCapacity, diskCapacity in
+    // TODO: Replace `URLCache`
     // According to docs, will evict contents from the cache if the capacity is set lower than the
     // size of the current contents
     if let memoryCapacity {
@@ -138,16 +142,18 @@ struct CacheConfigurationKey: DependencyKey {
       URLSession.shared.configuration.urlCache?.diskCapacity = diskCapacity
     }
   }
-  static var testValue: (_ memoryCapacity: Int?, _ diskCapacity: Int?) -> Void = unimplemented("cache configuration")
+  static var testValue: (_ memoryCapacity: Int?, _ diskCapacity: Int?) -> Void
+    = unimplemented("cache configuration")
 }
 
 extension DependencyValues {
   /// Configures the capacity of memory and disk caches for `URLSession`.
   ///
-  /// According to [a blog post](https://web.archive.org/web/20230608175638/https://zhuk.fi/subclassing-urlcache/) the default eviction policy for
-  /// `URLCache` is to delete *the entire cache* when the capacity limit is reached. For the time being this is acceptable, but
-  /// we may have to replace `URLCache` in the future with one with a more reasonable eviction policy ie LRU, LRU2, LFU
-  // TODO: Replace `URLCache`
+  /// According to
+  /// [a blog post](https://web.archive.org/web/20230608175638/https://zhuk.fi/subclassing-urlcache/)
+  /// the default eviction policy for `URLCache` is to delete *the entire cache* when the capacity limit is
+  /// reached. For the time being this is acceptable, but we may have to replace `URLCache` in the future
+  /// with one with a more reasonable eviction policy ie LRU, LRU2, LFU
   var cacheConfiguration: (_ memoryCapacity: Int?, _ diskCapacity: Int?) -> Void {
     get { self[CacheConfigurationKey.self] }
     set { self[CacheConfigurationKey.self] = newValue }

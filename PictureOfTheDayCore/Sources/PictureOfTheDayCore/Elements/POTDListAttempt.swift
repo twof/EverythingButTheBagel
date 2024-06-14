@@ -14,7 +14,7 @@ public struct POTDListAttemptBase {
     var dataModels: IdentifiedArrayOf<POTDResponseModel> = []
 
     public init(
-      elements: ListViewModelStatus<PictureOfTheDayItemBase.State> = .loaded(data: []),
+      elements: ListViewModelStatus<PictureOfTheDayItemBase.State> = .init(),
       viewModel: POTDListAttemptVM.State = .init(),
       dataSource: DataSource.State = .init()
     ) {
@@ -24,11 +24,12 @@ public struct POTDListAttemptBase {
     }
 
     mutating func setLoading(_ isLoading: Bool) {
-      let data = elements.data
-
-      elements = isLoading
-        ? .loading(data: data, placeholders: .placeholders)
-        : .loaded(data: data)
+      self.elements.isLoading = isLoading
+//      let data = elements.data
+//
+//      elements = isLoading
+//        ? .loading(data: data, placeholders: .placeholders)
+//        : .loaded(data: data)
     }
   }
 
@@ -65,7 +66,8 @@ public struct POTDListAttemptBase {
         return .none
 
       case let .dataSource(.delegate(.response(response))):
-        state.elements = state.elements.appending(contentsOf: response.map(\.listItemBase))
+//        state.elements = state.elements.appending(contentsOf: response.map(\.listItemBase))
+        state.elements.append(contentsOf: response.map(\.listItemBase))
         state.dataModels.append(contentsOf: response)
         state.setLoading(false)
         return .none
@@ -75,7 +77,8 @@ public struct POTDListAttemptBase {
         return .send(.refreshDataSource(.fetch(url: Self.urlString, cachePolicy: .useProtocolCachePolicy)))
 
       case let .refreshDataSource(.delegate(.response(response))):
-        state.elements = .loaded(data: response.map(\.listItemBase).toIdentifiedArray)
+//        state.elements = .loaded(data: response.map(\.listItemBase).toIdentifiedArray)
+        state.elements.append(contentsOf: response.map(\.listItemBase))
         state.dataModels = response.toIdentifiedArray
         state.setLoading(false)
         return .none
@@ -128,7 +131,10 @@ extension POTDResponseModel {
   var listItemBase: PictureOfTheDayItemBase.State {
     let url = thumbnailUrl ?? url
     let name = url.lastPathComponent
-    return PictureOfTheDayItemBase.State(title: title, asyncImage: AsyncImageCoordinator.State(imageUrl: url, imageName: name))
+    return PictureOfTheDayItemBase.State(
+      title: title,
+      asyncImage: AsyncImageCoordinator.State(imageUrl: url, imageName: name)
+    )
   }
 }
 

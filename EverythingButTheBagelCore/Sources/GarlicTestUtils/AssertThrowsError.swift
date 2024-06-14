@@ -1,7 +1,10 @@
 import XCTest
 import EverythingButTheBagelCore
 
-public func assertThrowsError(closure: () async throws -> Void, errorMatches: (EquatableError) -> Bool) async {
+public func assertThrowsError(
+  closure: () async throws -> Void,
+  errorMatches: (EquatableError) -> Bool
+) async {
   do {
     try await closure()
     XCTFail("Expected error")

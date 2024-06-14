@@ -1,4 +1,4 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 6.0
 
 import PackageDescription
 
@@ -39,7 +39,6 @@ let package = Package(
         .copy("prod.env")
       ],
       plugins: [
-//        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint"),
         .plugin(name: "LocalizationProcessing")
       ]
     ),
@@ -67,5 +66,6 @@ let package = Package(
         "PictureOfTheDayCore"
       ]
     )
-  ]
+  ],
+  swiftLanguageVersions: [.v6]
 )
