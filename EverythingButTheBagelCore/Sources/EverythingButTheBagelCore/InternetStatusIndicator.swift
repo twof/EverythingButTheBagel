@@ -83,7 +83,7 @@ public struct InternetStatusIndicator {
 }
 
 struct NetworkStatusMonitor: DependencyKey {
-  static var liveValue: () -> (monitor: NWPathMonitor, stream: AsyncStream<NWPath.Status>) = {
+  static let liveValue: @Sendable () -> (monitor: NWPathMonitor, stream: AsyncStream<NWPath.Status>) = {
     let monitor = NWPathMonitor()
     let stream = AsyncStream<NWPath.Status> { continuation in
       monitor.pathUpdateHandler = { path in
@@ -96,12 +96,12 @@ struct NetworkStatusMonitor: DependencyKey {
     return (monitor, stream)
   }
 
-  static var testValue: () -> (monitor: NWPathMonitor, stream: AsyncStream<NWPath.Status>)
+  static let testValue: @Sendable () -> (monitor: NWPathMonitor, stream: AsyncStream<NWPath.Status>)
     = unimplemented("network status")
 }
 
 extension DependencyValues {
-  var networkStatus: () -> (monitor: NWPathMonitor, stream: AsyncStream<NWPath.Status>) {
+  var networkStatus: @Sendable () -> (monitor: NWPathMonitor, stream: AsyncStream<NWPath.Status>) {
     get { self[NetworkStatusMonitor.self] }
     set { self[NetworkStatusMonitor.self] = newValue }
   }

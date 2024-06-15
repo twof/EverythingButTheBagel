@@ -2,15 +2,15 @@ import Foundation
 import ComposableArchitecture
 
 @DependencyClient
-public struct FileClient {
-  public var read: (_ url: URL) throws -> Data
-  public var write: (_ url: URL, _ data: Data) throws -> Void
-  public var exists: (_ url: URL) -> Bool = { _ in true }
+public struct FileClient: Sendable {
+  public var read: @Sendable (_ url: URL) throws -> Data
+  public var write: @Sendable (_ url: URL, _ data: Data) throws -> Void
+  public var exists: @Sendable (_ url: URL) -> Bool = { _ in true }
 }
 
 extension FileClient: DependencyKey {
   /// Performs an encrypted write to the provided `URL`
-  public static var liveValue = FileClient { url in
+  public static let liveValue = FileClient { url in
     try Data(contentsOf: url)
   } write: { url, data in
     try data.write(to: url, options: [.completeFileProtection])
@@ -18,7 +18,7 @@ extension FileClient: DependencyKey {
     FileManager.default.fileExists(atPath: url.path())
   }
 
-  public static var testValue = FileClient()
+  public static let testValue = FileClient()
 }
 
 public extension DependencyValues {

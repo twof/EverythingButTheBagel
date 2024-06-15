@@ -4,7 +4,7 @@ import Foundation
 /// Abstract data source which fetches data from a URL.
 /// Handles logging and error handling under the hood.
 @Reducer
-public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorProducer {
+public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorProducer, Sendable {
   public struct State: Codable, Equatable, Sendable { public init() { } }
 
   public enum Action: Equatable, ErrorReportingDelegate {
@@ -117,8 +117,8 @@ public struct HTTPDataSourceReducer<ResponseType: Codable & Equatable>: ErrorPro
 }
 
 @DependencyClient
-struct DataRequestClient<ResponseType: Codable & Equatable> {
-  var request: (
+struct DataRequestClient<ResponseType: Codable & Equatable>: Sendable {
+  var request: @Sendable (
     _ urlString: String,
     _ cachePolicy: NSURLRequest.CachePolicy
   ) async throws -> ResponseType

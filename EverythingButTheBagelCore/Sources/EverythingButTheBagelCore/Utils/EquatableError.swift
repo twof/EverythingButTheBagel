@@ -4,7 +4,7 @@
 /// Credit: https://sideeffect.io/posts/2021-12-10-equatableerror/
 public struct EquatableError: Error, Equatable, CustomStringConvertible {
   let base: Error
-  private let equals: (Error) -> Bool
+  private let equals: @Sendable (Error) -> Bool
 
   init<Base: Error>(_ base: Base) {
     self.base = base

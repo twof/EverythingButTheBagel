@@ -22,7 +22,7 @@ struct LocalizationProcessing: BuildToolPlugin {
       .buildCommand(
         displayName: "Process String Catalogs",
         executable: try context.tool(named: "ProcessStringCatalogs").url,
-        arguments: [stringCatalogFile.absoluteString, output.absoluteString],
+        arguments: [stringCatalogFile.path(), output.path()],
         environment: [:],
         inputFiles: [stringCatalogFile],
         outputFiles: [output]

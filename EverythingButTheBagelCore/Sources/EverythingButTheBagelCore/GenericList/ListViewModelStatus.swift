@@ -79,6 +79,22 @@ public struct ListViewModelStatus<ViewModel: Identifiable> {
     self.isLoading = isLoading
   }
 
+  public static func loading(
+    data: IdentifiedArrayOf<ViewModel> = [],
+    placeholders: IdentifiedArrayOf<ViewModel> = [],
+    isLoading: Bool = false
+  ) -> Self {
+    self.init(data: data, placeholders: placeholders, isLoading: true)
+  }
+
+  public static func loaded(
+    data: IdentifiedArrayOf<ViewModel> = [],
+    placeholders: IdentifiedArrayOf<ViewModel> = [],
+    isLoading: Bool = false
+  ) -> Self {
+    self.init(data: data, placeholders: placeholders, isLoading: false)
+  }
+
   public mutating func append(_ newData: ViewModel) {
     data.append(newData)
   }

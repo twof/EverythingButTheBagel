@@ -9,6 +9,7 @@ struct ProcessStringCatalogs {
     guard CommandLine.arguments.count == 3 else {
       throw CodeGeneratorError.invalidArguments
     }
+
     // arguments[0] is the path to this command line tool
     let input = URL(filePath: CommandLine.arguments[1])
     let output = URL(filePath: CommandLine.arguments[2])

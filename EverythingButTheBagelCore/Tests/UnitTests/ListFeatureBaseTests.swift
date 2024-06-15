@@ -17,7 +17,7 @@ class ListFeatureBaseTests: XCTestCase {
     }
 
     await store.receive(.viewModel(.newResponse(response.data.vms))) { state in
-      state.viewModel.status = .loaded(
+      state.viewModel.status = .init(
         data: response.data.map(ViewModel.init(model:)).toIdentifiedArray
       )
     }

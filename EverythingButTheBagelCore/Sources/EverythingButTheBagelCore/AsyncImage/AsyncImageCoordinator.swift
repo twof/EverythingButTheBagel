@@ -2,7 +2,7 @@ import ComposableArchitecture
 import Foundation
 
 @Reducer
-public struct AsyncImageCoordinator: LoggingContext {
+public struct AsyncImageCoordinator: LoggingContext, Sendable {
   public let loggingCategory: String = "AsyncImageCoordinator"
 
   public typealias HTTPDataSource = HTTPDataSourceReducer<Data>

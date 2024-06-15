@@ -37,10 +37,10 @@ public struct LocalizedTextState: Codable, Equatable, Sendable {
 ///
 /// If we don't do this, it's not possible to control copy from our view models while also controlling
 /// locale in previews and tests.
-struct StringCatalogClient: DependencyKey {
+actor StringCatalogClient: DependencyKey {
   static var catalogCache: [URL: StringCatalogModel] = [:]
 
-  static var liveValue: (URL) -> StringCatalogModel = { location in
+  static let liveValue: @Sendable (URL) -> StringCatalogModel = { location in
     if let cachedCatalog = catalogCache[location] {
       return cachedCatalog
     }
@@ -52,11 +52,11 @@ struct StringCatalogClient: DependencyKey {
     return catalog
   }
 
-  static var previewValue: (URL) -> StringCatalogModel = unimplemented("string catalog")
+  static let previewValue: @Sendable (URL) -> StringCatalogModel = unimplemented("string catalog")
 }
 
 extension DependencyValues {
-  var stringCatalog: (URL) -> StringCatalogModel {
+  var stringCatalog: @Sendable (URL) -> StringCatalogModel {
     get { self[StringCatalogClient.self] }
     set { self[StringCatalogClient.self] = newValue }
   }

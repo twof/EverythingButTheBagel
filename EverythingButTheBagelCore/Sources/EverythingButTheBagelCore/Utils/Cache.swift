@@ -55,10 +55,9 @@ public extension Reducer where State: Codable {
     return Reduce<Self.State, Self.Action> { state, action in
       let effect = self.reduce(into: &state, action: action)
       let newState = state
+      cache.save(newState)
+
       return .merge(
-        .run(operation: { _ in
-          cache.save(newState)
-        }),
         effect
       )
     }

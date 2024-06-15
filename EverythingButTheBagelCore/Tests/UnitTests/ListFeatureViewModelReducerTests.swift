@@ -122,13 +122,6 @@ class ListFeatureViewModelReducerTests: XCTestCase {
     }
   }
 
-  func testLoadingElement() {
-    let status = ListViewModelStatus<ViewModel>.loaded(
-      data: [.init(fact: "1"), .init(fact: "2"), .init(fact: "3"), .init(fact: "4")]
-    )
-    XCTAssertEqual(status.loadingElement, .init(fact: "2"))
-  }
-
   func testSinglePlaceholderOnManyElements() {
     // We keep a single placeholder at the bottom of the list to indicate loading
     let status = ListViewModelStatus.loading(
@@ -155,12 +148,12 @@ class ListFeatureViewModelReducerTests: XCTestCase {
 
   func testIsLoadingState() {
     let loadedState = TestViewModelReducer.State(status: .loaded(data: []))
-    XCTAssertFalse(loadedState.isLoading)
+    XCTAssertFalse(loadedState.status.isLoading)
 
     let loadingState = TestViewModelReducer.State(
       status: .loading(data: [], placeholders: [])
     )
-    XCTAssertTrue(loadingState.isLoading)
+    XCTAssertTrue(loadingState.status.isLoading)
   }
 }
 

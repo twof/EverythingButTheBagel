@@ -5,7 +5,7 @@ struct Repository<ResponseType: Decodable>: DependencyKey, StaticLoggingContext 
   static var loggingCategory: String {
     "Networking"
   }
-  static var networkRequest: (URLRequest) async throws -> (Data, URLResponse) {
+  static var networkRequest: @Sendable (URLRequest) async throws -> (Data, URLResponse) {
     Dependency(\.networkRequest).wrappedValue
   }
 
@@ -13,7 +13,7 @@ struct Repository<ResponseType: Decodable>: DependencyKey, StaticLoggingContext 
   ///
   /// Makes use of the built in cache. Cache policy can be set as a part of the the `request` parameter.
   /// Any responses with a status code outside of the 200 range are treated as errors.
-  static var liveValue: (
+  static var liveValue: @Sendable (
     _ request: URLRequest
   ) async throws -> ResponseType {
     { request in
@@ -32,7 +32,7 @@ struct Repository<ResponseType: Decodable>: DependencyKey, StaticLoggingContext 
     }
   }
 
-  static var testValue: (URLRequest) async throws -> ResponseType {
+  static var testValue: @Sendable (URLRequest) async throws -> ResponseType {
     unimplemented("repository")
   }
 
@@ -101,33 +101,33 @@ private let ephemeralConfig = {
 private let ephemeralSession = URLSession(configuration: ephemeralConfig)
 
 struct EphemeralNetworkRequestKey: DependencyKey {
-  static var liveValue: (URLRequest) async throws -> (Data, URLResponse) = ephemeralSession.data
-  static var testValue: (URLRequest) async throws -> (Data, URLResponse) = unimplemented("network request")
+  static let liveValue: @Sendable (URLRequest) async throws -> (Data, URLResponse) = ephemeralSession.data
+  static let testValue: @Sendable (URLRequest) async throws -> (Data, URLResponse) = unimplemented("network request")
 }
 
 extension DependencyValues {
   /// Wrapper around `URLSession.data(for:)` that doesn't cache
-  var ephemeralNetworkRequest: (URLRequest) async throws -> (Data, URLResponse) {
+  var ephemeralNetworkRequest: @Sendable (URLRequest) async throws -> (Data, URLResponse) {
     get { self[EphemeralNetworkRequestKey.self] }
     set { self[EphemeralNetworkRequestKey.self] = newValue }
   }
 }
 
 struct NetworkRequestKey: DependencyKey {
-  static var liveValue: (URLRequest) async throws -> (Data, URLResponse) = URLSession.shared.data
-  static var testValue: (URLRequest) async throws -> (Data, URLResponse) = unimplemented("network request")
+  static let liveValue: @Sendable (URLRequest) async throws -> (Data, URLResponse) = URLSession.shared.data
+  static let testValue: @Sendable (URLRequest) async throws -> (Data, URLResponse) = unimplemented("network request")
 }
 
 extension DependencyValues {
   /// Wrapper around `URLSession.data(for:)`
-  var networkRequest: (URLRequest) async throws -> (Data, URLResponse) {
+  var networkRequest: @Sendable (URLRequest) async throws -> (Data, URLResponse) {
     get { self[NetworkRequestKey.self] }
     set { self[NetworkRequestKey.self] = newValue }
   }
 }
 
 struct CacheConfigurationKey: DependencyKey {
-  static var liveValue: (
+  static let liveValue: @Sendable (
     _ memoryCapacity: Int?,
     _ diskCapacity: Int?
   ) -> Void = { memoryCapacity, diskCapacity in
@@ -142,7 +142,7 @@ struct CacheConfigurationKey: DependencyKey {
       URLSession.shared.configuration.urlCache?.diskCapacity = diskCapacity
     }
   }
-  static var testValue: (_ memoryCapacity: Int?, _ diskCapacity: Int?) -> Void
+  static let testValue: @Sendable (_ memoryCapacity: Int?, _ diskCapacity: Int?) -> Void
     = unimplemented("cache configuration")
 }
 
@@ -154,13 +154,13 @@ extension DependencyValues {
   /// the default eviction policy for `URLCache` is to delete *the entire cache* when the capacity limit is
   /// reached. For the time being this is acceptable, but we may have to replace `URLCache` in the future
   /// with one with a more reasonable eviction policy ie LRU, LRU2, LFU
-  var cacheConfiguration: (_ memoryCapacity: Int?, _ diskCapacity: Int?) -> Void {
+  var cacheConfiguration: @Sendable (_ memoryCapacity: Int?, _ diskCapacity: Int?) -> Void {
     get { self[CacheConfigurationKey.self] }
     set { self[CacheConfigurationKey.self] = newValue }
   }
 }
 
-public enum SessionConfig {
+public enum SessionConfig: Sendable {
   case ephemeral
   case cached
 }

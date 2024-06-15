@@ -10,13 +10,13 @@ public enum LogLevel: Equatable {
 }
 
 @DependencyClient
-public struct LoggingClient {
-  public var setup: () -> Void
-  public var log: (_ level: LogLevel, _ category: String) -> Void
+public struct LoggingClient: Sendable {
+  public var setup: @Sendable () -> Void
+  public var log: @Sendable (_ level: LogLevel, _ category: String) -> Void
 }
 
 extension LoggingClient: DependencyKey {
-  public static var liveValue = LoggingClient {
+  public static let liveValue = LoggingClient {
     @Dependency(\.remoteLoggingClient) var remoteLoggingClient
     remoteLoggingClient.setup()
   } log: { level, category in
@@ -37,7 +37,7 @@ extension LoggingClient: DependencyKey {
   }
 
   // We want to turn off logging during tests most of the time
-  public static var testValue = LoggingClient(setup: { }, log: { _, _ in })
+  public static let testValue = LoggingClient(setup: { }, log: { _, _ in })
 }
 
 extension DependencyValues {
@@ -48,13 +48,13 @@ extension DependencyValues {
 }
 
 @DependencyClient
-struct RemoteLoggingClient {
-  var setup: () -> Void
-  var log: (_ level: LogLevel, _ category: String) -> Void
+struct RemoteLoggingClient: Sendable {
+  var setup: @Sendable () -> Void
+  var log: @Sendable (_ level: LogLevel, _ category: String) -> Void
 }
 
 extension RemoteLoggingClient: DependencyKey {
-  static var liveValue = RemoteLoggingClient {
+  static let liveValue = RemoteLoggingClient {
     SentrySDK.start { options in
       options.dsn
         = "https://262de3d8952cf58221fe4c6618834b64@o4506965171896320.ingest.us.sentry.io/4506965173207040"
@@ -73,7 +73,7 @@ extension RemoteLoggingClient: DependencyKey {
   }
 
   // We want to turn off logging during tests most of the time
-  static var testValue = RemoteLoggingClient(setup: { }, log: { _, _ in })
+  static let testValue = RemoteLoggingClient(setup: { }, log: { _, _ in })
 }
 
 extension DependencyValues {
